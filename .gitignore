@@ -1,1 +1,8 @@
 /docs/
+/build/
+/out/
+/.cache/
+/.env
+/.env.*
+*.key
+*.pem
