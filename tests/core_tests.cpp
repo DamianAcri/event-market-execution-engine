@@ -1,5 +1,6 @@
 #include "eme/book/order_book.hpp"
 #include "eme/core/fixed_point.hpp"
+#include "eme/gateway/kalshi/orderbook_decoder.hpp"
 #include "eme/gateway/kalshi/orderbook_normalizer.hpp"
 #include "eme/market/normalized_event.hpp"
 
@@ -303,6 +304,120 @@ void test_kalshi_delta_normalization(TestContext& test) {
                 "zero wire delta is rejected");
 }
 
+void test_kalshi_json_snapshot_pipeline(TestContext& test) {
+    namespace kalshi = eme::gateway::kalshi;
+    constexpr std::string_view fixture = R"json({
+      "type": "orderbook_snapshot",
+      "sid": 2,
+      "seq": 2,
+      "msg": {
+        "market_ticker": "FED-23DEC-T3.00",
+        "market_id": "9b0f6b43-5b68-4f9f-9f02-9a2d1b8ac1a1",
+        "yes_dollars_fp": [["0.0800", "300.00"], ["0.2200", "333.00"]],
+        "no_dollars_fp": [["0.5400", "20.00"], ["0.5600", "146.00"]]
+      }
+    })json";
+
+    const auto decoded = kalshi::decode_orderbook_message(
+        fixture,
+        7U,
+        eme::market::ReceiveTime{},
+        kalshi::BookPriceConvention::legacy_separate_scales);
+    test.expect(std::holds_alternative<kalshi::WireOrderBookSnapshot>(decoded),
+                "official raw snapshot JSON decodes strictly");
+    if (!std::holds_alternative<kalshi::WireOrderBookSnapshot>(decoded)) {
+        return;
+    }
+
+    const auto normalized = kalshi::normalize_orderbook_snapshot(
+        std::get<kalshi::WireOrderBookSnapshot>(decoded));
+    test.expect(std::holds_alternative<eme::market::BookSnapshot>(normalized),
+                "decoded snapshot normalizes into a core event");
+    if (!std::holds_alternative<eme::market::BookSnapshot>(normalized)) {
+        return;
+    }
+
+    const auto& event = std::get<eme::market::BookSnapshot>(normalized);
+    eme::book::OrderBook book;
+    test.expect(book.apply_snapshot(
+                    event.stream_id, event.sequence, event.bids, event.asks) ==
+                    eme::book::BookUpdateResult::applied,
+                "raw snapshot reaches the venue-neutral order book");
+    test.expect(book.best_bid().has_value() && book.best_bid()->raw() == 2'200 &&
+                    book.best_ask().has_value() && book.best_ask()->raw() == 4'400,
+                "decoder-normalizer-book pipeline preserves executable prices");
+}
+
+void test_kalshi_json_delta_pipeline(TestContext& test) {
+    namespace kalshi = eme::gateway::kalshi;
+    constexpr std::string_view fixture = R"json({
+      "type": "orderbook_delta",
+      "sid": 2,
+      "seq": 3,
+      "msg": {
+        "market_ticker": "FED-23DEC-T3.00",
+        "market_id": "9b0f6b43-5b68-4f9f-9f02-9a2d1b8ac1a1",
+        "price_dollars": "0.960",
+        "delta_fp": "-54.00",
+        "side": "yes",
+        "ts_ms": 1669149841000
+      }
+    })json";
+
+    const auto decoded = kalshi::decode_orderbook_message(
+        fixture,
+        7U,
+        eme::market::ReceiveTime{},
+        kalshi::BookPriceConvention::unified_yes_scale);
+    test.expect(std::holds_alternative<kalshi::WireOrderBookDelta>(decoded),
+                "official raw delta JSON decodes strictly");
+    if (!std::holds_alternative<kalshi::WireOrderBookDelta>(decoded)) {
+        return;
+    }
+
+    const auto normalized = kalshi::normalize_orderbook_delta(
+        std::get<kalshi::WireOrderBookDelta>(decoded));
+    test.expect(std::holds_alternative<eme::market::BookDelta>(normalized),
+                "decoded delta normalizes into a core event");
+    if (std::holds_alternative<eme::market::BookDelta>(normalized)) {
+        const auto& event = std::get<eme::market::BookDelta>(normalized);
+        test.expect(event.sequence == 3U && event.side == eme::book::Side::bid &&
+                        event.price.raw() == 9'600 && event.quantity_delta.raw() == -5'400,
+                    "raw delta fields survive the full decoding boundary");
+    }
+}
+
+void test_kalshi_json_errors(TestContext& test) {
+    namespace kalshi = eme::gateway::kalshi;
+    const auto decode = [](const std::string_view payload) {
+        return kalshi::decode_orderbook_message(
+            payload,
+            1U,
+            eme::market::ReceiveTime{},
+            kalshi::BookPriceConvention::unified_yes_scale);
+    };
+    const auto has_error = [](const kalshi::DecodedOrderBookMessage& result,
+                              const kalshi::DecodeErrorCode expected) {
+        return std::holds_alternative<kalshi::DecodeError>(result) &&
+               std::get<kalshi::DecodeError>(result).code == expected;
+    };
+
+    test.expect(has_error(decode("{"), kalshi::DecodeErrorCode::invalid_json),
+                "malformed JSON is rejected without throwing");
+    test.expect(has_error(
+                    decode(R"json({"type":"orderbook_delta","sid":2,"msg":{}})json"),
+                    kalshi::DecodeErrorCode::missing_field),
+                "missing sequence is rejected");
+    test.expect(has_error(
+                    decode(R"json({"type":"orderbook_snapshot","sid":2,"seq":2,"msg":{"market_ticker":"X","yes_dollars_fp":[["0.5","1.00","extra"]],"no_dollars_fp":[]}})json"),
+                    kalshi::DecodeErrorCode::invalid_level),
+                "malformed price level shape is rejected");
+    test.expect(has_error(
+                    decode(R"json({"type":"ticker","sid":2,"seq":2,"msg":{"market_ticker":"X"}})json"),
+                    kalshi::DecodeErrorCode::unsupported_message_type),
+                "non-orderbook WebSocket message is classified explicitly");
+}
+
 }  // namespace
 
 int main() {
@@ -314,5 +429,8 @@ int main() {
     test_kalshi_legacy_snapshot_fixture(test);
     test_kalshi_unified_price_normalization(test);
     test_kalshi_delta_normalization(test);
+    test_kalshi_json_snapshot_pipeline(test);
+    test_kalshi_json_delta_pipeline(test);
+    test_kalshi_json_errors(test);
     return test.result();
 }

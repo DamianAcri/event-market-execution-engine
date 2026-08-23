@@ -22,6 +22,7 @@ and synthetic event sources:
 - snapshot/delta sequencing scoped to a stream;
 - fail-closed transition to `STALE` after gaps or invalid updates;
 - recovery only through a fresh snapshot;
+- strict decoding of Kalshi order-book JSON messages with typed errors;
 - Kalshi YES/NO book normalization for legacy and unified YES-price feeds;
 - a dependency-free test executable and a small operator CLI.
 
@@ -42,7 +43,8 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-The current source tree has no third-party runtime or test dependencies.
+The JSON boundary uses the pinned, header-only `nlohmann/json` 3.12.0 release.
+CMake downloads it from the upstream release archive and verifies its SHA-256.
 
 ## CLI
 
