@@ -128,4 +128,37 @@ private:
     std::int64_t raw_{};
 };
 
+class QuantityDelta final {
+public:
+    static constexpr std::int64_t scale = Quantity::scale;
+
+    [[nodiscard]] static constexpr QuantityDelta from_raw(const std::int64_t raw) noexcept {
+        return QuantityDelta{raw};
+    }
+
+    [[nodiscard]] static constexpr std::optional<QuantityDelta> parse(
+        const std::string_view text) noexcept {
+        if (text.empty()) {
+            return std::nullopt;
+        }
+
+        const bool negative = text.front() == '-';
+        const auto magnitude_text = negative ? text.substr(1U) : text;
+        const auto magnitude = detail::parse_scaled_nonnegative<scale, 2U>(magnitude_text);
+        if (!magnitude.has_value()) {
+            return std::nullopt;
+        }
+        return QuantityDelta{negative ? -*magnitude : *magnitude};
+    }
+
+    [[nodiscard]] constexpr std::int64_t raw() const noexcept { return raw_; }
+
+    friend constexpr auto operator<=>(const QuantityDelta&, const QuantityDelta&) = default;
+
+private:
+    explicit constexpr QuantityDelta(const std::int64_t raw) noexcept : raw_{raw} {}
+
+    std::int64_t raw_{};
+};
+
 }  // namespace eme::core

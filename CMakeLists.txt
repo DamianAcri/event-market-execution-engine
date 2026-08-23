@@ -11,6 +11,7 @@ option(EME_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
 add_library(eme_core
     src/book/order_book.cpp
+    src/gateway/kalshi/orderbook_normalizer.cpp
 )
 
 target_include_directories(eme_core

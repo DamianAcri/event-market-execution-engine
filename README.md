@@ -22,10 +22,12 @@ and synthetic event sources:
 - snapshot/delta sequencing scoped to a stream;
 - fail-closed transition to `STALE` after gaps or invalid updates;
 - recovery only through a fresh snapshot;
+- Kalshi YES/NO book normalization for legacy and unified YES-price feeds;
 - a dependency-free test executable and a small operator CLI.
 
-Kalshi-specific WebSocket, JSON, authentication, and YES/NO normalization stay
-at the gateway boundary and will be added after the core invariants are stable.
+Kalshi JSON decoding, WebSocket transport, and authentication remain at the
+gateway boundary. The normalizer already accepts parsed wire DTOs and emits the
+same venue-neutral events that replay and synthetic sources will use.
 
 ## Build
 

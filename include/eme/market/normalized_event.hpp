@@ -28,7 +28,7 @@ struct BookDelta final {
     ReceiveTime received_at{};
     book::Side side{};
     core::Price price;
-    std::int64_t quantity_delta_raw{};
+    core::QuantityDelta quantity_delta;
 };
 
 using NormalizedMarketEvent = std::variant<BookSnapshot, BookDelta>;
