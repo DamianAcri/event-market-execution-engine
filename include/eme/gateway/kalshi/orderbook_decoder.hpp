@@ -32,6 +32,7 @@ using DecodedOrderBookMessage =
 // payload remains the canonical source for recorder/replay.
 [[nodiscard]] DecodedOrderBookMessage decode_orderbook_message(
     std::string_view raw_payload,
+    market::ConnectionGeneration connection_generation,
     market::ReceiveTime received_at,
     const MarketRegistry& markets);
 

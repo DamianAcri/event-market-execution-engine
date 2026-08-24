@@ -27,6 +27,7 @@ struct WirePriceLevel final {
 
 struct WireOrderBookSnapshot final {
     market::MarketId market_id{};
+    market::ConnectionGeneration connection_generation{};
     book::StreamId stream_id{};
     book::SequenceNumber sequence{};
     market::ReceiveTime received_at{};
@@ -36,6 +37,7 @@ struct WireOrderBookSnapshot final {
 
 struct WireOrderBookDelta final {
     market::MarketId market_id{};
+    market::ConnectionGeneration connection_generation{};
     book::StreamId stream_id{};
     book::SequenceNumber sequence{};
     market::ReceiveTime received_at{};

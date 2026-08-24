@@ -23,6 +23,7 @@ enum class BookState : std::uint8_t {
     empty,
     valid,
     stale,
+    recovering,
 };
 
 enum class BookUpdateResult : std::uint8_t {
@@ -31,6 +32,8 @@ enum class BookUpdateResult : std::uint8_t {
     stream_mismatch,
     sequence_gap,
     invalid_level,
+    connection_mismatch,
+    recovery_not_started,
 };
 
 struct Level final {
@@ -46,6 +49,8 @@ struct Level final {
             return "VALID";
         case BookState::stale:
             return "STALE";
+        case BookState::recovering:
+            return "RECOVERING";
     }
     return "UNKNOWN";
 }
@@ -66,6 +71,7 @@ public:
         core::QuantityDelta quantity_delta);
 
     void mark_stale() noexcept;
+    [[nodiscard]] bool begin_recovery() noexcept;
 
     [[nodiscard]] BookState state() const noexcept { return state_; }
     [[nodiscard]] std::optional<StreamId> stream_id() const noexcept { return stream_id_; }

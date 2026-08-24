@@ -104,6 +104,7 @@ void test_invalid_levels(eme::test::Context& test) {
 void test_normalized_event_model(eme::test::Context& test) {
     const eme::market::BookDelta delta{
         7U,
+        1U,
         3U,
         11U,
         eme::market::ReceiveTime{},

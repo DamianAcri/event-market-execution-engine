@@ -10,10 +10,12 @@
 namespace eme::market {
 
 using MarketId = std::uint32_t;
+using ConnectionGeneration = std::uint64_t;
 using ReceiveTime = std::chrono::time_point<std::chrono::steady_clock, std::chrono::nanoseconds>;
 
 struct BookSnapshot final {
     MarketId market_id{};
+    ConnectionGeneration connection_generation{};
     book::StreamId stream_id{};
     book::SequenceNumber sequence{};
     ReceiveTime received_at{};
@@ -23,6 +25,7 @@ struct BookSnapshot final {
 
 struct BookDelta final {
     MarketId market_id{};
+    ConnectionGeneration connection_generation{};
     book::StreamId stream_id{};
     book::SequenceNumber sequence{};
     ReceiveTime received_at{};

@@ -11,6 +11,7 @@ namespace kalshi = eme::gateway::kalshi;
 void test_snapshot(eme::test::Context& test) {
     const kalshi::WireOrderBookSnapshot wire{
         7U,
+        1U,
         2U,
         2U,
         eme::market::ReceiveTime{},
@@ -51,6 +52,7 @@ void test_snapshot(eme::test::Context& test) {
 void test_delta(eme::test::Context& test) {
     const kalshi::WireOrderBookDelta yes_wire{
         7U,
+        1U,
         2U,
         3U,
         eme::market::ReceiveTime{},

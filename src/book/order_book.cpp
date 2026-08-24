@@ -91,6 +91,14 @@ void OrderBook::mark_stale() noexcept {
     state_ = BookState::stale;
 }
 
+bool OrderBook::begin_recovery() noexcept {
+    if (state_ != BookState::stale) {
+        return false;
+    }
+    state_ = BookState::recovering;
+    return true;
+}
+
 std::optional<core::Price> OrderBook::best_bid() const noexcept {
     if (state_ != BookState::valid || bids_.empty()) {
         return std::nullopt;

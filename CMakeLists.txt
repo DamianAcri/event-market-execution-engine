@@ -22,12 +22,15 @@ FetchContent_MakeAvailable(nlohmann_json)
 
 add_library(eme_core
     src/book/order_book.cpp
+    src/journal/raw_journal.cpp
+    src/market/market_state.cpp
 )
 
 add_library(eme_kalshi_gateway
     src/gateway/kalshi/market_registry.cpp
     src/gateway/kalshi/orderbook_decoder.cpp
     src/gateway/kalshi/orderbook_normalizer.cpp
+    src/gateway/kalshi/orderbook_processor.cpp
 )
 
 target_include_directories(eme_core
@@ -88,6 +91,8 @@ if(BUILD_TESTING)
 
     eme_add_test(eme_fixed_point_tests tests/fixed_point_tests.cpp eme_core)
     eme_add_test(eme_order_book_tests tests/order_book_tests.cpp eme_core)
+    eme_add_test(eme_market_state_tests tests/market_state_tests.cpp eme_core)
+    eme_add_test(eme_raw_journal_tests tests/raw_journal_tests.cpp eme_core)
     eme_add_test(
         eme_kalshi_normalizer_tests
         tests/kalshi_normalizer_tests.cpp
@@ -98,4 +103,10 @@ if(BUILD_TESTING)
         tests/kalshi_decoder_tests.cpp
         eme_kalshi_gateway
     )
+    eme_add_test(
+        eme_kalshi_replay_tests
+        tests/kalshi_replay_tests.cpp
+        eme_kalshi_gateway
+    )
+    add_test(NAME eme_cli_status COMMAND event-engine status)
 endif()

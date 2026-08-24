@@ -49,7 +49,7 @@ void test_snapshot_pipeline(eme::test::Context& test) {
 
     const auto markets = fixture_markets();
     const auto decoded = kalshi::decode_orderbook_message(
-        fixture, eme::market::ReceiveTime{}, markets);
+        fixture, 1U, eme::market::ReceiveTime{}, markets);
     const auto* wire = std::get_if<kalshi::WireOrderBookSnapshot>(&decoded);
     test.expect(wire != nullptr, "raw snapshot JSON decodes strictly");
     if (wire == nullptr) {
@@ -57,6 +57,8 @@ void test_snapshot_pipeline(eme::test::Context& test) {
     }
     test.expect(markets.find("FED-23DEC-T3.00") == wire->market_id,
                 "payload ticker determines the internal market identity");
+    test.expect(wire->connection_generation == 1U,
+                "decoder preserves the connection generation");
 
     const auto normalized_result = kalshi::normalize_orderbook_snapshot(*wire);
     const auto* event = std::get_if<eme::market::BookSnapshot>(&normalized_result);
@@ -91,7 +93,7 @@ void test_delta_pipeline(eme::test::Context& test) {
 
     const auto markets = fixture_markets();
     const auto decoded = kalshi::decode_orderbook_message(
-        fixture, eme::market::ReceiveTime{}, markets);
+        fixture, 1U, eme::market::ReceiveTime{}, markets);
     const auto* wire = std::get_if<kalshi::WireOrderBookDelta>(&decoded);
     test.expect(wire != nullptr, "raw delta JSON decodes strictly");
     if (wire == nullptr) {
@@ -113,7 +115,7 @@ void test_decode_errors(eme::test::Context& test) {
     const auto markets = fixture_markets();
     const auto decode = [&markets](const std::string_view payload) {
         return kalshi::decode_orderbook_message(
-            payload, eme::market::ReceiveTime{}, markets);
+            payload, 1U, eme::market::ReceiveTime{}, markets);
     };
     const auto has_error = [](const kalshi::DecodedOrderBookMessage& result,
                               const kalshi::DecodeErrorCode expected) {
@@ -143,6 +145,14 @@ void test_decode_errors(eme::test::Context& test) {
                     decode(R"json({"type":"orderbook_snapshot","sid":2,"seq":2,"msg":{"market_ticker":"","yes_dollars_fp":[],"no_dollars_fp":[]}})json"),
                     kalshi::DecodeErrorCode::invalid_field_value),
                 "empty payload ticker is rejected");
+    test.expect(has_error(
+                    kalshi::decode_orderbook_message(
+                        R"json({"type":"orderbook_snapshot","sid":2,"seq":2,"msg":{"market_ticker":"X","yes_dollars_fp":[],"no_dollars_fp":[]}})json",
+                        0U,
+                        eme::market::ReceiveTime{},
+                        markets),
+                    kalshi::DecodeErrorCode::invalid_field_value),
+                "zero connection generation is rejected");
 }
 
 }  // namespace

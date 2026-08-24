@@ -77,8 +77,12 @@ using Json = nlohmann::json;
 
 DecodedOrderBookMessage decode_orderbook_message(
     const std::string_view raw_payload,
+    const market::ConnectionGeneration connection_generation,
     const market::ReceiveTime received_at,
     const MarketRegistry& markets) {
+    if (connection_generation == 0U) {
+        return error(DecodeErrorCode::invalid_field_value, "connection_generation");
+    }
     const auto root = Json::parse(raw_payload, nullptr, false);
     if (root.is_discarded()) {
         return error(DecodeErrorCode::invalid_json, "$");
@@ -131,6 +135,7 @@ DecodedOrderBookMessage decode_orderbook_message(
         }
         return WireOrderBookSnapshot{
             *market_id,
+            connection_generation,
             std::get<std::uint64_t>(stream_id),
             std::get<std::uint64_t>(sequence),
             received_at,
@@ -164,6 +169,7 @@ DecodedOrderBookMessage decode_orderbook_message(
 
         return WireOrderBookDelta{
             *market_id,
+            connection_generation,
             std::get<std::uint64_t>(stream_id),
             std::get<std::uint64_t>(sequence),
             received_at,

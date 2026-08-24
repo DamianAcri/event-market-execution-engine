@@ -48,6 +48,7 @@ using PriceResult = std::variant<core::Price, NormalizationError>;
 SnapshotNormalizationResult normalize_orderbook_snapshot(const WireOrderBookSnapshot& wire) {
     market::BookSnapshot normalized{
         wire.market_id,
+        wire.connection_generation,
         wire.stream_id,
         wire.sequence,
         wire.received_at,
@@ -88,6 +89,7 @@ DeltaNormalizationResult normalize_orderbook_delta(const WireOrderBookDelta& wir
 
     return market::BookDelta{
         wire.market_id,
+        wire.connection_generation,
         wire.stream_id,
         wire.sequence,
         wire.received_at,

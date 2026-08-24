@@ -22,8 +22,11 @@ and synthetic event sources:
 - snapshot/delta sequencing scoped to a stream;
 - fail-closed transition to `STALE` after gaps or invalid updates;
 - recovery only through a fresh snapshot;
+- connection-generation tracking across multiple market books;
+- explicit `STALE -> RECOVERING -> VALID` recovery transitions;
 - strict decoding of Kalshi order-book JSON messages with typed errors;
 - Kalshi YES/NO book normalization on the unified YES-price scale;
+- an append-only binary raw journal with corruption-aware sequential replay;
 - focused test executables and a small operator CLI.
 
 The venue-neutral `eme_core` library has no Kalshi or JSON dependency. Kalshi
@@ -35,6 +38,13 @@ update cannot silently be attached to the wrong internal market.
 The Kalshi gateway requires subscriptions with `use_yes_price: true`. Both YES
 bids and NO-derived asks then arrive on one YES-price scale, avoiding ambiguous
 legacy price conversion inside the engine.
+
+Live frames and replayed records converge through the same Kalshi decoder,
+normalizer, and generation-aware market-state processor. The journal stores its
+own versioned header plus the connection generation, local monotonic and wall
+timestamps, sequence, optional exchange time, channel, and original payload for
+each record. Payloads are length-delimited, so newlines and embedded null bytes
+round-trip without transformation.
 
 ## Build
 
@@ -56,11 +66,15 @@ CMake downloads it from the upstream release archive and verifies its SHA-256.
 
 ```bash
 event-engine status
+event-engine journal verify path/to/session.journal
 event-engine --version
 ```
 
 `status` reports the implemented milestone and makes it explicit that execution
 and authenticated connectivity are disabled.
+
+`journal verify` scans a raw journal without mutating it, rejects incompatible or
+truncated data, and reports its record, generation, and sequence range.
 
 ## Credentials
 
