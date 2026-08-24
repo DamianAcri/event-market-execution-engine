@@ -9,7 +9,7 @@
 
 namespace {
 
-constexpr std::string_view version = "0.1.0-dev";
+constexpr std::string_view version = "0.2.0-dev";
 
 void print_help() {
     std::cout << "Event Market Execution Engine\n\n"
@@ -21,9 +21,10 @@ void print_help() {
 
 void print_status() {
     std::cout << "ENGINE          READY\n"
-              << "MILESTONE       v0.1 correct market state\n"
+              << "MILESTONE       v0.2 deterministic constraint core (in progress)\n"
               << "CORE            fixed-point + generation-aware multi-market books\n"
               << "JOURNAL         APPEND-ONLY RAW + SEQUENTIAL REPLAY\n"
+              << "CONSTRAINTS     CURATED REGISTRY + PAYOFF ORACLE\n"
               << "CONNECTIVITY    DISABLED\n"
               << "EXECUTION       DISABLED\n"
               << "CREDENTIALS     NOT REQUIRED\n";

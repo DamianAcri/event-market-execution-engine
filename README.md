@@ -12,10 +12,10 @@ correct -> usable -> observable -> measured -> optimized
 It is not a profitability claim and it does not send live orders in its current
 state.
 
-## Current milestone: v0.1 market-data correctness
+## Current milestone: v0.2 deterministic constraint core (in progress)
 
-The first milestone establishes the venue-neutral core used by live, recorded,
-and synthetic event sources:
+The completed v0.1 foundation establishes the venue-neutral core used by live,
+recorded, and synthetic event sources:
 
 - exact fixed-point price and quantity types (no floating-point money);
 - a normalized local order book;
@@ -45,6 +45,17 @@ own versioned header plus the connection generation, local monotonic and wall
 timestamps, sequence, optional exchange time, channel, and original payload for
 each record. Payloads are length-delimited, so newlines and embedded null bytes
 round-trip without transformation.
+
+The first v0.2 component adds a manually populated relationship registry, a
+market-to-constraint dependency index, and a generic finite-world payoff oracle.
+Specialized implication and complement builders emit a `GuaranteedPortfolio`
+only after the oracle verifies its minimum settlement payoff across every valid
+world declared by that relationship. There is deliberately no title matching or
+probability inference: semantic relationships must be curated explicitly.
+
+This is not yet an opportunity or arbitrage detector. Contract-metadata loading,
+incremental violation events, and deterministic opportunity hashing remain part
+of the unfinished v0.2 milestone; depth and fees belong to v0.3.
 
 ## Build
 

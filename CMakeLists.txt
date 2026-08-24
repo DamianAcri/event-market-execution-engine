@@ -22,6 +22,7 @@ FetchContent_MakeAvailable(nlohmann_json)
 
 add_library(eme_core
     src/book/order_book.cpp
+    src/constraint/payoff.cpp
     src/journal/raw_journal.cpp
     src/market/market_state.cpp
 )
@@ -90,6 +91,7 @@ if(BUILD_TESTING)
     endfunction()
 
     eme_add_test(eme_fixed_point_tests tests/fixed_point_tests.cpp eme_core)
+    eme_add_test(eme_constraint_tests tests/constraint_tests.cpp eme_core)
     eme_add_test(eme_order_book_tests tests/order_book_tests.cpp eme_core)
     eme_add_test(eme_market_state_tests tests/market_state_tests.cpp eme_core)
     eme_add_test(eme_raw_journal_tests tests/raw_journal_tests.cpp eme_core)
