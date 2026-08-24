@@ -77,9 +77,8 @@ using Json = nlohmann::json;
 
 DecodedOrderBookMessage decode_orderbook_message(
     const std::string_view raw_payload,
-    const market::MarketId market_id,
     const market::ReceiveTime received_at,
-    const BookPriceConvention price_convention) {
+    const MarketRegistry& markets) {
     const auto root = Json::parse(raw_payload, nullptr, false);
     if (root.is_discarded()) {
         return error(DecodeErrorCode::invalid_json, "$");
@@ -112,6 +111,14 @@ DecodedOrderBookMessage decode_orderbook_message(
     if (std::holds_alternative<DecodeError>(ticker)) {
         return std::get<DecodeError>(ticker);
     }
+    const auto& ticker_value = std::get<std::string>(ticker);
+    if (ticker_value.empty()) {
+        return error(DecodeErrorCode::invalid_field_value, "market_ticker");
+    }
+    const auto market_id = markets.find(ticker_value);
+    if (!market_id.has_value()) {
+        return error(DecodeErrorCode::unknown_market, "market_ticker");
+    }
 
     if (std::get<std::string>(type) == "orderbook_snapshot") {
         auto yes_bids = read_levels(*message, "yes_dollars_fp");
@@ -123,11 +130,10 @@ DecodedOrderBookMessage decode_orderbook_message(
             return std::get<DecodeError>(no_bids);
         }
         return WireOrderBookSnapshot{
-            market_id,
+            *market_id,
             std::get<std::uint64_t>(stream_id),
             std::get<std::uint64_t>(sequence),
             received_at,
-            price_convention,
             std::move(std::get<std::vector<WirePriceLevel>>(yes_bids)),
             std::move(std::get<std::vector<WirePriceLevel>>(no_bids)),
         };
@@ -157,11 +163,10 @@ DecodedOrderBookMessage decode_orderbook_message(
         }
 
         return WireOrderBookDelta{
-            market_id,
+            *market_id,
             std::get<std::uint64_t>(stream_id),
             std::get<std::uint64_t>(sequence),
             received_at,
-            price_convention,
             outcome_side,
             std::get<std::string>(price),
             std::get<std::string>(quantity_delta),

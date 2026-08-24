@@ -22,6 +22,10 @@ FetchContent_MakeAvailable(nlohmann_json)
 
 add_library(eme_core
     src/book/order_book.cpp
+)
+
+add_library(eme_kalshi_gateway
+    src/gateway/kalshi/market_registry.cpp
     src/gateway/kalshi/orderbook_decoder.cpp
     src/gateway/kalshi/orderbook_normalizer.cpp
 )
@@ -32,7 +36,17 @@ target_include_directories(eme_core
 )
 
 target_compile_features(eme_core PUBLIC cxx_std_20)
-target_link_libraries(eme_core PRIVATE nlohmann_json::nlohmann_json)
+
+target_include_directories(eme_kalshi_gateway
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+target_compile_features(eme_kalshi_gateway PUBLIC cxx_std_20)
+target_link_libraries(eme_kalshi_gateway
+    PUBLIC eme_core
+    PRIVATE nlohmann_json::nlohmann_json
+)
 
 function(eme_enable_warnings target)
     if(MSVC)
@@ -55,6 +69,7 @@ function(eme_enable_warnings target)
 endfunction()
 
 eme_enable_warnings(eme_core)
+eme_enable_warnings(eme_kalshi_gateway)
 
 add_executable(event-engine src/main.cpp)
 target_link_libraries(event-engine PRIVATE eme_core)
@@ -63,9 +78,24 @@ eme_enable_warnings(event-engine)
 include(CTest)
 
 if(BUILD_TESTING)
-    add_executable(eme_tests tests/core_tests.cpp)
-    target_link_libraries(eme_tests PRIVATE eme_core)
-    eme_enable_warnings(eme_tests)
+    function(eme_add_test target source library)
+        add_executable(${target} ${source})
+        target_link_libraries(${target} PRIVATE ${library})
+        target_include_directories(${target} PRIVATE ${PROJECT_SOURCE_DIR}/tests)
+        eme_enable_warnings(${target})
+        add_test(NAME ${target} COMMAND ${target})
+    endfunction()
 
-    add_test(NAME eme_core_tests COMMAND eme_tests)
+    eme_add_test(eme_fixed_point_tests tests/fixed_point_tests.cpp eme_core)
+    eme_add_test(eme_order_book_tests tests/order_book_tests.cpp eme_core)
+    eme_add_test(
+        eme_kalshi_normalizer_tests
+        tests/kalshi_normalizer_tests.cpp
+        eme_kalshi_gateway
+    )
+    eme_add_test(
+        eme_kalshi_decoder_tests
+        tests/kalshi_decoder_tests.cpp
+        eme_kalshi_gateway
+    )
 endif()

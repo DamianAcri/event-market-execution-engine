@@ -63,7 +63,7 @@ public:
         SequenceNumber sequence,
         Side side,
         core::Price price,
-        std::int64_t quantity_delta_raw);
+        core::QuantityDelta quantity_delta);
 
     void mark_stale() noexcept;
 

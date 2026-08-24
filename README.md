@@ -23,12 +23,18 @@ and synthetic event sources:
 - fail-closed transition to `STALE` after gaps or invalid updates;
 - recovery only through a fresh snapshot;
 - strict decoding of Kalshi order-book JSON messages with typed errors;
-- Kalshi YES/NO book normalization for legacy and unified YES-price feeds;
-- a dependency-free test executable and a small operator CLI.
+- Kalshi YES/NO book normalization on the unified YES-price scale;
+- focused test executables and a small operator CLI.
 
-Kalshi JSON decoding, WebSocket transport, and authentication remain at the
-gateway boundary. The normalizer already accepts parsed wire DTOs and emits the
-same venue-neutral events that replay and synthetic sources will use.
+The venue-neutral `eme_core` library has no Kalshi or JSON dependency. Kalshi
+JSON decoding and normalization live in `eme_kalshi_gateway`; WebSocket
+transport and authentication will remain at that boundary. The decoder resolves
+the ticker carried by every payload through an explicit market registry, so an
+update cannot silently be attached to the wrong internal market.
+
+The Kalshi gateway requires subscriptions with `use_yes_price: true`. Both YES
+bids and NO-derived asks then arrive on one YES-price scale, avoiding ambiguous
+legacy price conversion inside the engine.
 
 ## Build
 

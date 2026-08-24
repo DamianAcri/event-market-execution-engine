@@ -9,30 +9,20 @@ namespace {
 using PriceResult = std::variant<core::Price, NormalizationError>;
 
 [[nodiscard]] PriceResult normalize_price(
-    const std::string_view price_text,
-    const OutcomeSide outcome_side,
-    const BookPriceConvention convention) {
+    const std::string_view price_text) {
     const auto parsed = core::Price::parse(price_text);
     if (!parsed.has_value()) {
         return NormalizationError::invalid_price;
-    }
-
-    if (outcome_side == OutcomeSide::no &&
-        convention == BookPriceConvention::legacy_separate_scales) {
-        return *core::Price::from_raw(core::Price::scale - parsed->raw());
     }
     return *parsed;
 }
 
 [[nodiscard]] std::optional<NormalizationError> append_levels(
     const std::vector<WirePriceLevel>& source,
-    const OutcomeSide outcome_side,
-    const BookPriceConvention convention,
     std::vector<book::Level>& destination) {
     destination.reserve(source.size());
     for (const auto& wire_level : source) {
-        const auto normalized_price = normalize_price(
-            wire_level.price_dollars, outcome_side, convention);
+        const auto normalized_price = normalize_price(wire_level.price_dollars);
         if (std::holds_alternative<NormalizationError>(normalized_price)) {
             return std::get<NormalizationError>(normalized_price);
         }
@@ -67,8 +57,6 @@ SnapshotNormalizationResult normalize_orderbook_snapshot(const WireOrderBookSnap
 
     if (const auto error = append_levels(
             wire.yes_bids,
-            OutcomeSide::yes,
-            wire.price_convention,
             normalized.bids);
         error.has_value()) {
         return *error;
@@ -76,8 +64,6 @@ SnapshotNormalizationResult normalize_orderbook_snapshot(const WireOrderBookSnap
 
     if (const auto error = append_levels(
             wire.no_bids,
-            OutcomeSide::no,
-            wire.price_convention,
             normalized.asks);
         error.has_value()) {
         return *error;
@@ -87,8 +73,7 @@ SnapshotNormalizationResult normalize_orderbook_snapshot(const WireOrderBookSnap
 }
 
 DeltaNormalizationResult normalize_orderbook_delta(const WireOrderBookDelta& wire) {
-    const auto normalized_price = normalize_price(
-        wire.price_dollars, wire.outcome_side, wire.price_convention);
+    const auto normalized_price = normalize_price(wire.price_dollars);
     if (std::holds_alternative<NormalizationError>(normalized_price)) {
         return std::get<NormalizationError>(normalized_price);
     }

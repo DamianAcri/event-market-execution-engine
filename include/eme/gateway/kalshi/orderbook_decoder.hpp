@@ -1,5 +1,6 @@
 #pragma once
 
+#include "eme/gateway/kalshi/market_registry.hpp"
 #include "eme/gateway/kalshi/orderbook_normalizer.hpp"
 
 #include <string>
@@ -15,6 +16,7 @@ enum class DecodeErrorCode : std::uint8_t {
     invalid_field_type,
     invalid_field_value,
     invalid_level,
+    unknown_market,
     unsupported_message_type,
 };
 
@@ -26,12 +28,11 @@ struct DecodeError final {
 using DecodedOrderBookMessage =
     std::variant<WireOrderBookSnapshot, WireOrderBookDelta, DecodeError>;
 
-// The caller resolves the venue ticker to a stable internal MarketId before
-// decoding. The raw payload remains the canonical source for recorder/replay.
+// Market identity is resolved from the ticker inside the payload. The raw
+// payload remains the canonical source for recorder/replay.
 [[nodiscard]] DecodedOrderBookMessage decode_orderbook_message(
     std::string_view raw_payload,
-    market::MarketId market_id,
     market::ReceiveTime received_at,
-    BookPriceConvention price_convention);
+    const MarketRegistry& markets);
 
 }  // namespace eme::gateway::kalshi

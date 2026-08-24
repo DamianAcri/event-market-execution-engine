@@ -46,7 +46,7 @@ BookUpdateResult OrderBook::apply_delta(
     const SequenceNumber sequence,
     const Side side,
     const core::Price price,
-    const std::int64_t quantity_delta_raw) {
+    const core::QuantityDelta quantity_delta) {
     if (state_ != BookState::valid || !stream_id_.has_value() || !last_sequence_.has_value()) {
         return BookUpdateResult::requires_snapshot;
     }
@@ -64,6 +64,7 @@ BookUpdateResult OrderBook::apply_delta(
     auto& levels = levels_for(side);
     const auto found = levels.find(price.raw());
     const std::int64_t current = found == levels.end() ? 0 : found->second;
+    const auto quantity_delta_raw = quantity_delta.raw();
 
     if ((quantity_delta_raw > 0 &&
          current > std::numeric_limits<std::int64_t>::max() - quantity_delta_raw) ||
