@@ -32,8 +32,8 @@ enum class BookUpdateResult : std::uint8_t {
     stream_mismatch,
     sequence_gap,
     invalid_level,
-    connection_mismatch,
     recovery_not_started,
+    stale_snapshot,
 };
 
 struct Level final {

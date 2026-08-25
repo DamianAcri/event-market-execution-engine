@@ -9,6 +9,27 @@ permissions:
   contents: read
 
 jobs:
+  core-only:
+    name: core-only offline boundary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Configure without venue dependencies
+        run: >-
+          cmake -S . -B build-core -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DEME_WARNINGS_AS_ERRORS=ON
+          -DEME_BUILD_KALSHI_GATEWAY=OFF
+          -DEME_BUILD_CLI=OFF
+
+      - name: Build
+        run: cmake --build build-core
+
+      - name: Test
+        run: ctest --test-dir build-core --output-on-failure
+
   build-and-test:
     name: ${{ matrix.compiler }} debug
     runs-on: ubuntu-latest

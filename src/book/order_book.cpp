@@ -10,6 +10,19 @@ BookUpdateResult OrderBook::apply_snapshot(
     const SequenceNumber sequence,
     const std::vector<Level>& bids,
     const std::vector<Level>& asks) {
+    if (state_ == BookState::stale) {
+        return BookUpdateResult::recovery_not_started;
+    }
+    if (state_ == BookState::valid && stream_id_.has_value() && last_sequence_.has_value()) {
+        if (stream_id != *stream_id_) {
+            mark_stale();
+            return BookUpdateResult::stream_mismatch;
+        }
+        if (sequence <= *last_sequence_) {
+            return BookUpdateResult::stale_snapshot;
+        }
+    }
+
     Levels next_bids;
     Levels next_asks;
 

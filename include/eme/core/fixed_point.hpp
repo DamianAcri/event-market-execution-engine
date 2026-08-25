@@ -161,4 +161,39 @@ private:
     std::int64_t raw_{};
 };
 
+class Cash final {
+public:
+    static constexpr std::int64_t scale = 1'000'000;
+
+    [[nodiscard]] static constexpr std::optional<Cash> from_raw(
+        const std::int64_t raw) noexcept {
+        return raw < 0 ? std::nullopt : std::optional{Cash{raw}};
+    }
+
+    [[nodiscard]] static constexpr std::optional<Cash> parse(
+        const std::string_view text) noexcept {
+        const auto raw = detail::parse_scaled_nonnegative<scale, 6U>(text);
+        return raw.has_value() ? from_raw(*raw) : std::nullopt;
+    }
+
+    [[nodiscard]] constexpr std::int64_t raw() const noexcept { return raw_; }
+
+    friend constexpr auto operator<=>(const Cash&, const Cash&) = default;
+
+private:
+    explicit constexpr Cash(const std::int64_t raw) noexcept : raw_{raw} {}
+
+    std::int64_t raw_{};
+};
+
+[[nodiscard]] constexpr std::optional<Cash> contract_settlement_value(
+    const Quantity quantity) noexcept {
+    static_assert(Cash::scale % Quantity::scale == 0);
+    constexpr auto multiplier = Cash::scale / Quantity::scale;
+    if (quantity.raw() > std::numeric_limits<std::int64_t>::max() / multiplier) {
+        return std::nullopt;
+    }
+    return Cash::from_raw(quantity.raw() * multiplier);
+}
+
 }  // namespace eme::core

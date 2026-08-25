@@ -6,6 +6,20 @@
 
 namespace {
 
+[[nodiscard]] bool book_result(
+    const eme::market::MarketApplyResult& result,
+    const eme::book::BookUpdateResult expected) {
+    const auto* update = std::get_if<eme::book::BookUpdateResult>(&result);
+    return update != nullptr && *update == expected;
+}
+
+[[nodiscard]] bool state_error(
+    const eme::market::MarketApplyResult& result,
+    const eme::market::MarketStateError expected) {
+    const auto* error = std::get_if<eme::market::MarketStateError>(&result);
+    return error != nullptr && *error == expected;
+}
+
 [[nodiscard]] eme::market::BookSnapshot snapshot(
     const eme::market::MarketId market_id,
     const eme::market::ConnectionGeneration generation,
@@ -51,13 +65,13 @@ void test_connection_lifecycle(eme::test::Context& test) {
     test.expect(!state.open_connection(1U), "same generation cannot be reopened");
     test.expect(!state.open_connection(0U), "older generation cannot replace current state");
 
-    test.expect(state.apply(snapshot(7U, 1U, 2U, 10U)) ==
-                    eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(snapshot(7U, 1U, 2U, 10U)),
+                            eme::book::BookUpdateResult::applied),
                 "snapshot creates a live market book");
     test.expect(state.book_count() == 1U && state.valid_book_count() == 1U,
                 "book counters reflect live state");
-    test.expect(state.apply(delta(7U, 1U, 2U, 11U, 50)) ==
-                    eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(delta(7U, 1U, 2U, 11U, 50)),
+                            eme::book::BookUpdateResult::applied),
                 "current-generation delta is applied");
 
     test.expect(!state.close_connection(2U),
@@ -69,43 +83,43 @@ void test_connection_lifecycle(eme::test::Context& test) {
     test.expect(state.valid_book_count() == 0U &&
                     !stale_book->best_bid().has_value(),
                 "stale book exposes no actionable quote");
-    test.expect(state.apply(delta(7U, 1U, 2U, 12U, 1)) ==
-                    eme::book::BookUpdateResult::connection_mismatch,
+    test.expect(state_error(state.apply(delta(7U, 1U, 2U, 12U, 1)),
+                            eme::market::MarketStateError::connection_mismatch),
                 "updates cannot apply while disconnected");
 }
 
 void test_generation_recovery(eme::test::Context& test) {
     eme::market::MarketState state;
     test.expect(state.open_connection(4U), "initial generation opens");
-    test.expect(state.apply(snapshot(7U, 4U, 10U, 20U)) ==
-                    eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(snapshot(7U, 4U, 10U, 20U)),
+                            eme::book::BookUpdateResult::applied),
                 "initial snapshot applies");
-    test.expect(state.apply(snapshot(8U, 4U, 11U, 30U)) ==
-                    eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(snapshot(8U, 4U, 11U, 30U)),
+                            eme::book::BookUpdateResult::applied),
                 "second market snapshot applies");
 
     test.expect(state.open_connection(5U), "newer connection generation opens");
     test.expect(state.valid_book_count() == 0U,
                 "generation change invalidates all books atomically");
-    test.expect(state.apply(snapshot(7U, 5U, 12U, 1U)) ==
-                    eme::book::BookUpdateResult::recovery_not_started,
+    test.expect(book_result(state.apply(snapshot(7U, 5U, 12U, 1U)),
+                            eme::book::BookUpdateResult::recovery_not_started),
                 "stale book rejects snapshot before recovery is requested");
     test.expect(state.begin_recovery(7U), "recovery transition is explicit");
     const auto* recovering = state.find_book(7U);
     test.expect(recovering != nullptr &&
                     recovering->state() == eme::book::BookState::recovering,
                 "book enters recovering state");
-    test.expect(state.apply(delta(7U, 5U, 12U, 2U, 10)) ==
-                    eme::book::BookUpdateResult::requires_snapshot,
+    test.expect(book_result(state.apply(delta(7U, 5U, 12U, 2U, 10)),
+                            eme::book::BookUpdateResult::requires_snapshot),
                 "recovering book rejects deltas");
-    test.expect(state.apply(snapshot(7U, 5U, 12U, 1U)) ==
-                    eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(snapshot(7U, 5U, 12U, 1U)),
+                            eme::book::BookUpdateResult::applied),
                 "validated current-generation snapshot completes recovery");
     test.expect(state.valid_book_count() == 1U,
                 "only recovered books return to valid state");
 
-    test.expect(state.apply(delta(7U, 4U, 10U, 21U, 10)) ==
-                    eme::book::BookUpdateResult::connection_mismatch,
+    test.expect(state_error(state.apply(delta(7U, 4U, 10U, 21U, 10)),
+                            eme::market::MarketStateError::connection_mismatch),
                 "late update from prior generation is rejected");
     const auto* live_book = state.find_book(7U);
     test.expect(live_book != nullptr && live_book->state() == eme::book::BookState::valid &&
@@ -117,44 +131,51 @@ void test_generation_recovery(eme::test::Context& test) {
 void test_fail_closed_faults(eme::test::Context& test) {
     eme::market::MarketState state;
     test.expect(state.open_connection(9U), "connection opens for fault test");
-    test.expect(state.apply(delta(77U, 9U, 1U, 1U, 10)) ==
-                    eme::book::BookUpdateResult::requires_snapshot,
+    test.expect(book_result(state.apply(delta(77U, 9U, 1U, 1U, 10)),
+                            eme::book::BookUpdateResult::requires_snapshot),
                 "delta cannot create an unknown book");
     test.expect(state.book_count() == 0U,
                 "rejected unknown delta does not allocate market state");
-    test.expect(state.apply(snapshot(77U, 9U, 1U, 100U)) ==
-                    eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(snapshot(77U, 9U, 1U, 100U)),
+                            eme::book::BookUpdateResult::applied),
                 "fault-test snapshot applies");
-    test.expect(state.apply(delta(77U, 9U, 1U, 102U, 10)) ==
-                    eme::book::BookUpdateResult::sequence_gap,
+    test.expect(book_result(state.apply(delta(77U, 9U, 1U, 102U, 10)),
+                            eme::book::BookUpdateResult::sequence_gap),
                 "dropped delta is detected as a gap");
     const auto* stale = state.find_book(77U);
     test.expect(stale != nullptr && stale->state() == eme::book::BookState::stale,
                 "gap makes the affected book stale");
     test.expect(state.begin_recovery(77U), "gap recovery can be requested");
-    test.expect(state.apply(snapshot(77U, 9U, 1U, 200U)) ==
-                    eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(snapshot(77U, 9U, 1U, 200U)),
+                            eme::book::BookUpdateResult::applied),
                 "fresh snapshot restores state after a dropped delta");
 
     const eme::market::NormalizedMarketEvent event{delta(77U, 9U, 1U, 201U, 5)};
-    test.expect(state.apply(event) == eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(event), eme::book::BookUpdateResult::applied),
                 "variant event follows the same deterministic apply path");
-    test.expect(state.apply(event) == eme::book::BookUpdateResult::sequence_gap,
+    test.expect(book_result(state.apply(event), eme::book::BookUpdateResult::sequence_gap),
                 "duplicated delta is rejected rather than applied twice");
     test.expect(state.begin_recovery(77U),
                 "book can recover after duplicated input invalidates continuity");
-    test.expect(state.apply(snapshot(77U, 9U, 1U, 300U)) ==
-                    eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(snapshot(77U, 9U, 1U, 300U)),
+                            eme::book::BookUpdateResult::applied),
                 "snapshot restores state after duplicate detection");
-    test.expect(state.apply(delta(77U, 9U, 1U, 299U, 5)) ==
-                    eme::book::BookUpdateResult::sequence_gap,
+    test.expect(book_result(state.apply(delta(77U, 9U, 1U, 299U, 5)),
+                            eme::book::BookUpdateResult::sequence_gap),
                 "reordered older delta is rejected");
     test.expect(state.begin_recovery(77U) &&
-                    state.apply(snapshot(77U, 9U, 2U, 400U)) ==
-                        eme::book::BookUpdateResult::applied,
+                    book_result(state.apply(snapshot(77U, 9U, 2U, 400U)),
+                                eme::book::BookUpdateResult::applied),
                 "new stream snapshot recovers after reordered input");
-    test.expect(state.apply(snapshot(77U, 9U, 2U, 500U)) ==
-                    eme::book::BookUpdateResult::applied,
+    test.expect(book_result(state.apply(snapshot(77U, 9U, 2U, 350U)),
+                            eme::book::BookUpdateResult::stale_snapshot),
+                "late snapshot cannot roll a valid market backward");
+    const auto* preserved = state.find_book(77U);
+    test.expect(preserved != nullptr && preserved->state() == eme::book::BookState::valid &&
+                    preserved->last_sequence() == 400U,
+                "rejected snapshot preserves the newer actionable state");
+    test.expect(book_result(state.apply(snapshot(77U, 9U, 2U, 500U)),
+                            eme::book::BookUpdateResult::applied),
                 "validated snapshot can refresh an already live subscription");
     const auto* refreshed = state.find_book(77U);
     test.expect(refreshed != nullptr && refreshed->last_sequence() == 500U,

@@ -1,25 +1,41 @@
 #include "eme/gateway/kalshi/market_registry.hpp"
 
 #include <functional>
-#include <limits>
 #include <utility>
 
 namespace eme::gateway::kalshi {
 
-std::optional<market::MarketId> MarketRegistry::register_market(std::string ticker) {
+MarketRegistrationResult MarketRegistry::register_market(
+    const market::MarketId market_id,
+    std::string ticker) {
+    if (metadata_version_ == 0U) {
+        return MarketRegistrationResult::invalid_metadata_version;
+    }
+    if (market_id == 0U) {
+        return MarketRegistrationResult::invalid_market_id;
+    }
     if (ticker.empty()) {
-        return std::nullopt;
+        return MarketRegistrationResult::invalid_ticker;
     }
-    if (const auto existing = market_ids_.find(ticker); existing != market_ids_.end()) {
-        return existing->second;
+    if (const auto by_ticker = market_ids_.find(ticker); by_ticker != market_ids_.end()) {
+        return by_ticker->second == market_id
+                   ? MarketRegistrationResult::already_registered
+                   : MarketRegistrationResult::ticker_conflict;
     }
-    if (next_id_ == std::numeric_limits<market::MarketId>::max()) {
-        return std::nullopt;
+    if (tickers_.contains(market_id)) {
+        return MarketRegistrationResult::market_id_conflict;
     }
 
-    const auto id = next_id_++;
-    market_ids_.emplace(std::move(ticker), id);
-    return id;
+    tickers_.emplace(market_id, ticker);
+    market_ids_.emplace(std::move(ticker), market_id);
+    return MarketRegistrationResult::registered;
+}
+
+std::optional<std::string_view> MarketRegistry::find(
+    const market::MarketId market_id) const {
+    const auto found = tickers_.find(market_id);
+    return found == tickers_.end() ? std::nullopt
+                                   : std::optional<std::string_view>{found->second};
 }
 
 std::optional<market::MarketId> MarketRegistry::find(const std::string_view ticker) const {

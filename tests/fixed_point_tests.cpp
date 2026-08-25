@@ -33,5 +33,14 @@ int main() {
     test.expect(!eme::core::QuantityDelta::parse("1.251").has_value(),
                 "quantity delta with excess precision is rejected");
 
+    const auto cash = eme::core::Cash::parse("42.123456");
+    test.expect(cash.has_value() && cash->raw() == 42'123'456,
+                "cash uses an independent six-decimal monetary scale");
+    test.expect(!eme::core::Cash::parse("1.0000001").has_value(),
+                "cash rejects excess monetary precision");
+    const auto settlement = eme::core::contract_settlement_value(*parsed_quantity);
+    test.expect(settlement.has_value() && settlement->raw() == 42'500'000,
+                "contract quantity converts explicitly to one-dollar settlement value");
+
     return test.result();
 }

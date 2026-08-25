@@ -12,26 +12,49 @@ namespace {
 namespace kalshi = eme::gateway::kalshi;
 
 void test_market_registry(eme::test::Context& test) {
-    kalshi::MarketRegistry markets;
-    test.expect(!markets.register_market("").has_value(),
+    kalshi::MarketRegistry unversioned{0U};
+    test.expect(unversioned.register_market(1U, "X") ==
+                    kalshi::MarketRegistrationResult::invalid_metadata_version,
+                "market mappings require a nonzero metadata version");
+    kalshi::MarketRegistry markets{11U};
+    test.expect(markets.register_market(1U, "") ==
+                    kalshi::MarketRegistrationResult::invalid_ticker &&
+                    markets.register_market(0U, "X") ==
+                        kalshi::MarketRegistrationResult::invalid_market_id,
                 "empty ticker cannot be registered");
-    const auto first = markets.register_market("FED-23DEC-T3.00");
-    const auto duplicate = markets.register_market("FED-23DEC-T3.00");
-    const auto second = markets.register_market("X");
-    test.expect(first.has_value() && duplicate == first,
+    const auto first = markets.register_market(42U, "FED-23DEC-T3.00");
+    const auto duplicate = markets.register_market(42U, "FED-23DEC-T3.00");
+    const auto second = markets.register_market(7U, "X");
+    test.expect(first == kalshi::MarketRegistrationResult::registered &&
+                    duplicate == kalshi::MarketRegistrationResult::already_registered,
                 "registering the same ticker is idempotent");
-    test.expect(second.has_value() && second != first && markets.size() == 2U,
-                "different tickers receive different stable IDs");
-    test.expect(markets.find("FED-23DEC-T3.00") == first,
-                "registered ticker resolves to its internal ID");
+    test.expect(second == kalshi::MarketRegistrationResult::registered &&
+                    markets.size() == 2U,
+                "explicit IDs are independent of registration order");
+    test.expect(markets.find("FED-23DEC-T3.00") == 42U &&
+                    markets.find(42U) == "FED-23DEC-T3.00" &&
+                    markets.metadata_version() == 11U,
+                "registry resolves both directions under a versioned mapping");
+    test.expect(markets.register_market(42U, "OTHER") ==
+                        kalshi::MarketRegistrationResult::market_id_conflict &&
+                    markets.register_market(99U, "X") ==
+                        kalshi::MarketRegistrationResult::ticker_conflict,
+                "registry rejects ID and ticker remapping conflicts");
     test.expect(!markets.find("UNKNOWN").has_value(),
                 "unknown ticker does not resolve");
+
+    kalshi::MarketRegistry reverse_order{11U};
+    static_cast<void>(reverse_order.register_market(7U, "X"));
+    static_cast<void>(reverse_order.register_market(42U, "FED-23DEC-T3.00"));
+    test.expect(reverse_order.find("X") == 7U &&
+                    reverse_order.find("FED-23DEC-T3.00") == 42U,
+                "registration order cannot change persistent market identity");
 }
 
 kalshi::MarketRegistry fixture_markets() {
-    kalshi::MarketRegistry markets;
-    (void)markets.register_market("FED-23DEC-T3.00");
-    (void)markets.register_market("X");
+    kalshi::MarketRegistry markets{11U};
+    (void)markets.register_market(42U, "FED-23DEC-T3.00");
+    (void)markets.register_market(7U, "X");
     return markets;
 }
 

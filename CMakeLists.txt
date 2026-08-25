@@ -2,36 +2,28 @@ cmake_minimum_required(VERSION 3.25)
 
 project(
     event_market_execution_engine
-    VERSION 0.1.0
+    VERSION 0.2.0
     DESCRIPTION "Correct, replayable event-market execution infrastructure"
     LANGUAGES CXX
 )
 
 option(EME_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+option(EME_BUILD_KALSHI_GATEWAY "Build the Kalshi JSON boundary" ON)
+option(EME_BUILD_CLI "Build the operator command-line interface" ON)
 
-include(FetchContent)
-
-FetchContent_Declare(
-    nlohmann_json
-    URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
-    URL_HASH SHA256=42f6e95cad6ec532fd372391373363b62a14af6d771056dbfc86160e6dfff7aa
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/generated/eme)
+configure_file(
+    cmake/version.hpp.in
+    ${PROJECT_BINARY_DIR}/generated/eme/version.hpp
+    @ONLY
 )
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-FetchContent_MakeAvailable(nlohmann_json)
 
 add_library(eme_core
     src/book/order_book.cpp
     src/constraint/payoff.cpp
+    src/journal/journal_codec.cpp
     src/journal/raw_journal.cpp
     src/market/market_state.cpp
-)
-
-add_library(eme_kalshi_gateway
-    src/gateway/kalshi/market_registry.cpp
-    src/gateway/kalshi/orderbook_decoder.cpp
-    src/gateway/kalshi/orderbook_normalizer.cpp
-    src/gateway/kalshi/orderbook_processor.cpp
 )
 
 target_include_directories(eme_core
@@ -40,17 +32,6 @@ target_include_directories(eme_core
 )
 
 target_compile_features(eme_core PUBLIC cxx_std_20)
-
-target_include_directories(eme_kalshi_gateway
-    PUBLIC
-        ${PROJECT_SOURCE_DIR}/include
-)
-
-target_compile_features(eme_kalshi_gateway PUBLIC cxx_std_20)
-target_link_libraries(eme_kalshi_gateway
-    PUBLIC eme_core
-    PRIVATE nlohmann_json::nlohmann_json
-)
 
 function(eme_enable_warnings target)
     if(MSVC)
@@ -73,11 +54,42 @@ function(eme_enable_warnings target)
 endfunction()
 
 eme_enable_warnings(eme_core)
-eme_enable_warnings(eme_kalshi_gateway)
 
-add_executable(event-engine src/main.cpp)
-target_link_libraries(event-engine PRIVATE eme_core)
-eme_enable_warnings(event-engine)
+if(EME_BUILD_KALSHI_GATEWAY)
+    include(FetchContent)
+    FetchContent_Declare(
+        nlohmann_json
+        URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
+        URL_HASH SHA256=42f6e95cad6ec532fd372391373363b62a14af6d771056dbfc86160e6dfff7aa
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    )
+    set(JSON_BuildTests OFF CACHE INTERNAL "")
+    FetchContent_MakeAvailable(nlohmann_json)
+
+    add_library(eme_kalshi_gateway
+        src/gateway/kalshi/market_registry.cpp
+        src/gateway/kalshi/orderbook_decoder.cpp
+        src/gateway/kalshi/orderbook_normalizer.cpp
+        src/gateway/kalshi/orderbook_processor.cpp
+    )
+    target_include_directories(eme_kalshi_gateway PUBLIC ${PROJECT_SOURCE_DIR}/include)
+    target_compile_features(eme_kalshi_gateway PUBLIC cxx_std_20)
+    target_link_libraries(eme_kalshi_gateway
+        PUBLIC eme_core
+        PRIVATE nlohmann_json::nlohmann_json
+    )
+    eme_enable_warnings(eme_kalshi_gateway)
+endif()
+
+if(EME_BUILD_CLI)
+    add_executable(event-engine src/main.cpp src/cli/commands.cpp)
+    target_include_directories(event-engine PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
+        ${PROJECT_BINARY_DIR}/generated
+    )
+    target_link_libraries(event-engine PRIVATE eme_core)
+    eme_enable_warnings(event-engine)
+endif()
 
 include(CTest)
 
@@ -95,20 +107,28 @@ if(BUILD_TESTING)
     eme_add_test(eme_order_book_tests tests/order_book_tests.cpp eme_core)
     eme_add_test(eme_market_state_tests tests/market_state_tests.cpp eme_core)
     eme_add_test(eme_raw_journal_tests tests/raw_journal_tests.cpp eme_core)
-    eme_add_test(
-        eme_kalshi_normalizer_tests
-        tests/kalshi_normalizer_tests.cpp
-        eme_kalshi_gateway
-    )
-    eme_add_test(
-        eme_kalshi_decoder_tests
-        tests/kalshi_decoder_tests.cpp
-        eme_kalshi_gateway
-    )
-    eme_add_test(
-        eme_kalshi_replay_tests
-        tests/kalshi_replay_tests.cpp
-        eme_kalshi_gateway
-    )
-    add_test(NAME eme_cli_status COMMAND event-engine status)
+    if(EME_BUILD_KALSHI_GATEWAY)
+        eme_add_test(
+            eme_kalshi_normalizer_tests
+            tests/kalshi_normalizer_tests.cpp
+            eme_kalshi_gateway
+        )
+        eme_add_test(
+            eme_kalshi_decoder_tests
+            tests/kalshi_decoder_tests.cpp
+            eme_kalshi_gateway
+        )
+        eme_add_test(
+            eme_kalshi_replay_tests
+            tests/kalshi_replay_tests.cpp
+            eme_kalshi_gateway
+        )
+    endif()
+    if(EME_BUILD_CLI)
+        add_test(NAME eme_cli_status COMMAND event-engine status)
+        add_test(NAME eme_cli_version COMMAND event-engine --version)
+        set_tests_properties(eme_cli_version PROPERTIES
+            PASS_REGULAR_EXPRESSION "event-engine ${PROJECT_VERSION}"
+        )
+    endif()
 endif()

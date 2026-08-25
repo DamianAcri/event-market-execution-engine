@@ -36,21 +36,19 @@ bool MarketState::begin_recovery(const MarketId market_id) noexcept {
     return found != books_.end() && found->second.begin_recovery();
 }
 
-book::BookUpdateResult MarketState::apply(const BookSnapshot& snapshot) {
+MarketApplyResult MarketState::apply(const BookSnapshot& snapshot) {
     if (!accepts(snapshot.connection_generation)) {
-        return book::BookUpdateResult::connection_mismatch;
+        return MarketStateError::connection_mismatch;
     }
     const auto [found, inserted] = books_.try_emplace(snapshot.market_id);
-    if (!inserted && found->second.state() == book::BookState::stale) {
-        return book::BookUpdateResult::recovery_not_started;
-    }
+    static_cast<void>(inserted);
     return found->second.apply_snapshot(
         snapshot.stream_id, snapshot.sequence, snapshot.bids, snapshot.asks);
 }
 
-book::BookUpdateResult MarketState::apply(const BookDelta& delta) {
+MarketApplyResult MarketState::apply(const BookDelta& delta) {
     if (!accepts(delta.connection_generation)) {
-        return book::BookUpdateResult::connection_mismatch;
+        return MarketStateError::connection_mismatch;
     }
     const auto found = books_.find(delta.market_id);
     if (found == books_.end()) {
@@ -60,7 +58,7 @@ book::BookUpdateResult MarketState::apply(const BookDelta& delta) {
         delta.stream_id, delta.sequence, delta.side, delta.price, delta.quantity_delta);
 }
 
-book::BookUpdateResult MarketState::apply(const NormalizedMarketEvent& event) {
+MarketApplyResult MarketState::apply(const NormalizedMarketEvent& event) {
     return std::visit([this](const auto& update) { return apply(update); }, event);
 }
 

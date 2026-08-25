@@ -6,8 +6,15 @@
 #include <functional>
 #include <optional>
 #include <unordered_map>
+#include <variant>
 
 namespace eme::market {
+
+enum class MarketStateError : std::uint8_t {
+    connection_mismatch,
+};
+
+using MarketApplyResult = std::variant<book::BookUpdateResult, MarketStateError>;
 
 class MarketState final {
 public:
@@ -15,9 +22,9 @@ public:
     [[nodiscard]] bool close_connection(ConnectionGeneration generation) noexcept;
     [[nodiscard]] bool begin_recovery(MarketId market_id) noexcept;
 
-    [[nodiscard]] book::BookUpdateResult apply(const BookSnapshot& snapshot);
-    [[nodiscard]] book::BookUpdateResult apply(const BookDelta& delta);
-    [[nodiscard]] book::BookUpdateResult apply(const NormalizedMarketEvent& event);
+    [[nodiscard]] MarketApplyResult apply(const BookSnapshot& snapshot);
+    [[nodiscard]] MarketApplyResult apply(const BookDelta& delta);
+    [[nodiscard]] MarketApplyResult apply(const NormalizedMarketEvent& event);
 
     [[nodiscard]] bool connected() const noexcept { return connected_; }
     [[nodiscard]] std::optional<ConnectionGeneration> connection_generation() const noexcept {

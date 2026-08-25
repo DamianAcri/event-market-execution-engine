@@ -37,6 +37,14 @@ void test_snapshot_and_deltas(eme::test::Context& test) {
     test.expect(book.level_count(eme::book::Side::bid) == 2U,
                 "zero-quantity level is erased");
 
+    test.expect(book.apply_snapshot(
+                    9, 101, {eme::test::level(5'000, 999)}, asks) ==
+                    eme::book::BookUpdateResult::stale_snapshot,
+                "older same-stream snapshot cannot overwrite a newer live book");
+    test.expect(book.last_sequence() == 102U &&
+                    book.best_bid().has_value() && book.best_bid()->raw() == 6'200,
+                "rejected stale snapshot preserves the valid sequence and levels");
+
     test.expect(book.apply_delta(
                     9, 104, eme::book::Side::ask, eme::test::price(6'400),
                     eme::test::delta(-100)) == eme::book::BookUpdateResult::sequence_gap,
@@ -50,7 +58,8 @@ void test_snapshot_and_deltas(eme::test::Context& test) {
                     eme::test::delta(-100)) == eme::book::BookUpdateResult::requires_snapshot,
                 "stale book rejects further deltas");
 
-    test.expect(book.apply_snapshot(10, 1, bids, asks) ==
+    test.expect(book.begin_recovery() &&
+                    book.apply_snapshot(10, 1, bids, asks) ==
                     eme::book::BookUpdateResult::applied,
                 "fresh snapshot recovers the book on a new stream");
     test.expect(book.apply_delta(
@@ -71,7 +80,8 @@ void test_invalid_levels(eme::test::Context& test) {
                 "duplicate snapshot price is rejected");
     test.expect(book.state() == eme::book::BookState::stale,
                 "invalid snapshot leaves the book stale");
-    test.expect(book.apply_snapshot(2, 1, {eme::test::level(5'000, 100)}, {}) ==
+    test.expect(book.begin_recovery() &&
+                    book.apply_snapshot(2, 1, {eme::test::level(5'000, 100)}, {}) ==
                     eme::book::BookUpdateResult::applied,
                 "valid snapshot recovers after invalid input");
     test.expect(book.apply_delta(
@@ -81,7 +91,7 @@ void test_invalid_levels(eme::test::Context& test) {
     test.expect(book.state() == eme::book::BookState::stale,
                 "negative resulting quantity fails closed");
 
-    test.expect(book.apply_snapshot(
+    test.expect(book.begin_recovery() && book.apply_snapshot(
                     3, 1, {eme::test::level(
                               5'000, std::numeric_limits<std::int64_t>::max())}, {}) ==
                     eme::book::BookUpdateResult::applied,
@@ -91,7 +101,8 @@ void test_invalid_levels(eme::test::Context& test) {
                     eme::test::delta(1)) == eme::book::BookUpdateResult::invalid_level,
                 "positive quantity overflow fails closed");
 
-    test.expect(book.apply_snapshot(4, 1, {eme::test::level(5'000, 100)}, {}) ==
+    test.expect(book.begin_recovery() &&
+                    book.apply_snapshot(4, 1, {eme::test::level(5'000, 100)}, {}) ==
                     eme::book::BookUpdateResult::applied,
                 "fresh snapshot recovers after overflow");
     test.expect(book.apply_delta(

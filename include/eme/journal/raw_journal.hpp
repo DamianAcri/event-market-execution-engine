@@ -6,19 +6,22 @@
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
+#include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <variant>
 
 namespace eme::journal {
 
-inline constexpr std::uint32_t current_schema_version = 1U;
+inline constexpr std::uint32_t current_schema_version = 2U;
 using WallTime =
     std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>;
 
 struct RawMarketRecord final {
     std::uint32_t schema_version{current_schema_version};
+    market::MetadataVersion metadata_version{};
     market::ConnectionGeneration connection_generation{};
     market::ReceiveTime received_at{};
     WallTime observed_at{};
@@ -26,6 +29,8 @@ struct RawMarketRecord final {
     std::optional<std::int64_t> exchange_time_ns;
     std::string channel;
     std::string payload;
+
+    friend bool operator==(const RawMarketRecord&, const RawMarketRecord&) = default;
 };
 
 enum class JournalErrorCode : std::uint8_t {
@@ -36,6 +41,7 @@ enum class JournalErrorCode : std::uint8_t {
     invalid_record,
     truncated_record,
     record_too_large,
+    checksum_mismatch,
 };
 
 [[nodiscard]] constexpr std::string_view to_string(const JournalErrorCode code) noexcept {
@@ -54,6 +60,8 @@ enum class JournalErrorCode : std::uint8_t {
             return "TRUNCATED_RECORD";
         case JournalErrorCode::record_too_large:
             return "RECORD_TOO_LARGE";
+        case JournalErrorCode::checksum_mismatch:
+            return "CHECKSUM_MISMATCH";
     }
     return "UNKNOWN";
 }
@@ -66,48 +74,51 @@ struct JournalError final {
 struct EndOfJournal final {};
 using JournalReadResult = std::variant<RawMarketRecord, EndOfJournal, JournalError>;
 
+class RawJournalWriter;
+class RawJournalReader;
+using OpenWriterResult = std::variant<std::unique_ptr<RawJournalWriter>, JournalError>;
+using OpenReaderResult = std::variant<std::unique_ptr<RawJournalReader>, JournalError>;
+
+[[nodiscard]] OpenWriterResult open_raw_journal_writer(
+    const std::filesystem::path& path);
+[[nodiscard]] OpenReaderResult open_raw_journal_reader(
+    const std::filesystem::path& path);
+
 class RawJournalWriter final {
 public:
-    explicit RawJournalWriter(const std::filesystem::path& path);
-
     RawJournalWriter(const RawJournalWriter&) = delete;
     RawJournalWriter& operator=(const RawJournalWriter&) = delete;
     RawJournalWriter(RawJournalWriter&&) noexcept = default;
     RawJournalWriter& operator=(RawJournalWriter&&) noexcept = default;
 
-    [[nodiscard]] bool ready() const noexcept { return !initialization_error_.has_value(); }
-    [[nodiscard]] std::optional<JournalError> initialization_error() const noexcept {
-        return initialization_error_;
-    }
     [[nodiscard]] std::optional<JournalError> append(const RawMarketRecord& record);
     [[nodiscard]] std::optional<JournalError> flush();
     [[nodiscard]] std::uint64_t records_written() const noexcept { return records_written_; }
 
 private:
+    friend OpenWriterResult open_raw_journal_writer(const std::filesystem::path& path);
+    explicit RawJournalWriter(std::ofstream stream, std::uint64_t records_written)
+        : stream_{std::move(stream)}, records_written_{records_written} {}
+
     std::ofstream stream_;
-    std::optional<JournalError> initialization_error_;
     std::uint64_t records_written_{};
 };
 
 class RawJournalReader final {
 public:
-    explicit RawJournalReader(const std::filesystem::path& path);
-
     RawJournalReader(const RawJournalReader&) = delete;
     RawJournalReader& operator=(const RawJournalReader&) = delete;
     RawJournalReader(RawJournalReader&&) noexcept = default;
     RawJournalReader& operator=(RawJournalReader&&) noexcept = default;
 
-    [[nodiscard]] bool ready() const noexcept { return !initialization_error_.has_value(); }
-    [[nodiscard]] std::optional<JournalError> initialization_error() const noexcept {
-        return initialization_error_;
-    }
     [[nodiscard]] JournalReadResult read_next();
     [[nodiscard]] std::uint64_t records_read() const noexcept { return records_read_; }
 
 private:
+    friend OpenReaderResult open_raw_journal_reader(const std::filesystem::path& path);
+    explicit RawJournalReader(std::ifstream stream) : stream_{std::move(stream)} {}
+
     std::ifstream stream_;
-    std::optional<JournalError> initialization_error_;
     std::uint64_t records_read_{};
 };
 

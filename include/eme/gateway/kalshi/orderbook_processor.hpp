@@ -1,15 +1,25 @@
 #pragma once
 
 #include "eme/gateway/kalshi/orderbook_decoder.hpp"
+#include "eme/journal/raw_journal.hpp"
 #include "eme/market/market_state.hpp"
 
-#include <string_view>
 #include <variant>
 
 namespace eme::gateway::kalshi {
 
-using ProcessingResult =
-    std::variant<book::BookUpdateResult, DecodeError, NormalizationError>;
+enum class ProcessingError : std::uint8_t {
+    schema_version_mismatch,
+    metadata_version_mismatch,
+    sequence_mismatch,
+};
+
+using ProcessingResult = std::variant<
+    book::BookUpdateResult,
+    market::MarketStateError,
+    DecodeError,
+    NormalizationError,
+    ProcessingError>;
 
 class OrderBookProcessor final {
 public:
@@ -27,9 +37,7 @@ public:
     }
 
     [[nodiscard]] ProcessingResult process(
-        std::string_view raw_payload,
-        market::ConnectionGeneration connection_generation,
-        market::ReceiveTime received_at);
+        const journal::RawMarketRecord& record);
 
     [[nodiscard]] const market::MarketState& state() const noexcept { return state_; }
 
