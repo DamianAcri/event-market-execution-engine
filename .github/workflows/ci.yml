@@ -9,6 +9,33 @@ permissions:
   contents: read
 
 jobs:
+  portability:
+    name: ${{ matrix.name }} release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows-msvc-x64
+            os: windows-2022
+          - name: linux-gcc-arm64
+            os: ubuntu-24.04-arm
+          - name: macos-clang-arm64
+            os: macos-15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+      - name: Configure
+        run: >-
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DEME_WARNINGS_AS_ERRORS=ON
+          -DEME_BUILD_BENCHMARKS=ON
+      - name: Build
+        run: cmake --build build --config Release --parallel 3
+      - name: Test
+        run: ctest --test-dir build -C Release --output-on-failure
+
   core-only:
     name: core-only offline boundary
     runs-on: ubuntu-latest
