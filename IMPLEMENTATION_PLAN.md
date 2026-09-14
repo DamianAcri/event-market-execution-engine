@@ -5,6 +5,9 @@ Milestone ownership remains in [ROADMAP.md](ROADMAP.md). Performance methodology
 and public research are in [PERFORMANCE.md](PERFORMANCE.md).
 The [quantitative research supplement](QUANT_RESEARCH.md) explains the funding,
 accounting, model-selection and execution evidence behind the requirements below.
+The [economic validation plan](ECONOMIC_VALIDATION.md) defines the evidence needed
+to continue, revise or stop the hypothesis; completed engineering steps alone
+do not answer that question.
 
 ## Objective and working rule
 
@@ -23,8 +26,8 @@ justify its memory, complexity, and maintenance costs.
 
 Merged in PR #2: offline workloads, comparison runner,
 compatibility checks and the first measured CRC/book optimizations. Results and
-their limits are recorded in [PERFORMANCE.md](PERFORMANCE.md). The next functional
-block is the reviewed metadata snapshot in phase 1.
+their limits are recorded in [PERFORMANCE.md](PERFORMANCE.md). Metadata and session
+binding have since been merged in PRs #3 and #5.
 
 Deliverables:
 - Optional offline Release benchmarks for journal CRC/codec, multi-market book
@@ -43,13 +46,16 @@ Acceptance:
 
 ## 1. Finish the reproducibility contract (v0.2)
 
-Steps 1–2 are implemented on `feat/metadata-snapshot`, including offline CLI
+Steps 1–2 were merged in PR #3, including offline CLI
 inspection and generated payout checks. See [METADATA_FORMAT.md](METADATA_FORMAT.md).
-Step 3 is implemented on `feat/reproducible-sessions`: new-directory session
+Step 3 was merged in PR #5: new-directory session
 publication, exact artifact fingerprints, count validation and offline pack/verify.
 See [SESSION_FORMAT.md](SESSION_FORMAT.md) for its integrity and durability scope.
-Next are opportunity identity/lifecycle and a structured session replay. Explicit
-connection/recovery control history is needed before claiming full live replay.
+Step 4 is implemented for the current gross two-leg candidates on
+`feat/incremental-candidates`: deterministic identity, incremental updates and
+opened/updated/invalidated events. See [CANDIDATES.md](CANDIDATES.md); these are not
+net executable opportunities. Next is structured session replay with explicit
+connection/recovery control history before claiming full live replay.
 
 Implement in this order:
 1. Define a strict, versioned snapshot format for stable market IDs, tickers and
@@ -64,6 +70,9 @@ Implement in this order:
    and market dependencies; model opened/updated/invalidated lifecycle events.
    Quote changes update an identity instead of generating a new one every tick.
 5. Connect an offline CLI replay to the session manifest and structured output.
+   Persist explicit connection/recovery actions and subscription conventions,
+   including the gateway's required `use_yes_price: true`; never infer the price
+   scale from a payload or silently repair a missing control history.
 
 Acceptance: registration order cannot change identity; mismatched or incomplete
 sessions fail closed; two runs produce identical ordered output; generated small

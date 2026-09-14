@@ -132,6 +132,8 @@ public:
     [[nodiscard]] std::span<const ConstraintId> dependencies(
         market::MarketId market_id) const noexcept;
     [[nodiscard]] std::size_t size() const noexcept { return constraints_.size(); }
+    // Startup enumeration; independent of registration/hash-table order.
+    [[nodiscard]] std::vector<ConstraintId> sorted_ids() const;
 
 private:
     std::unordered_map<ConstraintId, CompiledConstraint> constraints_;

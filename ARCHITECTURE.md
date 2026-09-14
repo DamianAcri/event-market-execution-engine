@@ -11,6 +11,8 @@ Kalshi frame -> raw journal -> strict decoder -> venue normalizer
              -> generation-aware market state -> local order books
                                       |
 versioned constraint registry -> compiled worlds -> payoff verification
+                                      |
+normalized books + compiled legs -> incremental gross candidate lifecycle
 ```
 
 Live input and replay use the same decoder, normalizer, and state transition path.
@@ -55,7 +57,8 @@ changes can be evaluated reproducibly against the original bytes.
 ## Safety boundary
 
 The repository currently has no authenticated transport and cannot place orders.
-Connectivity, opportunity detection, fee/depth evaluation, risk approval, and
+The core can track gross candidates using compiled two-leg templates and best
+prices. Connectivity, fee/depth and funding evaluation, risk approval, and
 execution are later layers. Production submission must remain disabled by default
 and must not bypass centralized limits or a kill switch.
 

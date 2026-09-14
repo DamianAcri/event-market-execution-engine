@@ -63,9 +63,13 @@ deterministic canonical output. The CLI can verify or canonicalize a snapshot.
 Finalized [sessions](SESSION_FORMAT.md) bind exact metadata and journal bytes with
 SHA-256 fingerprints and a verified record count. The CLI can pack existing files
 into a new session and verify integrity without mutating market state.
-This is not yet an opportunity or arbitrage detector. Incremental violation events,
-structured CLI replay and deterministic opportunity identity remain part
-of the unfinished v0.2 milestone; depth and fees belong to v0.3.
+The core now tracks [gross candidates](CANDIDATES.md) from the compiled two-leg
+templates at the best available prices, with stable identity and incremental
+opened/updated/invalidated events. These exclude fees, funding and execution risk;
+the economically executable detector is still pending. Structured CLI replay
+and live control history remain part of unfinished v0.2; depth and fees belong
+to v0.3. The [economic validation plan](ECONOMIC_VALIDATION.md) defines how we will
+test whether the model is worth pursuing.
 
 ## Documentation
 
@@ -77,6 +81,8 @@ of the unfinished v0.2 milestone; depth and fees belong to v0.3.
 - [Raw journal format](JOURNAL_FORMAT.md)
 - [Reviewed metadata snapshot format](METADATA_FORMAT.md)
 - [Finalized session format and offline verification](SESSION_FORMAT.md)
+- [Gross candidate calculation and lifecycle](CANDIDATES.md)
+- [Economic validation and decision gates](ECONOMIC_VALIDATION.md)
 - [Roadmap](ROADMAP.md)
 - [Contributing](CONTRIBUTING.md)
 
