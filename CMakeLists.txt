@@ -25,6 +25,7 @@ add_library(eme_core
     src/journal/journal_codec.cpp
     src/journal/raw_journal.cpp
     src/market/market_state.cpp
+    src/opportunity/candidate_tracker.cpp
 )
 
 target_include_directories(eme_core
@@ -111,6 +112,17 @@ endif()
 include(CTest)
 
 if(EME_BUILD_BENCHMARKS)
+    add_executable(eme_candidate_benchmarks benchmarks/candidate_benchmarks.cpp)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+        ${PROJECT_SOURCE_DIR}/benchmarks/candidate_benchmarks.cpp)
+    file(SHA256 ${PROJECT_SOURCE_DIR}/benchmarks/candidate_benchmarks.cpp EME_CANDIDATE_BENCH_SOURCE_SHA256)
+    target_compile_definitions(eme_candidate_benchmarks PRIVATE
+        EME_CANDIDATE_BENCH_SOURCE_SHA256="${EME_CANDIDATE_BENCH_SOURCE_SHA256}")
+    target_link_libraries(eme_candidate_benchmarks PRIVATE eme_core)
+    eme_enable_warnings(eme_candidate_benchmarks)
+    if(BUILD_TESTING)
+        add_test(NAME eme_candidate_benchmark_smoke COMMAND eme_candidate_benchmarks --smoke)
+    endif()
     add_executable(eme_benchmarks benchmarks/engine_benchmarks.cpp)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
         ${PROJECT_SOURCE_DIR}/benchmarks/engine_benchmarks.cpp)
@@ -165,6 +177,7 @@ if(BUILD_TESTING)
 
     eme_add_test(eme_fixed_point_tests tests/fixed_point_tests.cpp eme_core)
     eme_add_test(eme_constraint_tests tests/constraint_tests.cpp eme_core)
+    eme_add_test(eme_candidate_tests tests/candidate_tests.cpp eme_core)
     eme_add_test(eme_order_book_tests tests/order_book_tests.cpp eme_core)
     eme_add_test(eme_market_state_tests tests/market_state_tests.cpp eme_core)
     eme_add_test(eme_raw_journal_tests tests/raw_journal_tests.cpp eme_core)

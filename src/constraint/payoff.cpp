@@ -206,4 +206,15 @@ std::span<const ConstraintId> ConstraintRegistry::dependencies(
                                         : std::span<const ConstraintId>{found->second};
 }
 
+std::vector<ConstraintId> ConstraintRegistry::sorted_ids() const {
+    std::vector<ConstraintId> ids;
+    ids.reserve(constraints_.size());
+    for (const auto& [id, compiled] : constraints_) {
+        static_cast<void>(compiled);
+        ids.push_back(id);
+    }
+    std::sort(ids.begin(), ids.end());
+    return ids;
+}
+
 }  // namespace eme::constraint
