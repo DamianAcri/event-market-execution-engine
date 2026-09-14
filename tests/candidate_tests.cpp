@@ -100,6 +100,10 @@ void identities_and_global_changes(eme::test::Context& test) {
         left.size() == 2U && left[0U].id.constraint_id == 3U && left[1U].id.constraint_id == 9U,
         "registration order and symmetric complement leg order do not change ordered events");
     const auto identity = left[0U].id;
+    test.expect(a.refresh(99U, state).empty() && a.evaluations_last_refresh() == 0U,
+        "unrelated market evaluates no definitions");
+    test.expect(a.refresh(1U, state).empty() && a.evaluations_last_refresh() == 1U,
+        "market refresh evaluates only its dependent definition");
     op::CandidateTracker other_version{2U, forward};
     test.expect(other_version.refresh_all(state)[0U].id != identity, "metadata version changes identity");
     c::ConstraintRegistry semantic;

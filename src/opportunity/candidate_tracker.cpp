@@ -102,9 +102,16 @@ std::span<const CandidateEvent> CandidateTracker::refresh_all(const market::Mark
 
 std::span<const CandidateEvent> CandidateTracker::refresh(
     const market::MarketId changed_market, const market::MarketState& state) {
-    // Full-scan reference implementation retained before the measured index optimization.
-    static_cast<void>(changed_market);
-    return refresh_all(state);
+    if (generation_ != state.connection_generation() || connected_ != state.connected()) {
+        return refresh_all(state);
+    }
+    events_.clear();
+    evaluated_ = 0U;
+    const auto affected = dependencies_.find(changed_market);
+    if (affected != dependencies_.end()) {
+        for (const auto index : affected->second) { evaluate(entries_[index], state); }
+    }
+    return events_;
 }
 
 }  // namespace eme::opportunity
