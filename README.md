@@ -63,6 +63,8 @@ of the unfinished v0.2 milestone; depth and fees belong to v0.3.
 ## Documentation
 
 - [Project direction and research basis](PROJECT_DIRECTION.md)
+- [Implementation plan and acceptance criteria](IMPLEMENTATION_PLAN.md)
+- [Performance methodology and research](PERFORMANCE.md)
 - [Architecture](ARCHITECTURE.md)
 - [Raw journal format](JOURNAL_FORMAT.md)
 - [Roadmap](ROADMAP.md)

@@ -10,6 +10,7 @@ project(
 option(EME_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 option(EME_BUILD_KALSHI_GATEWAY "Build the Kalshi JSON boundary" ON)
 option(EME_BUILD_CLI "Build the operator command-line interface" ON)
+option(EME_BUILD_BENCHMARKS "Build deterministic offline performance workloads" OFF)
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/generated/eme)
 configure_file(
@@ -93,6 +94,26 @@ endif()
 
 include(CTest)
 
+if(EME_BUILD_BENCHMARKS)
+    add_executable(eme_benchmarks benchmarks/engine_benchmarks.cpp)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+        ${PROJECT_SOURCE_DIR}/benchmarks/engine_benchmarks.cpp)
+    file(SHA256 ${PROJECT_SOURCE_DIR}/benchmarks/engine_benchmarks.cpp EME_BENCH_SOURCE_SHA256)
+    target_compile_definitions(eme_benchmarks PRIVATE
+        EME_BENCH_SOURCE_SHA256="${EME_BENCH_SOURCE_SHA256}")
+    target_include_directories(eme_benchmarks PRIVATE ${PROJECT_SOURCE_DIR}/src)
+    if(EME_BUILD_KALSHI_GATEWAY)
+        target_link_libraries(eme_benchmarks PRIVATE eme_kalshi_gateway)
+        target_compile_definitions(eme_benchmarks PRIVATE EME_BENCH_KALSHI=1)
+    else()
+        target_link_libraries(eme_benchmarks PRIVATE eme_core)
+    endif()
+    eme_enable_warnings(eme_benchmarks)
+    if(BUILD_TESTING)
+        add_test(NAME eme_benchmark_smoke COMMAND eme_benchmarks --smoke)
+    endif()
+endif()
+
 if(BUILD_TESTING)
     function(eme_add_test target source library)
         add_executable(${target} ${source})
@@ -107,6 +128,8 @@ if(BUILD_TESTING)
     eme_add_test(eme_order_book_tests tests/order_book_tests.cpp eme_core)
     eme_add_test(eme_market_state_tests tests/market_state_tests.cpp eme_core)
     eme_add_test(eme_raw_journal_tests tests/raw_journal_tests.cpp eme_core)
+    eme_add_test(eme_journal_codec_tests tests/journal_codec_tests.cpp eme_core)
+    target_include_directories(eme_journal_codec_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
     if(EME_BUILD_KALSHI_GATEWAY)
         eme_add_test(
             eme_kalshi_normalizer_tests
