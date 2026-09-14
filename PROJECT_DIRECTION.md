@@ -11,6 +11,13 @@ Engineering improvements should increase the margin that can actually be capture
 the capacity that can be handled, or the reliability of the evidence. Latency,
 throughput, memory use, execution quality, and operating cost are measured together.
 
+Research includes public methods from quantitative trading firms generally,
+economic and microstructure papers, execution models and inventory control.
+Jane Street and Optiver are examples of relevant sources. Apply a method when its
+assumptions fit the venue and its measured economic benefit justifies its complexity.
+The [quantitative research supplement](QUANT_RESEARCH.md) records evidence,
+limitations and proposed experiments, including the September 2026 review.
+
 This makes the project a structural-arbitrage and execution optimizer. It extends
 the existing market-data and payoff-verification foundation. It does not change
 the development order or execution gates in the [roadmap](ROADMAP.md).
@@ -34,6 +41,13 @@ fees and pays $1 at settlement locks in a $0.04 terminal margin after it is full
 assembled. Available depth, changing prices, incomplete execution, and the time
 until capital is released determine whether that opportunity is useful. This is
 an illustration, not an observed result from the engine.
+
+The evaluator must distinguish certified payoff, venue collateral mechanisms and
+account/event eligibility. Measure peak funding along the acquisition path and
+remaining capital-time exposure, including any eligible early collateral return.
+An early cash release must not be counted twice as profit. Fee accounting must
+preserve per-order rounding state across partial fills. These are requirements
+for the planned evaluator, with source details in [the supplement](QUANT_RESEARCH.md).
 
 ## Intended decisions
 

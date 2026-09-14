@@ -23,6 +23,31 @@ These are public methods and sources, not a claim to reproduce a firm's private
 trading platform. Our immediate priority is avoiding unnecessary work in the
 existing path while retaining replay and failure semantics.
 
+The [quantitative research supplement](QUANT_RESEARCH.md) adds public accounts from
+Optiver on research-to-production iteration and Jane Street on incremental
+computation, deterministic fault testing and jitter. It also covers execution
+models, adverse selection, collateral and statistical validation. These methods
+inform the experiments; the firms' names do not establish a performance target.
+
+## Economic latency experiment
+
+This is a proposed measurement layer, not an existing benchmark. On reserved
+sessions, compare a fixed policy with controlled extra delays at feed reception,
+decision processing, outbound order arrival and response delivery. Keep inputs
+and seeds paired. An initial sensitivity grid might add 0, 0.1, 1, 5, 20 and 100 ms;
+these are scenario values, not measured venue latencies or hardware requirements.
+
+Report completed portfolios, captured quantity, fees, partial-execution losses,
+net results, worst event loss, peak funding and capital-time exposure. Include
+per-event stage latency and queue age under paced arrivals and bursts. State fill,
+queue, collateral and market-impact assumptions beside each result; their quality
+limits what a simulated economic latency curve can establish.
+
+Use this curve to prioritize low-level work and compare deployment hardware by
+incremental economic benefit and operating cost. Continue differential correctness
+checks, portable fallbacks and workload-specific measurements. Compatibility on
+multiple platforms does not imply equal speed across them.
+
 ## Build and run
 
 ```sh

@@ -63,6 +63,7 @@ of the unfinished v0.2 milestone; depth and fees belong to v0.3.
 ## Documentation
 
 - [Project direction and research basis](PROJECT_DIRECTION.md)
+- [Quantitative models, execution research and economic experiments](QUANT_RESEARCH.md)
 - [Implementation plan and acceptance criteria](IMPLEMENTATION_PLAN.md)
 - [Performance methodology and research](PERFORMANCE.md)
 - [Architecture](ARCHITECTURE.md)
