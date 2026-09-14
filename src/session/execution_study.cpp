@@ -242,19 +242,27 @@ private:
         const auto quotes = [&](const std::int64_t q) {
             return std::array{walk(legs[0U], q, 10'000, state, false), walk(legs[1U], q, 10'000, state, false)};
         };
-        // Find the largest funded quantity; no assumption that profit is monotone.
-        std::int64_t lo = 0;
-        std::int64_t hi = quantity / policy_.quantity_step;
-        while (lo < hi) {
-            const auto mid = lo + (hi - lo + 1) / 2;
-            const auto q = mid * policy_.quantity_step;
-            const auto quote = quotes(q);
-            const auto needed = reserve(legs[0U], q, quote[0U].worst_price) + reserve(legs[1U], q, quote[1U].worst_price);
-            if (needed <= available_) { lo = mid; } else { hi = mid - 1; }
+        // Reuse the depth traversal when both sides reach the quantity cap.
+        // Funded full size needs no binary search through the same levels.
+        auto quote = std::array{
+            depth0.quantity == quantity ? depth0 : walk(legs[0U], quantity, 10'000, state, false),
+            depth1.quantity == quantity ? depth1 : walk(legs[1U], quantity, 10'000, state, false)};
+        if (reserve(legs[0U], quantity, quote[0U].worst_price) +
+            reserve(legs[1U], quantity, quote[1U].worst_price) > available_) {
+            // Only funding is monotone; net profit need not be.
+            std::int64_t lo = 0;
+            std::int64_t hi = quantity / policy_.quantity_step;
+            while (lo < hi) {
+                const auto mid = lo + (hi - lo + 1) / 2;
+                const auto q = mid * policy_.quantity_step;
+                const auto trial = quotes(q);
+                const auto needed = reserve(legs[0U], q, trial[0U].worst_price) + reserve(legs[1U], q, trial[1U].worst_price);
+                if (needed <= available_) { lo = mid; } else { hi = mid - 1; }
+            }
+            quantity = lo * policy_.quantity_step;
+            if (quantity == 0) { decline("insufficient_cash"); return; }
+            quote = quotes(quantity);
         }
-        quantity = lo * policy_.quantity_step;
-        if (quantity == 0) { decline("insufficient_cash"); return; }
-        const auto quote = quotes(quantity);
         const auto cost = quote[0U].debit + quote[1U].debit;
         if (quantity * 10'000 - cost <= policy_.min_margin) { decline("non_positive_costed_margin"); return; }
         Attempt attempt{id, legs, *state.connection_generation(), quantity,
