@@ -4,6 +4,11 @@ The development order is correctness, usability, observability, measurement, and
 only then optimization. Milestones describe engineering capability, not expected
 profitability.
 
+See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for ordered deliverables and
+acceptance criteria. An optional offline benchmark baseline is being established
+alongside v0.2 so later features have measurable costs from their first change;
+methodology and research live in [PERFORMANCE.md](PERFORMANCE.md).
+
 ## v0.1 — Deterministic market-data foundation
 
 Completed: fixed-point price and quantity, normalized order books, strict sequence
