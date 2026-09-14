@@ -56,8 +56,11 @@ settlement across every valid world. Contract quantity and cash are distinct
 fixed-point types. There is deliberately no title matching or probability
 inference: semantic relationships must be curated explicitly.
 
-This is not yet an opportunity or arbitrage detector. Contract-metadata loading,
-incremental violation events, and deterministic opportunity identity remain part
+Reviewed [metadata snapshots](METADATA_FORMAT.md) now load stable market IDs and
+compiled relationships together, reject ambiguous/invalid input, and produce
+deterministic canonical output. The CLI can verify or canonicalize a snapshot.
+This is not yet an opportunity or arbitrage detector. Session content binding,
+incremental violation events and deterministic opportunity identity remain part
 of the unfinished v0.2 milestone; depth and fees belong to v0.3.
 
 ## Documentation
@@ -68,6 +71,7 @@ of the unfinished v0.2 milestone; depth and fees belong to v0.3.
 - [Performance methodology and research](PERFORMANCE.md)
 - [Architecture](ARCHITECTURE.md)
 - [Raw journal format](JOURNAL_FORMAT.md)
+- [Reviewed metadata snapshot format](METADATA_FORMAT.md)
 - [Roadmap](ROADMAP.md)
 - [Contributing](CONTRIBUTING.md)
 

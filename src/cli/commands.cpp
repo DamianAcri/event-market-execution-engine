@@ -3,6 +3,12 @@
 #include "eme/journal/raw_journal.hpp"
 #include "eme/version.hpp"
 
+#ifdef EME_CLI_KALSHI
+#include "eme/gateway/kalshi/metadata_snapshot.hpp"
+#include <fstream>
+#include <string>
+#endif
+
 #include <cstdint>
 #include <iostream>
 #include <memory>
@@ -19,6 +25,10 @@ void print_help() {
               << "Usage:\n"
               << "  event-engine status\n"
               << "  event-engine journal verify <path>\n"
+#ifdef EME_CLI_KALSHI
+              << "  event-engine metadata verify <path>\n"
+              << "  event-engine metadata canonical <path>\n"
+#endif
               << "  event-engine --version\n";
 }
 
@@ -32,6 +42,42 @@ void print_status() {
               << "EXECUTION       DISABLED\n"
               << "CREDENTIALS     NOT REQUIRED\n";
 }
+
+#ifdef EME_CLI_KALSHI
+[[nodiscard]] int inspect_metadata(const std::string_view path, const bool canonical) {
+    namespace kalshi = gateway::kalshi;
+    std::ifstream input{std::string{path}, std::ios::binary};
+    if (!input) {
+        std::cerr << "Metadata read failed\n";
+        return 1;
+    }
+    // Bound the read itself, including non-seekable or concurrently growing files.
+    std::string bytes(kalshi::maximum_metadata_bytes + 1U, '\0');
+    input.read(bytes.data(), static_cast<std::streamsize>(bytes.size()));
+    const auto count = input.gcount();
+    if (input.bad() || (input.fail() && !input.eof())) {
+        std::cerr << "Metadata read failed\n";
+        return 1;
+    }
+    bytes.resize(static_cast<std::size_t>(count));
+    const auto result = kalshi::parse_metadata_snapshot(bytes);
+    if (const auto* error = std::get_if<kalshi::MetadataError>(&result)) {
+        std::cerr << "Metadata verification failed: " << kalshi::to_string(error->code)
+                  << " at " << error->field << '\n';
+        return 1;
+    }
+    const auto& snapshot = std::get<kalshi::MetadataSnapshot>(result);
+    if (canonical) {
+        std::cout << snapshot.canonical_json() << '\n';
+    } else {
+        std::cout << "METADATA        VALID\n"
+                  << "VERSION         " << snapshot.markets().metadata_version() << '\n'
+                  << "MARKETS         " << snapshot.markets().size() << '\n'
+                  << "CONSTRAINTS     " << snapshot.constraints().size() << '\n';
+    }
+    return std::cout ? 0 : 1;
+}
+#endif
 
 [[nodiscard]] int verify_journal(const std::string_view path) {
     auto open = journal::open_raw_journal_reader(path);
@@ -101,6 +147,14 @@ int run(const int argc, const char* const argv[]) {
     if (command == "journal" && argc == 4 && std::string_view{argv[2]} == "verify") {
         return verify_journal(argv[3]);
     }
+#ifdef EME_CLI_KALSHI
+    if (command == "metadata" && argc == 4) {
+        const std::string_view action{argv[2]};
+        if (action == "verify" || action == "canonical") {
+            return inspect_metadata(argv[3], action == "canonical");
+        }
+    }
+#endif
     if (command == "--version" || command == "version") {
         std::cout << "event-engine " << version << '\n';
         return 0;

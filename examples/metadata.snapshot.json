@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "metadata_version": 1,
+  "venue": "kalshi",
+  "markets": [
+    {"id": 1, "ticker": "SYNTHETIC-TEMP-GE25"},
+    {"id": 2, "ticker": "SYNTHETIC-TEMP-GE30"},
+    {"id": 3, "ticker": "SYNTHETIC-TEMP-LT25"}
+  ],
+  "constraints": [
+    {
+      "id": 7,
+      "semantic_version": 1,
+      "key": "synthetic.temperature.ge30-implies-ge25",
+      "provenance": "Synthetic example only: same measurement, time and settlement rules.",
+      "relationship": {"type": "implication", "antecedent": 2, "consequent": 1}
+    },
+    {
+      "id": 9,
+      "semantic_version": 1,
+      "key": "synthetic.temperature.ge25-complements-lt25",
+      "provenance": "Synthetic example only: exhaustive complementary settlement outcomes.",
+      "relationship": {"type": "complement", "left": 1, "right": 3}
+    }
+  ]
+}

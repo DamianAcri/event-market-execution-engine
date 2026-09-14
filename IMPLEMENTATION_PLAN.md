@@ -43,6 +43,10 @@ Acceptance:
 
 ## 1. Finish the reproducibility contract (v0.2)
 
+Steps 1–2 are implemented on `feat/metadata-snapshot`, including offline CLI
+inspection and generated payout checks. See [METADATA_FORMAT.md](METADATA_FORMAT.md).
+The next functional block is step 3; inspection alone does not bind a session.
+
 Implement in this order:
 1. Define a strict, versioned snapshot format for stable market IDs, tickers and
    curated implication/complement definitions, including provenance.

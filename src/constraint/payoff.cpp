@@ -168,8 +168,8 @@ PortfolioResult construct_guaranteed_portfolio(
 }
 
 ConstraintRegistrationResult ConstraintRegistry::add(ConstraintDefinition definition) {
-    const auto compiled_result = compile_constraint(std::move(definition));
-    const auto* compiled = std::get_if<CompiledConstraint>(&compiled_result);
+    auto compiled_result = compile_constraint(std::move(definition));
+    auto* compiled = std::get_if<CompiledConstraint>(&compiled_result);
     if (compiled == nullptr) {
         return ConstraintRegistrationResult::invalid_definition;
     }
@@ -185,11 +185,9 @@ ConstraintRegistrationResult ConstraintRegistry::add(ConstraintDefinition defini
     }
 
     const auto constraint_id = compiled->metadata.id;
-    const auto key = compiled->metadata.key;
-    const auto markets = compiled->dependent_markets;
-    constraints_.emplace(constraint_id, *compiled);
-    keys_.emplace(key, constraint_id);
-    for (const auto market_id : markets) {
+    const auto stored = constraints_.emplace(constraint_id, std::move(*compiled)).first;
+    keys_.emplace(stored->second.metadata.key, constraint_id);
+    for (const auto market_id : stored->second.dependent_markets) {
         dependencies_[market_id].push_back(constraint_id);
     }
     return ConstraintRegistrationResult::registered;

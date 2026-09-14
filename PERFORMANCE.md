@@ -133,6 +133,50 @@ fixtures can reward an optimization that fails under churn or larger state.
 Independent reference checks, explicit metric names and additional workloads
 address those risks. A retained optimization needs measured benefit in its scope.
 
+## Portability, profiling and hardware decisions
+
+The correctness matrix now includes Windows 2022/MSVC x64, Linux GCC arm64 and
+macOS 15/AppleClang arm64 Release builds, alongside Linux x64 GCC/Clang Debug,
+ASan/UBSan and the dependency-free core build. The selected architecture labels
+are documented by [GitHub](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
+The first matrix run on `e71337d` passed all seven jobs. This checks compilation,
+behavior and smoke workloads; it does not establish comparable speed on these
+shared hosts. Runtime libraries, code generation and scheduling still differ.
+
+Our engineering application of the public research is to measure the stage that
+limits useful decisions, including rare delays. Jane Street's
+[magic-trace account](https://blog.janestreet.com/magic-trace/) shows why sampling
+can miss very short or rare paths and why tracing overhead matters. Its Intel PT
+implementation is hardware/platform-specific; adopting its measurement approach
+does not require adding it to an ARM/Windows build. Start with stage-level timing
+and recorded inputs; choose a supported profiler when that evidence warrants it.
+This is a public engineering example, not evidence about proprietary strategies.
+
+Google Benchmark's [variance guidance](https://google.github.io/benchmark/reducing_variance.html)
+motivates recording machine load, frequency behavior and repeatability. Keep
+compiler/flags/inputs fixed within each A/B comparison. Run sequentially, preserve
+raw samples and test a held-out workload before accepting a specialization. Do
+not tune host power/security settings implicitly or compare CI wall time as if
+it were a controlled CPU experiment.
+
+Hardware selection remains an experiment, not a shopping recommendation:
+
+| Decision | Evidence required |
+| --- | --- |
+| Development machine | Supported compiler, complete tests, practical build/replay time |
+| Operating host | Arrival-to-decision tails under paced bursts, network path and recovery |
+| RAM | Peak resident memory for intended books, dependency fan-out, parser and bounded queues |
+| Storage | Capture bytes/second, retention duration, durability policy and disk stalls |
+| CPU specialization | Same workload on target x64/ARM CPUs, portable fallback, net path benefit |
+
+Do not infer minimum RAM from the 32 GiB development Mac. Do not buy dedicated
+hardware before representative capture and execution simulation show its benefit.
+The next load baseline is `eme_metadata_benchmarks`: snapshot startup cost and
+strict validation, outside the per-message path. Its parser callback explicitly
+rejects duplicate keys; returning false from a
+[nlohmann parser callback](https://json.nlohmann.me/features/parsing/parser_callbacks/)
+would filter data, which is unsuitable for fail-closed metadata validation.
+
 ## Measurement log
 
 ### 2026-09-14: portable CRC table and reuse of an existing book iterator
@@ -188,3 +232,46 @@ including after an authorized run outside the sandbox. The host logs inspected
 did not establish a definitive cause. The same core-only smoke passed on Linux
 CI, and the full benchmark passed locally in Release and with sanitizers. No host
 security settings were changed; the local core-only smoke remains unverified.
+
+### 2026-09-14: snapshot loading and removal of compiled-constraint copies
+
+Added a separate startup workload without changing the existing engine benchmark
+source. Baseline `ee40c5f` introduces the snapshot loader; candidate `631ea40`
+moves each compiled constraint into its registry instead of copying its strings,
+worlds, legs and dependencies. The intervening `240c2c6` only renames a constructor
+parameter for MSVC and strengthens a test assertion. No JSON admission rule,
+canonical encoding or payoff definition changed in the optimization.
+
+Same M2 Pro/toolchain/Release flags as above. Six alternating A/B pairs, 20 loads
+per process per scenario, two warmups. Complete canonical output and dependency
+counts agree; the comparison runner verified matching source/workload digests.
+No concurrent local builds or tests ran during measurement. Background load and
+frequency were uncontrolled. Reported costs exclude destruction of the returned
+snapshot, output validation, input generation and file I/O.
+
+| Markets x constraints | Baseline median mean (ms/load) | Candidate (ms/load) | Median paired change | Paired range |
+| --- | ---: | ---: | ---: | ---: |
+| 32 x 64 | 0.284 | 0.268 | -6.3% | -12.7% to -3.6% |
+| 512 x 1024 | 6.555 | 6.238 | -4.7% | -23.1% to +63.9% |
+| 4096 x 8192 | 168.014 | 166.553 | -0.5% | -1.8% to +4.1% |
+
+Retained: a simpler ownership transfer with a consistent measured benefit for
+the small setup workload. The larger cases do **not** establish a consistent
+speedup. Do not quote their median changes as reliable gains. Setup at this scale
+is not instantaneous; its measured cost stays outside per-message processing.
+No allocation-count, peak-memory or hardware-general speedup claim is made.
+
+Metadata benchmark source SHA-256:
+`c81c7880bed6b138fcdd933bed9edb839a3398ca2da0f8134d87e9382c3ae31b`.
+Raw process CSV, summaries, run order and executable hashes are preserved in the
+local artifact `calci-metadata-performance-20260914/metadata-load`.
+
+A separate six-pair, 200-sample regression comparison used the unchanged nine
+engine scenarios against the pre-metadata PR #2 binary (production equivalent to
+main `9c2d2fa`). All workload/output digests agreed. Verified in-memory replay
+median process means were 2,185.023 vs 2,186.806 ns/op; paired changes ranged from
+-3.1% to +18.2%. The medians are effectively unchanged, but variation prevents
+claims about small speed differences or worst-case latency. No consistent engine
+regression was established. Raw results remain in the same artifact's
+`engine-regression` directory; do not interpret the setup gain as a trading-path
+gain. Both local Release and ASan/UBSan suites passed all 16 CTest cases.
