@@ -3,6 +3,8 @@
 Updated: 2026-09-14. Direction: [PROJECT_DIRECTION.md](PROJECT_DIRECTION.md).
 Milestone ownership remains in [ROADMAP.md](ROADMAP.md). Performance methodology
 and public research are in [PERFORMANCE.md](PERFORMANCE.md).
+The [quantitative research supplement](QUANT_RESEARCH.md) explains the funding,
+accounting, model-selection and execution evidence behind the requirements below.
 
 ## Objective and working rule
 
@@ -19,7 +21,7 @@ justify its memory, complexity, and maintenance costs.
 
 ## 0. Establish the performance baseline
 
-Implemented on `perf/journal-crc-benchmarks`: offline workloads, comparison runner,
+Merged in PR #2: offline workloads, comparison runner,
 compatibility checks and the first measured CRC/book optimizations. Results and
 their limits are recorded in [PERFORMANCE.md](PERFORMANCE.md). The next functional
 block is the reviewed metadata snapshot in phase 1.
@@ -48,6 +50,8 @@ Implement in this order:
    IDs/keys, unknown market references and unsupported versions before publishing.
 3. Persist that immutable snapshot beside the journal, with a session manifest
    identifying the exact artifact. Define crash/incomplete-session detection.
+   As economic policies are introduced, bind their exact fee, rounding, funding
+   and account/event assumptions to the session; mark hypothetical profiles.
 4. Add deterministic opportunity identity using definition version, direction
    and market dependencies; model opened/updated/invalidated lifecycle events.
    Quote changes update an identity instead of generating a new one every tick.
@@ -61,19 +65,32 @@ processing. This phase requires no credentials.
 
 ## 2. Make the first detector economically meaningful (v0.3)
 
+Before sizing, define independently calculated cash/position examples for full
+and partial acquisition, collateral eligibility and per-order fee accumulation.
+Use explicit synthetic account profiles until observed configuration is available.
+
 Start with the existing two-market implications and complements:
+
 1. Activate the compiled market-to-constraint dependency index so a delta visits
    only affected constraints. Compare outputs with a full-scan reference.
 2. Walk executable depth on all required legs and find feasible quantities.
-3. Apply an explicit, versioned fee policy with exact rounding and cash units.
+3. Apply an explicit, versioned fee policy with exact cash units and account
+   balance precision. Define per-order accumulation across partial maker/taker
+   fills; the detector emits a cost bound and the simulator applies each fill.
 4. Emit cost, minimum payout, margin, limiting leg, committed capital and a
    concrete reason for each acceptance/rejection. Include book freshness policy.
+   Model peak acquisition funding and capital-time exposure. Distinguish payoff
+   guarantees, venue collateral mechanisms and account/event eligibility; unknown
+   eligibility cannot silently enable sizing that depends on returned collateral.
 5. Measure work per changed market across growing numbers of unrelated markets
    and constraints; add realistic dependency fan-out and burst workloads.
 
 Acceptance: hand-calculated examples and a slower independent evaluator agree;
 rounding cannot turn a non-positive margin into a positive one; shared liquidity
 is not counted twice; missing/stale inputs never produce executable suggestions.
+Collateral release conserves economic value rather than creating duplicate profit;
+intermediate acquisition states fit the funding limit. Ledger examples cover
+partial fills, maker/taker transitions, cancelled residuals and rounding profiles.
 All of this can be implemented and tested without credentials. Synthetic data
 does not establish how frequently such opportunities exist on Kalshi.
 
@@ -82,13 +99,26 @@ does not establish how frequently such opportunities exist on Kalshi.
 Add an event-driven replay simulator with scheduled arrival times, configurable
 outbound/response delays, disappearing liquidity, partial fills, rejected orders,
 timeouts and recovery actions. Charge losses from incomplete portfolios and
-include capital held until exit/settlement. Separate observed fills from simulated
-fills in every report. Fix parameters before evaluating a held-out session.
+include funding and eligible collateral release through exit/settlement. Separate
+observed fills from simulated fills in every report. Fix parameters before
+evaluating a held-out session.
+
+Share the decision core across replay, simulation and eventual live adapters.
+Make time and pending responses explicit, retain seeds and reproducing sequences,
+and record failed order/cancel attempts as well as fills when execution is added.
+An aggressive-execution reference precedes passive-policy comparisons, which must
+model queue uncertainty, adverse selection and correlated partial-leg outcomes.
+Reserve chronological periods and event families before tuning, and retain all
+experiments. Historical replay must label its missing counterfactual market impact.
 
 Acceptance: no future information affects a decision; conservation of cash and
 positions holds; adverse execution cases can erase the quoted edge; slowdowns
 increase measured queue delay rather than silently slowing the event generator.
 Report how accepted opportunities change under latency and liquidity stress.
+Use the [economic latency experiment](PERFORMANCE.md#economic-latency-experiment)
+to compare complete portfolios, partial-leg losses, net results and peak funding
+at equal risk limits. Advanced binary inventory models require calibration and
+out-of-sample improvement over a simpler policy before adoption.
 
 Offline simulation needs no keys. Authenticated market-data collection should
 begin once this pipeline is ready enough to retain and replay sessions; delaying
