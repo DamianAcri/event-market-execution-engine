@@ -108,6 +108,50 @@ fixtures can reward an optimization that fails under churn or larger state.
 Independent reference checks, explicit metric names and additional workloads
 address those risks. A retained optimization needs measured benefit in its scope.
 
+## Portability, profiling and hardware decisions
+
+The correctness matrix now includes Windows 2022/MSVC x64, Linux GCC arm64 and
+macOS 15/AppleClang arm64 Release builds, alongside Linux x64 GCC/Clang Debug,
+ASan/UBSan and the dependency-free core build. The selected architecture labels
+are documented by [GitHub](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
+The first matrix run on `e71337d` passed all seven jobs. This checks compilation,
+behavior and smoke workloads; it does not establish comparable speed on these
+shared hosts. Runtime libraries, code generation and scheduling still differ.
+
+Our engineering application of the public research is to measure the stage that
+limits useful decisions, including rare delays. Jane Street's
+[magic-trace account](https://blog.janestreet.com/magic-trace/) shows why sampling
+can miss very short or rare paths and why tracing overhead matters. Its Intel PT
+implementation is hardware/platform-specific; adopting its measurement approach
+does not require adding it to an ARM/Windows build. Start with stage-level timing
+and recorded inputs; choose a supported profiler when that evidence warrants it.
+This is a public engineering example, not evidence about proprietary strategies.
+
+Google Benchmark's [variance guidance](https://google.github.io/benchmark/reducing_variance.html)
+motivates recording machine load, frequency behavior and repeatability. Keep
+compiler/flags/inputs fixed within each A/B comparison. Run sequentially, preserve
+raw samples and test a held-out workload before accepting a specialization. Do
+not tune host power/security settings implicitly or compare CI wall time as if
+it were a controlled CPU experiment.
+
+Hardware selection remains an experiment, not a shopping recommendation:
+
+| Decision | Evidence required |
+| --- | --- |
+| Development machine | Supported compiler, complete tests, practical build/replay time |
+| Operating host | Arrival-to-decision tails under paced bursts, network path and recovery |
+| RAM | Peak resident memory for intended books, dependency fan-out, parser and bounded queues |
+| Storage | Capture bytes/second, retention duration, durability policy and disk stalls |
+| CPU specialization | Same workload on target x64/ARM CPUs, portable fallback, net path benefit |
+
+Do not infer minimum RAM from the 32 GiB development Mac. Do not buy dedicated
+hardware before representative capture and execution simulation show its benefit.
+The next load baseline is `eme_metadata_benchmarks`: snapshot startup cost and
+strict validation, outside the per-message path. Its parser callback explicitly
+rejects duplicate keys; returning false from a
+[nlohmann parser callback](https://json.nlohmann.me/features/parsing/parser_callbacks/)
+would filter data, which is unsuitable for fail-closed metadata validation.
+
 ## Measurement log
 
 ### 2026-09-14: portable CRC table and reuse of an existing book iterator

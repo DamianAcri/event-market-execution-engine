@@ -25,11 +25,12 @@ Current milestone. Implemented:
 - versioned constraint definitions with provenance;
 - compilation to canonical valid worlds and payoff leg templates;
 - finite-world minimum-payoff verification;
-- operator journal verification.
+- operator journal verification;
+- strict reviewed metadata snapshot loading and canonical CLI output;
+- generated truth-table checks of loaded relationships and fractional payouts.
 
 Remaining before declaring the milestone complete:
 
-- ingest a reviewed contract-metadata snapshot into the explicit registry;
 - deterministic opportunity identity and lifecycle events;
 - persist the constraint metadata snapshot alongside a capture session;
 - property-based tests over generated worlds and malformed journal frames.

@@ -19,7 +19,7 @@ justify its memory, complexity, and maintenance costs.
 
 ## 0. Establish the performance baseline
 
-Implemented on `perf/journal-crc-benchmarks`: offline workloads, comparison runner,
+Merged in PR #2: offline workloads, comparison runner,
 compatibility checks and the first measured CRC/book optimizations. Results and
 their limits are recorded in [PERFORMANCE.md](PERFORMANCE.md). The next functional
 block is the reviewed metadata snapshot in phase 1.
@@ -40,6 +40,10 @@ Acceptance:
 - No performance threshold is enforced on shared CI hosts.
 
 ## 1. Finish the reproducibility contract (v0.2)
+
+Steps 1–2 are implemented on `feat/metadata-snapshot`, including offline CLI
+inspection and generated payout checks. See [METADATA_FORMAT.md](METADATA_FORMAT.md).
+The next functional block is step 3; inspection alone does not bind a session.
 
 Implement in this order:
 1. Define a strict, versioned snapshot format for stable market IDs, tickers and
