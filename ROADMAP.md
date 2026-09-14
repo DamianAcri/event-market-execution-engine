@@ -29,11 +29,11 @@ Current milestone. Implemented:
 - strict reviewed metadata snapshot loading and canonical CLI output;
 - generated truth-table checks of loaded relationships and fractional payouts;
 - finalized sessions binding canonical metadata, exact journal bytes and count;
-- offline session pack/verify CLI with incomplete-session detection.
+- offline session pack/verify CLI with incomplete-session detection;
+- deterministic gross candidate identity and lifecycle, updated by market dependency.
 
 Remaining before declaring the milestone complete:
 
-- deterministic opportunity identity and lifecycle events;
 - structured CLI replay and explicit control-history recording for live recovery;
 - property-based tests over generated worlds and malformed journal frames.
 

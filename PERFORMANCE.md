@@ -156,6 +156,25 @@ existing reader. These results do not measure cold storage, capture append cost,
 durability barriers, paced replay, exchange latency or economic opportunity loss.
 Core-only builds exclude this target and its SHA-256 dependency.
 
+## Gross candidate update workload
+
+`eme_candidate_benchmarks --samples 100` runs in both core-only and gateway
+builds. Each scenario initializes positive complement candidates, then alternates
+the quantity at one existing ask level. Timed work includes the normalized book
+delta, candidate refresh, output checks and a digest of every emitted identity,
+kind, reason, leg price, quantity and cash result. Setup, payoff compilation and
+initial candidate opening are excluded. Four warmup batches precede 100 timed
+batches of 16 updates; CSV percentiles are batch-mean costs, not message tails.
+`bytes_per_op=0` means this workload does not report a byte-throughput metric.
+
+Scenarios grow from 64 to 8,192 definitions while holding the affected dependency
+count at one, then exercise 32 affected definitions among 8,192. The same changed
+market and affected state remain hot; unrelated definitions are deliberately
+present to test work avoidance. This does not represent random-market cache
+misses, reconnect bursts, large depth, JSON decoding, file I/O, fees, time-based
+freshness, capital allocation or execution simulation. There is no parallel work
+or target-specific instruction path in this component.
+
 ## Portability, profiling and hardware decisions
 
 The correctness matrix now includes Windows 2022/MSVC x64, Linux GCC arm64 and
@@ -354,3 +373,49 @@ all 8 core-only cases with the CLI enabled and benchmarks disabled. Session
 tests include SHA-256 known vectors, independent CMake hashes, complete-frame
 loss, same-version metadata replacement and failed finalization. Cross-platform
 CI validates behavior, not equal performance across CPUs or operating systems.
+
+### 2026-09-14: dependency-driven gross candidate lifecycle
+
+Baseline `298532d` implements the candidate tracker with a complete refresh for
+every market change. Candidate `43e65b3` uses a precompiled market-to-entry index
+for normal updates and retains global scans for connection/generation changes.
+The existing `refresh_all` remains the differential correctness reference.
+The candidate also adds a verified-session integration fixture; it is not part
+of the timed workload. No book, decoder, normalizer or journal production code
+changed in this comparison.
+
+Apple M2 Pro, 32 GiB; AppleClang 21.0.0.21000101, CMake 3.31.6, Release
+`-O3 -DNDEBUG -std=gnu++20`, no PGO/LTO/native tuning. Six alternating A/B process
+pairs, 100 timed batches per scenario, 16 updates per batch. No other local builds,
+tests or benchmarks ran concurrently; desktop activity/frequency were uncontrolled.
+All source/workload/output digests agreed across all twelve processes.
+
+| Total definitions | Affected definitions | Baseline median mean (ns/update) | Candidate (ns/update) | Paired reduction range |
+|---:|---:|---:|---:|---:|
+| 64 | 1 | 816.369 | 26.770 | 95.96%–98.07% |
+| 1,024 | 1 | 12,934.961 | 28.165 | 99.76%–99.79% |
+| 8,192 | 1 | 103,043.193 | 26.862 | 99.97%–99.98% |
+| 8,192 | 32 | 103,796.655 | 1,077.124 | 98.86%–99.02% |
+
+The large reduction measures avoiding unrelated work compared with our simple
+full-scan reference, not an equivalent speedup of the whole trading system. It is
+consistent across these pairs. The indexed cost depends on affected fan-out;
+global connection changes still scan all definitions. The retained index adds
+startup work and linear storage. No allocation-count, RSS, cold-cache, tail-latency
+or economic-benefit claim is made.
+
+Benchmark source SHA-256:
+`cd93f5a0fccc946a77ac15d07596b6a747482a257ca607ddabb25ee0c4eb4952`.
+Raw CSV, executable hashes, build notes and run order are preserved in the local
+artifact `calci-candidate-performance-20260914`. Build the two revisions above
+with identical options and use `benchmarks/compare.py` to reproduce the comparison.
+
+Validation: 2,475 core candidate assertions, an independent cash/settlement grid,
+generated event comparisons against full scans, and deterministic verified-session
+integration. All 22 Release CTest cases passed. All 22 sanitizer cases passed
+across the full run and the corrected integration-fixture rerun. The new core-only
+candidate benchmark and all nine other non-engine-benchmark cases passed locally.
+The pre-existing core-only `eme_benchmark_smoke` was again killed by this Mac,
+as previously recorded above; the outside-sandbox retry was not authorized.
+That local smoke remains unverified. Cross-platform CI remains required before
+delivery and must independently exercise the complete core-only configuration.
