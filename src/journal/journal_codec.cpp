@@ -13,6 +13,20 @@ namespace {
 constexpr std::size_t maximum_channel_bytes = 256U;
 constexpr std::size_t maximum_payload_bytes = 16U * 1024U * 1024U;
 
+// CRC-32/ISO-HDLC, reflected IEEE polynomial. Preserve journal v2 wire values.
+// The 1 KiB immutable table replaces eight dependent bit steps per input byte.
+constexpr auto crc_table = [] {
+    std::array<std::uint32_t, 256U> table{};
+    for (std::size_t index = 0U; index < table.size(); ++index) {
+        auto value = static_cast<std::uint32_t>(index);
+        for (unsigned int bit = 0U; bit < 8U; ++bit) {
+            value = (value & 1U) != 0U ? (value >> 1U) ^ 0xedb88320U : value >> 1U;
+        }
+        table[index] = value;
+    }
+    return table;
+}();
+
 template <typename Value>
 void append_unsigned(std::vector<char>& bytes, const Value value) {
     static_assert(std::is_unsigned_v<Value>);
@@ -167,12 +181,8 @@ JournalReadResult decode(
 std::uint32_t checksum(const std::span<const char> bytes) noexcept {
     std::uint32_t crc = 0xffffffffU;
     for (const char character : bytes) {
-        crc ^= static_cast<std::uint32_t>(static_cast<unsigned char>(character));
-        for (std::uint8_t bit = 0U; bit < 8U; ++bit) {
-            const auto mask = static_cast<std::uint32_t>(
-                -static_cast<std::int32_t>(crc & 1U));
-            crc = (crc >> 1U) ^ (0xedb88320U & mask);
-        }
+        const auto index = (crc ^ static_cast<unsigned char>(character)) & 0xffU;
+        crc = (crc >> 8U) ^ crc_table[index];
     }
     return ~crc;
 }

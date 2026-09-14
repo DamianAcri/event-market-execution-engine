@@ -92,8 +92,10 @@ BookUpdateResult OrderBook::apply_delta(
         if (found != levels.end()) {
             levels.erase(found);
         }
+    } else if (found != levels.end()) {
+        found->second = updated;
     } else {
-        levels.insert_or_assign(price.raw(), updated);
+        levels.emplace(price.raw(), updated);
     }
 
     last_sequence_ = sequence;
