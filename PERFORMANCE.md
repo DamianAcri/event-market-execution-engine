@@ -80,7 +80,7 @@ It does not assign statistical significance or enforce a speedup threshold.
 
 ## Workload and metric definitions
 
-All data is synthetic, with a fixed seed and workload version printed in CSV.
+The `eme_benchmarks` data is synthetic, with a fixed seed and workload version printed in CSV.
 Preparation occurs outside timing; 16 warmup batches precede recorded samples.
 Operations include lightweight result checks and a rolling observable digest.
 No disk/network I/O or output formatting occurs in the measured interval.
@@ -132,6 +132,29 @@ journals; mislabelled batch statistics can hide latency spikes; unrepresentative
 fixtures can reward an optimization that fails under churn or larger state.
 Independent reference checks, explicit metric names and additional workloads
 address those risks. A retained optimization needs measured benefit in its scope.
+
+## Session verification workload
+
+`eme_session_benchmarks --samples 8` measures complete offline verification of
+0, 1,000 and 100,000 synthetic snapshot records, using one reviewed market and no
+constraints. `raw_journal_verify_N` opens the file, checks framing/CRCs and the
+expected count. `session_verify_N` also loads and validates the manifest and
+metadata, computes both SHA-256 fingerprints, and checks record metadata versions.
+The full result is compared against the fixture manifest and registry.
+
+File creation/finalization and console output occur outside timing. File I/O,
+validation and destruction of each returned result are inside timing. The cache
+is warm from fixture creation and two warmups per scenario. Each sample is one
+whole verification (`batch_size=1`); the CSV percentile columns describe whole
+session calls, never per-message latency. Eight samples cannot establish reliable
+tail percentiles. `bytes_per_op` reports journal bytes only, including its header
+and frames; full verification also reads metadata and the manifest.
+
+Use the same comparison runner with two `eme_session_benchmarks` executables.
+Hashing and framing validation currently make separate journal passes to reuse the
+existing reader. These results do not measure cold storage, capture append cost,
+durability barriers, paced replay, exchange latency or economic opportunity loss.
+Core-only builds exclude this target and its SHA-256 dependency.
 
 ## Portability, profiling and hardware decisions
 
@@ -275,3 +298,59 @@ claims about small speed differences or worst-case latency. No consistent engine
 regression was established. Raw results remain in the same artifact's
 `engine-regression` directory; do not interpret the setup gain as a trading-path
 gain. Both local Release and ASan/UBSan suites passed all 16 CTest cases.
+
+### 2026-09-14: finalized-session integrity and bounded metadata allocation
+
+Added session manifests and offline pack/verify above the existing gateway and
+journal. The engine's decoder, book, journal codec and benchmark source are
+unchanged. SHA-256 is outside the market-update path.
+
+The first session verifier allocated `maximum_metadata_bytes + 1` for every
+metadata read (4 MiB plus one byte). The retained implementation first checks the
+regular file's size against that limit, then allocates only its size plus one and
+rejects any growth/shrinkage observed during reading. The extra byte and the byte
+bound are preserved. No peak-RSS or allocation-count measurement is claimed.
+
+Same M2 Pro/toolchain/Release flags as the earlier measurements. Six alternating
+A/B process pairs, eight verification calls per process/scenario, two warmups;
+no concurrent local builds, tests or benchmarks. Ordinary desktop background
+activity and frequency were uncontrolled. The baseline executable was retained
+before changing the bounded reader; benchmark source and fixtures are identical.
+Every process agreed on workload and output digests.
+
+| Full session records | Journal bytes | Baseline median mean (ms) | Candidate (ms) | Median paired change | Paired range |
+|---|---:|---:|---:|---:|---:|
+| 0 | 12 | 0.162 | 0.122 | -26.4% | -32.8% to -12.7% |
+| 1,000 | 213,905 | 2.369 | 2.160 | -6.4% | -44.3% to +42.3% |
+| 100,000 | 21,588,907 | 201.907 | 201.264 | -0.3% | -14.2% to +1.9% |
+
+Only the empty-session case showed a consistent improvement across these pairs.
+Larger cases do not establish a repeatable speedup. Retain the file-sized
+allocation because it avoids unnecessary initialization for small artifacts while
+preserving bounded reads, not because it makes large captures much faster.
+
+For context, the candidate's raw journal-only verification medians were 0.025,
+0.664 and 65.280 ms respectively. The full-session work has a real offline cost:
+hashing, metadata validation and an additional journal pass. Raw verification
+does not provide the same artifact identity guarantees, so those ratios are not
+an optimization comparison.
+
+Session benchmark source SHA-256:
+`12b5ae76077f5e21752ff7e7e04f89b19ce436eb794ac4e41195965c2b9c61f5`.
+The pre-optimization `session_files.cpp` SHA-256 is
+`5b35ef0784cfa27803a3136834bfec96e617b718a39e2e2cb4ca4efef33af5cb`.
+Its source, the reverse patch, raw CSV, executable hashes and run order are
+preserved in the local artifact `calci-session-performance-20260914/verification`.
+
+A separate six-pair, 100-sample comparison built main `d762325` and this branch's
+unchanged engine benchmark. All source/workload/output digests agreed. Verified
+in-memory replay median process means were 2,169.241 vs 2,164.225 ns/op, with
+paired changes from -23.6% to +4.9%. No consistent engine regression was
+established; this is not a speedup or a bound on tail latency. Those raw results
+remain in the same artifact's `engine-regression` directory.
+
+Local validation passed all 19 Release CTest cases, all 19 ASan/UBSan cases and
+all 8 core-only cases with the CLI enabled and benchmarks disabled. Session
+tests include SHA-256 known vectors, independent CMake hashes, complete-frame
+loss, same-version metadata replacement and failed finalization. Cross-platform
+CI validates behavior, not equal performance across CPUs or operating systems.

@@ -4,6 +4,7 @@
 #include "eme/version.hpp"
 
 #ifdef EME_CLI_KALSHI
+#include "cli/session_commands.hpp"
 #include "eme/gateway/kalshi/metadata_snapshot.hpp"
 #include <fstream>
 #include <string>
@@ -28,6 +29,8 @@ void print_help() {
 #ifdef EME_CLI_KALSHI
               << "  event-engine metadata verify <path>\n"
               << "  event-engine metadata canonical <path>\n"
+              << "  event-engine session pack <metadata> <journal> <new-directory>\n"
+              << "  event-engine session verify <directory>\n"
 #endif
               << "  event-engine --version\n";
 }
@@ -148,6 +151,7 @@ int run(const int argc, const char* const argv[]) {
         return verify_journal(argv[3]);
     }
 #ifdef EME_CLI_KALSHI
+    if (command == "session") { return run_session_command(argc, argv); }
     if (command == "metadata" && argc == 4) {
         const std::string_view action{argv[2]};
         if (action == "verify" || action == "canonical") {

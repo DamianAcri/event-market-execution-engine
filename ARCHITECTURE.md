@@ -27,6 +27,9 @@ changes can be evaluated reproducibly against the original bytes.
   data, and applies records through the shared processor.
 - `event-engine` is a thin operator CLI. It reports implemented capabilities and
   verifies journals without changing them.
+- `eme_session` composes the gateway metadata loader and core journal into a
+  finalized offline artifact. It owns publication and integrity verification,
+  with JSON and SHA-256 confined to this layer. See [SESSION_FORMAT.md](SESSION_FORMAT.md).
 
 ## Correctness invariants
 
@@ -58,6 +61,7 @@ and must not bypass centralized limits or a kill switch.
 
 ## Dependency direction
 
-The venue gateway depends on the core, never the reverse. The CLI depends on the
-core and has no trading authority. A core-only build can disable the Kalshi gateway
-and therefore performs no JSON dependency download.
+The venue gateway depends on the core, never the reverse. The full CLI depends on
+the session library, which depends on the gateway and core; it has no trading
+authority. A core-only CLI depends directly on the core, with gateway and session
+libraries disabled, and performs no JSON dependency download.

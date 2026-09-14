@@ -46,7 +46,8 @@ normalizer, and generation-aware market-state processor. The journal stores its
 own versioned header plus the metadata version, connection generation, local
 monotonic and wall timestamps, sequence, optional exchange time, channel, and
 original payload for each record. Payloads are length-delimited and each record is
-checksummed, so byte changes and truncation fail before replay mutates state.
+checksummed, so record corruption and partial-frame truncation fail before replay
+mutates state. A finalized session additionally detects whole-record loss at EOF.
 
 The v0.2 constraint core accepts curated definitions with a stable ID, semantic
 version, key, and provenance. Each definition is compiled once into canonical
@@ -59,8 +60,11 @@ inference: semantic relationships must be curated explicitly.
 Reviewed [metadata snapshots](METADATA_FORMAT.md) now load stable market IDs and
 compiled relationships together, reject ambiguous/invalid input, and produce
 deterministic canonical output. The CLI can verify or canonicalize a snapshot.
-This is not yet an opportunity or arbitrage detector. Session content binding,
-incremental violation events and deterministic opportunity identity remain part
+Finalized [sessions](SESSION_FORMAT.md) bind exact metadata and journal bytes with
+SHA-256 fingerprints and a verified record count. The CLI can pack existing files
+into a new session and verify integrity without mutating market state.
+This is not yet an opportunity or arbitrage detector. Incremental violation events,
+structured CLI replay and deterministic opportunity identity remain part
 of the unfinished v0.2 milestone; depth and fees belong to v0.3.
 
 ## Documentation
@@ -72,6 +76,7 @@ of the unfinished v0.2 milestone; depth and fees belong to v0.3.
 - [Architecture](ARCHITECTURE.md)
 - [Raw journal format](JOURNAL_FORMAT.md)
 - [Reviewed metadata snapshot format](METADATA_FORMAT.md)
+- [Finalized session format and offline verification](SESSION_FORMAT.md)
 - [Roadmap](ROADMAP.md)
 - [Contributing](CONTRIBUTING.md)
 
@@ -98,6 +103,9 @@ For a network-independent core-only build, configure with
 ```bash
 event-engine status
 event-engine journal verify path/to/session.journal
+event-engine metadata verify examples/metadata.snapshot.json
+event-engine metadata canonical examples/metadata.snapshot.json
+event-engine session verify path/to/finalized-session
 event-engine --version
 ```
 
@@ -107,6 +115,10 @@ and authenticated connectivity are disabled.
 `journal verify` scans a raw journal without mutating it, verifies every checksum,
 rejects incompatible or truncated data, and reports its record, generation, and
 sequence range. CLI version output is generated from the CMake project version.
+
+Metadata and session commands require the Kalshi gateway build. The
+[session workflow](SESSION_FORMAT.md#offline-cli) shows how to pack existing
+metadata and journal files into a new finalized directory.
 
 ## Credentials
 

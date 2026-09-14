@@ -24,7 +24,10 @@ Each record is stored as:
 
 The checksum is verified before decoding. Truncation, impossible lengths, an
 unsupported schema, and a checksum mismatch are distinct failures and include the
-zero-based record index.
+zero-based record index. EOF at a complete record boundary is valid for the raw
+reader: it cannot tell whether whole records were removed. A
+[finalized session manifest](SESSION_FORMAT.md) supplies the expected count, byte
+length and SHA-256 fingerprint to detect that class of loss.
 
 ## Schema version 2 body
 
