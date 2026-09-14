@@ -154,3 +154,12 @@ and retain their own artifacts. Reproduction can build the two revisions above
 with the same toolchain. Full Release and ASan/UBSan suites passed (12 CTest cases
 each); the added codec executable performs 11,332 checks. CI also builds these
 scenarios on GCC/Clang and in the core-only configuration.
+
+Validation of candidate `551f61f` (documentation added, production code unchanged):
+[all four CI jobs passed](https://github.com/DamianAcri/event-market-execution-engine/actions/runs/34867707844).
+On this Mac, the six core-only correctness executables passed, but the core-only
+benchmark process was repeatedly killed and its executable became unavailable,
+including after an authorized run outside the sandbox. The host logs inspected
+did not establish a definitive cause. The same core-only smoke passed on Linux
+CI, and the full benchmark passed locally in Release and with sanitizers. No host
+security settings were changed; the local core-only smoke remains unverified.
