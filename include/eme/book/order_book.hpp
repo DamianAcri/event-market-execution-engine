@@ -83,6 +83,24 @@ public:
     [[nodiscard]] core::Quantity quantity_at(Side side, core::Price price) const noexcept;
     [[nodiscard]] std::size_t level_count(Side side) const noexcept;
 
+    // Best to worst, without copying depth. A false return stops traversal.
+    // The visitor must not mutate this book; invalid books expose no liquidity.
+    template <typename Visitor>
+    void visit_levels(const Side side, Visitor&& visitor) const {
+        if (state_ != BookState::valid) { return; }
+        const auto visit = [&visitor](const auto& entry) {
+            return visitor(Level{*core::Price::from_raw(entry.first),
+                                 *core::Quantity::from_raw(entry.second)});
+        };
+        if (side == Side::bid) {
+            for (auto it = bids_.rbegin(); it != bids_.rend(); ++it) {
+                if (!visit(*it)) { break; }
+            }
+        } else {
+            for (const auto& entry : asks_) { if (!visit(entry)) { break; } }
+        }
+    }
+
 private:
     using Levels = std::map<std::int64_t, std::int64_t>;
 

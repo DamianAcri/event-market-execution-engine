@@ -66,10 +66,11 @@ into a new session and verify integrity without mutating market state.
 The core now tracks [gross candidates](CANDIDATES.md) from the compiled two-leg
 templates at the best available prices, with stable identity and incremental
 opened/updated/invalidated events. These exclude fees, funding and execution risk;
-the economically executable detector is still pending. Structured CLI replay
-and live control history remain part of unfinished v0.2; depth and fees belong
-to v0.3. The [economic validation plan](ECONOMIC_VALIDATION.md) defines how we will
-test whether the model is worth pursuing.
+the [offline study pipeline](OFFLINE_STUDY.md) adds structured replay, explicit
+controller plans, costed depth, conservative funding and delayed IOC simulation.
+Live capture and calibrated execution remain pending. The
+[economic validation plan](ECONOMIC_VALIDATION.md) defines the evidence needed
+to judge the hypothesis.
 
 ## Documentation
 
@@ -137,3 +138,10 @@ from runtime configuration. Private keys must remain outside the repository.
 Development follows a demo-first policy. Production order submission will
 remain disabled by default and will require explicit configuration, centralized
 risk approval, and a kill switch before it is implemented.
+
+## Offline economic studies
+
+The [structured replay and execution-study guide](OFFLINE_STUDY.md) covers
+`session import`, `session replay` and `session study`, versioned cost policies,
+IOC simulation and the first public-data pilot. No credentials are required;
+no orders are sent and no profitability has been established.

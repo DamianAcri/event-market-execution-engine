@@ -1,6 +1,7 @@
 #include "session_commands.hpp"
 
 #include "eme/session/capture_session.hpp"
+#include "eme/session/execution_study.hpp"
 #include "session/session_files.hpp"
 
 #include <iostream>
@@ -71,6 +72,29 @@ int pack(const std::string_view metadata_path, const std::string_view journal_pa
 }  // namespace
 
 int run_session_command(const int argc, const char* const argv[]) {
+    const auto replay_failed = [](const session::ReplayError& error) {
+        std::cerr << "Replay/study failed: " << error.reason << " at record " << error.record_index << '\n';
+        return 1;
+    };
+    if (argc == 6 && std::string_view{argv[2]} == "import") {
+        if (const auto failure = session::import_capture(argv[3], argv[4], argv[5])) { return replay_failed(*failure); }
+        std::cout << "CAPTURE         IMPORTED AND REPLAY VERIFIED\n";
+        return std::cout ? 0 : 1;
+    }
+    if ((argc == 5 && std::string_view{argv[2]} == "replay") ||
+        (argc == 6 && std::string_view{argv[2]} == "study")) {
+        auto loaded = session::load_replay(argv[3], argv[4]);
+        if (const auto* failure = std::get_if<session::ReplayError>(&loaded)) { return replay_failed(*failure); }
+        const auto& input = std::get<session::ReplayInput>(loaded);
+        if (argc == 6) {
+            if (const auto failure = session::run_execution_study(input, argv[5], std::cout)) { return replay_failed(*failure); }
+        } else {
+            session::ReplayObserver observer;
+            const auto result = session::replay(input, observer, &std::cout);
+            if (const auto* failure = std::get_if<session::ReplayError>(&result)) { return replay_failed(*failure); }
+        }
+        return 0;
+    }
     if (argc == 6 && std::string_view{argv[2]} == "pack") {
         return pack(argv[3], argv[4], argv[5]);
     }
@@ -81,6 +105,9 @@ int run_session_command(const int argc, const char* const argv[]) {
     }
     std::cerr << "Usage: event-engine session pack <metadata> <journal> <new-directory>\n"
               << "       event-engine session verify <directory>\n";
+    std::cerr << "       event-engine session import <metadata> <capture.json> <new-directory>\n"
+              << "       event-engine session replay <directory> <replay.json>\n"
+              << "       event-engine session study <directory> <replay.json> <policy.json>\n";
     return 2;
 }
 

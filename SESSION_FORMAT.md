@@ -88,11 +88,12 @@ payloads remain uninterpreted, including malformed venue messages useful for
 reproduction. Downstream decoding still checks payload/envelope sequences,
 normalization and market-state transitions.
 
-Connection-open/close and explicit recovery commands are not added to the raw
-journal by this change. Full live control-history replay, opportunity lifecycle,
-structured CLI market replay and economic-policy versions remain planned work.
-Reproducing behavior also requires the relevant engine revision: this schema
-binds data artifacts, not a build or trading policy.
+Connection-open/close and explicit recovery commands remain outside raw journal
+v2. [Replay plans and execution studies](OFFLINE_STUDY.md) now bind an explicit
+controller history to this manifest and retain plan/policy hashes in structured
+output. Actual live recording still requires transport integration. Reproducing
+behavior also requires the relevant engine revision: session v1 binds data
+artifacts, not a build or trading policy.
 
 ## Offline CLI
 

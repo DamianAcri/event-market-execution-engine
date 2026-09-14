@@ -14,10 +14,14 @@ Tests independently check cash/payoff examples and repeat candidate lifecycle
 events through the existing journal/decoder/state pipeline with explicit fixture
 controller actions. See [CANDIDATES.md](CANDIDATES.md).
 
-Recorded controller history and a general structured CLI replay remain unfinished.
-The costed detector, realistic execution simulator and observed opportunity study
-do not exist yet. We have not measured venue opportunity frequency, achievable
-net returns, capacity or economic latency sensitivity.
+General structured replay now uses explicit manifest-bound controller plans. The
+first offline depth/cost/funding evaluator and delayed IOC simulator are implemented;
+[OFFLINE_STUDY.md](OFFLINE_STUDY.md) specifies their assumptions and results.
+A 96-snapshot, 8-market public REST pilot found no gross candidates or trades across
+12 scenarios. This small, asynchronous sample is inconclusive: opportunity frequency,
+achievable returns, capacity and economic latency sensitivity remain unestablished.
+Real controller-history capture, representative coverage and calibrated fills are
+still required. There is no evidence of realized profit.
 
 ## Evidence gates
 
@@ -55,10 +59,10 @@ For each recorded session and fixed policy, report:
 - sensitivity to feed/decision/order/response delays and adverse fill assumptions;
 - operating costs and results by chronological period and event family.
 
-The first two lines require complete replay integration; the remaining lines need
-the costed evaluator and simulator. The current tracker does not produce this
-economic report. Its events have to be wrapped with recorded causal indices and
-times before measuring duration or attributing performance.
+The offline pipeline now supplies causal indices/times, costed decisions, simulated
+fill traces, aggregate rejections and settlement bounds. The full research report
+still needs duration/coverage aggregation, capital-time and settlement accounting,
+held-out periods and calibration against observed execution.
 
 ## Where infrastructure work stops being the immediate priority
 
