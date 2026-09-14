@@ -89,7 +89,8 @@ void test_canonical_and_lifetime(eme::test::Context& test) {
     record.sequence = 1U;
     record.payload = R"({"type":"orderbook_snapshot","sid":1,"seq":1,"msg":{"market_ticker":"A","yes_dollars_fp":[["0.4000","2.00"]],"no_dollars_fp":[["0.5000","2.00"]]}})";
     const auto processed = processor.process(record);
-    test.expect(std::holds_alternative<eme::book::BookUpdateResult>(processed),
+    const auto* update = std::get_if<eme::book::BookUpdateResult>(&processed);
+    test.expect(update != nullptr && *update == eme::book::BookUpdateResult::applied,
                 "loaded IDs and version are accepted by the processor");
     record.metadata_version = 43U;
     const auto mismatch = processor.process(record);

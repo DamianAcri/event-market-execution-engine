@@ -45,7 +45,8 @@ public:
     const std::string& canonical_json() const && = delete;
 
 private:
-    explicit MetadataSnapshot(market::MetadataVersion version) : markets_{version} {}
+    explicit MetadataSnapshot(market::MetadataVersion metadata_version)
+        : markets_{metadata_version} {}
     friend std::variant<MetadataSnapshot, MetadataError> parse_metadata_snapshot(
         std::string_view input);
 
