@@ -19,6 +19,11 @@ justify its memory, complexity, and maintenance costs.
 
 ## 0. Establish the performance baseline
 
+Implemented on `perf/journal-crc-benchmarks`: offline workloads, comparison runner,
+compatibility checks and the first measured CRC/book optimizations. Results and
+their limits are recorded in [PERFORMANCE.md](PERFORMANCE.md). The next functional
+block is the reviewed metadata snapshot in phase 1.
+
 Deliverables:
 - Optional offline Release benchmarks for journal CRC/codec, multi-market book
   updates and churn, Kalshi decode/normalize/apply, and verified in-memory replay.

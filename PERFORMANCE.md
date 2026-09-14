@@ -110,6 +110,47 @@ address those risks. A retained optimization needs measured benefit in its scope
 
 ## Measurement log
 
-Initial comparison pending. Record source revisions, machine, flags, repeated-run
-results and limitations here when the first experiment is complete. Raw captures
-and machine-specific experiment directories stay outside Git.
+### 2026-09-14: portable CRC table and reuse of an existing book iterator
+
+Baseline: `8d8046a` (benchmark foundation, production code unchanged). Candidate:
+`f555484` (the two production optimizations). These are the rebased equivalents of
+the built trees `db345ce` and `07c1105`; rebasing only integrated the already-merged
+direction document. The benchmark source SHA-256 is
+`f2759cbec37128b48cb489c441b5dbbf30e7ba4ede07094ac4ae30f684f661fa`.
+
+Environment: Apple M2 Pro, 32 GiB RAM, AppleClang 21.0.0.21000101, CMake 3.31.6,
+macOS SDK 26.5, Release `-O3 -DNDEBUG -std=gnu++20`, no PGO/LTO/native tuning.
+No CPU pinning or power-setting changes; ordinary desktop background activity
+was not controlled. No local builds ran during measurement.
+
+Six pairs of processes ran in alternating A/B and B/A order, each with 200 timed
+batches per scenario. Every scenario and output digest agreed across all twelve
+processes. Values below are medians of per-process mean costs, in nanoseconds;
+change is the median of the six paired percentage changes, which need not equal
+the ratio of the two displayed medians.
+
+| Scenario | Baseline ns/op | Candidate ns/op | Paired change | Range of paired changes |
+|---|---:|---:|---:|---:|
+| CRC, 256 bytes | 1,962.4 | 561.7 | -71.4% | -72.7% to -70.9% |
+| CRC, 4 KiB | 31,997.8 | 10,261.7 | -67.9% | -68.6% to -67.5% |
+| CRC, 64 KiB | 513,191.0 | 164,227.9 | -68.1% | -69.4% to -67.6% |
+| Journal round trip, 256 bytes | 2,590.5 | 890.6 | -65.4% | -66.3% to -64.5% |
+| Journal round trip, 4 KiB | 32,886.0 | 10,725.0 | -67.5% | -67.6% to -66.8% |
+| Existing book levels, 32 x 64 | 26.1 | 19.8 | -24.7% | -31.9% to -17.9% |
+| Book deletion/insertion, 32 x 64 | 54.9 | 46.6 | -12.2% | -19.6% to -3.8% |
+| Kalshi decode/normalize/apply | 1,650.9 | 1,622.2 | -1.7% | -6.2% to +1.8% |
+| Verified in-memory replay | 3,280.4 | 2,185.7 | -33.5% | -34.4% to -32.6% |
+
+Retained changes: a 1 KiB compile-time CRC table and direct assignment through
+the book iterator already obtained for validation. No wire-format or state-machine
+change. The parser path has no repeatable improvement established by this run;
+the small change overlaps observed variation. The CRC and local replay benefits
+were consistent across pairs, but these are synthetic service-cost measurements
+on one machine, not exchange response times or a statistical confidence interval.
+
+Raw CSV, paired summary and executable hashes are retained in the local experiment
+artifact `calci-performance-20260914`; future runs should use the checked-in runner
+and retain their own artifacts. Reproduction can build the two revisions above
+with the same toolchain. Full Release and ASan/UBSan suites passed (12 CTest cases
+each); the added codec executable performs 11,332 checks. CI also builds these
+scenarios on GCC/Clang and in the core-only configuration.
