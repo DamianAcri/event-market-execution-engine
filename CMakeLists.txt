@@ -81,6 +81,15 @@ if(EME_BUILD_KALSHI_GATEWAY)
         PRIVATE nlohmann_json::nlohmann_json
     )
     eme_enable_warnings(eme_kalshi_gateway)
+
+    add_library(eme_session
+        src/session/capture_session.cpp
+        src/session/session_files.cpp
+    )
+    target_include_directories(eme_session PUBLIC ${PROJECT_SOURCE_DIR}/include)
+    target_include_directories(eme_session SYSTEM PRIVATE ${PROJECT_SOURCE_DIR}/third_party/picosha2)
+    target_link_libraries(eme_session PUBLIC eme_kalshi_gateway PRIVATE nlohmann_json::nlohmann_json)
+    eme_enable_warnings(eme_session)
 endif()
 
 if(EME_BUILD_CLI)
@@ -90,7 +99,8 @@ if(EME_BUILD_CLI)
         ${PROJECT_BINARY_DIR}/generated
     )
     if(EME_BUILD_KALSHI_GATEWAY)
-        target_link_libraries(event-engine PRIVATE eme_kalshi_gateway)
+        target_sources(event-engine PRIVATE src/cli/session_commands.cpp)
+        target_link_libraries(event-engine PRIVATE eme_session)
         target_compile_definitions(event-engine PRIVATE EME_CLI_KALSHI=1)
     else()
         target_link_libraries(event-engine PRIVATE eme_core)
@@ -130,6 +140,17 @@ if(EME_BUILD_BENCHMARKS)
         if(BUILD_TESTING)
             add_test(NAME eme_metadata_benchmark_smoke COMMAND eme_metadata_benchmarks --smoke)
         endif()
+        add_executable(eme_session_benchmarks benchmarks/session_benchmarks.cpp)
+        set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+            ${PROJECT_SOURCE_DIR}/benchmarks/session_benchmarks.cpp)
+        file(SHA256 ${PROJECT_SOURCE_DIR}/benchmarks/session_benchmarks.cpp EME_SESSION_BENCH_SOURCE_SHA256)
+        target_compile_definitions(eme_session_benchmarks PRIVATE
+            EME_SESSION_BENCH_SOURCE_SHA256="${EME_SESSION_BENCH_SOURCE_SHA256}")
+        target_link_libraries(eme_session_benchmarks PRIVATE eme_session)
+        eme_enable_warnings(eme_session_benchmarks)
+        if(BUILD_TESTING)
+            add_test(NAME eme_session_benchmark_smoke COMMAND eme_session_benchmarks --smoke)
+        endif()
     endif()
 endif()
 
@@ -167,6 +188,9 @@ if(BUILD_TESTING)
         )
         eme_add_test(eme_metadata_snapshot_tests tests/metadata_snapshot_tests.cpp eme_kalshi_gateway)
         target_link_libraries(eme_metadata_snapshot_tests PRIVATE nlohmann_json::nlohmann_json)
+        eme_add_test(eme_session_tests tests/session_tests.cpp eme_session)
+        target_include_directories(eme_session_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_session_tests PRIVATE nlohmann_json::nlohmann_json)
     endif()
     if(EME_BUILD_CLI)
         if(EME_BUILD_KALSHI_GATEWAY)
@@ -179,6 +203,11 @@ if(BUILD_TESTING)
                 -DFIXTURE=${PROJECT_SOURCE_DIR}/examples/metadata.snapshot.json
                 -DTEST_DIR=${PROJECT_BINARY_DIR}/metadata-cli-test
                 -P ${PROJECT_SOURCE_DIR}/tests/metadata_cli_tests.cmake)
+            add_test(NAME eme_cli_sessions COMMAND ${CMAKE_COMMAND}
+                -DENGINE=$<TARGET_FILE:event-engine>
+                -DFIXTURE_WRITER=$<TARGET_FILE:eme_session_tests>
+                -DTEST_DIR=${PROJECT_BINARY_DIR}/session-cli-test
+                -P ${PROJECT_SOURCE_DIR}/tests/session_cli_tests.cmake)
         endif()
         add_test(NAME eme_cli_status COMMAND event-engine status)
         add_test(NAME eme_cli_version COMMAND event-engine --version)

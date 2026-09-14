@@ -45,7 +45,11 @@ Acceptance:
 
 Steps 1–2 are implemented on `feat/metadata-snapshot`, including offline CLI
 inspection and generated payout checks. See [METADATA_FORMAT.md](METADATA_FORMAT.md).
-The next functional block is step 3; inspection alone does not bind a session.
+Step 3 is implemented on `feat/reproducible-sessions`: new-directory session
+publication, exact artifact fingerprints, count validation and offline pack/verify.
+See [SESSION_FORMAT.md](SESSION_FORMAT.md) for its integrity and durability scope.
+Next are opportunity identity/lifecycle and a structured session replay. Explicit
+connection/recovery control history is needed before claiming full live replay.
 
 Implement in this order:
 1. Define a strict, versioned snapshot format for stable market IDs, tickers and

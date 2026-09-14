@@ -27,12 +27,14 @@ Current milestone. Implemented:
 - finite-world minimum-payoff verification;
 - operator journal verification;
 - strict reviewed metadata snapshot loading and canonical CLI output;
-- generated truth-table checks of loaded relationships and fractional payouts.
+- generated truth-table checks of loaded relationships and fractional payouts;
+- finalized sessions binding canonical metadata, exact journal bytes and count;
+- offline session pack/verify CLI with incomplete-session detection.
 
 Remaining before declaring the milestone complete:
 
 - deterministic opportunity identity and lifecycle events;
-- persist the constraint metadata snapshot alongside a capture session;
+- structured CLI replay and explicit control-history recording for live recovery;
 - property-based tests over generated worlds and malformed journal frames.
 
 ## v0.3 — Executable opportunity evaluation

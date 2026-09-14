@@ -2,6 +2,7 @@
 /build/
 /out/
 /.cache/
+/captures/
 /.env
 /.env.*
 *.key
