@@ -580,9 +580,10 @@ M2 Pro, AppleClang 21, portable CMake Release flags. Eight alternating process
 pairs compare the previous schema-2 path before/after, each with 3 warmups and
 100 measured complete-study samples. The complete JSON transcript is identical.
 Eight independent processes per schema-3 policy use the same sampling procedure.
-Each sample includes study policy loading, validated replay, accounting and JSON
-output to an in-memory stream. Construction and I/O costs are therefore part of
-these complete-study timings; they are not feed-update latency.
+Each sample includes study policy loading, replay, accounting and JSON output
+to a hashing stream (the transcript is not retained in a growing buffer). Initial
+session/plan loading and validation happen once before timing. Per-study setup
+and policy/replay I/O are part of these timings; they are not feed-update latency.
 
 | Policy / implementation | Median of process p50 | Median of process p99 |
 |---|---:|---:|
