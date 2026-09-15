@@ -50,7 +50,7 @@ Channels are limited to 256 bytes and payloads to 16 MiB. Empty channels and
 payloads are invalid. Payload bytes are not transformed, so embedded nulls and
 newlines round-trip exactly.
 
-## Replay contract
+## Legacy market-only replay contract
 
 The journal envelope is part of the deterministic input. Before applying a Kalshi
 message, the processor requires:
@@ -67,3 +67,14 @@ existing journal before appending, so they refuse to extend a corrupt file.
 Version 1 files are intentionally rejected: schema 2 adds stable metadata identity
 and checksummed framing. Migration should replay the original source capture into a
 new file rather than silently reinterpreting bytes.
+
+## WS controller history
+
+Read-only captures use the versioned `ws.*.v1` channels documented in
+[READONLY_CAPTURE.md](READONLY_CAPTURE.md) and replay-plan schema 2. They retain
+schema-2 binary framing, but set the envelope sequence to zero and leave the
+optional exchange timestamp absent. The complete original venue sequence and
+exchange fields remain inside opaque incoming text. Controller validation routes
+market data through the same decoder/normalizer/core without changing wire
+sequences. Legacy market-only replay does not interpret these channels. No file
+or record is silently converted between these contracts.

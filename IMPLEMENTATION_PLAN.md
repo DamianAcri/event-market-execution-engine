@@ -62,7 +62,7 @@ not market profitability. Details and reproductions are in
 
 ## Delivery order
 
-**P1 is merged; P2 persistence preparation is implemented.** Start P2 collection as soon as its
+**P1 is merged; P2 transport/controller implementation is tested locally.** Start P2 collection as soon as its
 recorder is ready; it must not wait for all simulator or product features. P3 can
 be developed against fixtures while data is collected, but passing its economic
 acceptance requires suitable observations from P2. P4 follows P3. P5 requires
@@ -118,13 +118,14 @@ its measured comparison before starting another major strategy feature.
 
 ### P2 — Opportunity supply and read-only capture
 
-**Status, 2026-09-15:** persistence preparation implemented on
-`feat/bounded-capture-writer`: bounded background recording, explicit overload
-failure, reusable encoding and byte-identical replay tests. The read-only WS
-transport/controller and representative data campaign remain pending; P2 is not
-complete. [READONLY_CAPTURE.md](READONLY_CAPTURE.md) records the interface,
-memory/ownership contract, protocol research and next delivery. No credentials
-are needed to develop or test this preparation.
+**Status, 2026-09-15:** optional authenticated read-only TLS/WS transport,
+strict one-market subscription controller, reconnect/recovery, bounded background
+recording and manifest-bound controller replay are implemented on
+`feat/readonly-market-capture`. Local TLS fixtures verify signing, peer validation,
+control/data history and recovery; the decoder avoids redundant per-frame parsing.
+**P2 remains data-dependent, not complete:** real authenticated sequence/subscription
+acceptance and representative multi-event collection have not been validated.
+[READONLY_CAPTURE.md](READONLY_CAPTURE.md) owns the actual interface and limits.
 
 **Deliverable:** reproducible observed sessions and a report showing where net
 margin exists, at what quantities, and which constraints prevent acquisition.
@@ -265,8 +266,8 @@ These were differences in status, priority and model scope, not evidence that th
 core strategy requires incompatible architectures. The chosen consolidation follows
 incremental delivery and outcome ownership, explicit contracts, existing stack and
 adding complexity when needed. P2 now adds one bounded writer thread at the
-persistence boundary; mutable market state still has one owner and no external
-transport dependency has been selected.
+persistence boundary; mutable market state still has one owner and the optional transport uses Boost.Beast/Asio and OpenSSL, without adding these
+dependencies to the offline core.
 
 ## Delivery discipline
 

@@ -16,8 +16,9 @@ state.
 
 **Start with [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)** for the current
 work order and acceptance criteria. [Exact net-profit sizing](NET_SIZING.md) is
-implemented; [read-only capture preparation](READONLY_CAPTURE.md) now includes
-bounded background persistence. Transport and observed validation are next. Research documents contain
+implemented; [read-only capture](READONLY_CAPTURE.md) includes an optional TLS/WS
+collector, bounded persistence and controller replay. Real authenticated sessions
+and representative observations remain to validate. Research documents contain
 evidence and conditional proposals; they do not create additional work queues.
 The package version remains 0.2.0, and capability status is described below.
 
@@ -77,7 +78,8 @@ the [offline study pipeline](OFFLINE_STUDY.md) adds structured replay, explicit
 controller plans, costed depth, conservative funding and delayed IOC simulation.
 Exact two-leg sizing now chooses the best funded margin after fees. Background
 recording preserves raw bytes with explicit memory limits and overload failure.
-Live transport/controller integration and calibrated execution remain pending. The
+Read-only transport/controller integration is tested with local TLS fixtures.
+Real feed validation and calibrated execution remain pending. The
 [economic validation plan](ECONOMIC_VALIDATION.md) defines the evidence needed
 to judge the hypothesis.
 

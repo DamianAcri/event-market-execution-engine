@@ -23,6 +23,8 @@ struct ReplayPlan final {
     std::string manifest_sha256;
     std::string plan_sha256;
     std::vector<ReplayControl> controls;
+    bool ws_controller{};
+    std::vector<market::MarketId> markets;
 };
 struct ReplayInput final {
     std::filesystem::path directory;
