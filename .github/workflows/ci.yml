@@ -161,7 +161,7 @@ jobs:
         shell: pwsh
         run: |
           $revision = git -C $env:VCPKG_INSTALLATION_ROOT rev-parse HEAD
-          "key=readonly-vcpkg-x64-$revision" >> $env:GITHUB_OUTPUT
+          "key=readonly-vcpkg-openssl-tools-x64-$revision" >> $env:GITHUB_OUTPUT
           "path=$env:LOCALAPPDATA/vcpkg/archives" >> $env:GITHUB_OUTPUT
       - name: Restore Windows dependency binaries
         if: runner.os == 'Windows'
@@ -172,7 +172,7 @@ jobs:
       - name: Install Windows dependencies
         if: runner.os == 'Windows'
         shell: pwsh
-        run: vcpkg install boost-beast:x64-windows openssl:x64-windows
+        run: vcpkg install boost-beast:x64-windows "openssl[tools]:x64-windows"
       - name: Save Windows dependency binaries
         if: runner.os == 'Windows'
         uses: actions/cache/save@v6.1.0
