@@ -93,6 +93,7 @@ if(EME_BUILD_KALSHI_GATEWAY)
         src/session/session_files.cpp
         src/session/replay.cpp
         src/session/execution_study.cpp
+        src/session/study_policy.cpp
         src/session/import_capture.cpp
     )
     target_include_directories(eme_session PUBLIC ${PROJECT_SOURCE_DIR}/include PRIVATE ${PROJECT_SOURCE_DIR}/src)

@@ -62,8 +62,10 @@ not market profitability. Details and reproductions are in
 
 ## Delivery order
 
-**P1 is merged; P2 transport/controller implementation is tested locally.** Start P2 collection as soon as its
-recorder is ready; it must not wait for all simulator or product features. P3 can
+**P1 and P2's transport/controller implementation are merged.** P2 collection and
+authenticated venue acceptance remain open. P3's first offline acquisition-to-settlement
+loop is delivered in [PR #11](https://github.com/DamianAcri/event-market-execution-engine/pull/11).
+Start P2 collection now; it must not wait for all simulator or product features. P3 can
 be developed against fixtures while data is collected, but passing its economic
 acceptance requires suitable observations from P2. P4 follows P3. P5 requires
 separate authorization and operational readiness.
@@ -120,8 +122,10 @@ its measured comparison before starting another major strategy feature.
 
 **Status, 2026-09-15:** optional authenticated read-only TLS/WS transport,
 strict one-market subscription controller, reconnect/recovery, bounded background
-recording and manifest-bound controller replay are implemented on
-`feat/readonly-market-capture`. Local TLS fixtures verify signing, peer validation,
+recording and manifest-bound controller replay are merged as
+[PR #10](https://github.com/DamianAcri/event-market-execution-engine/pull/10), `ae94071`.
+Portability/sanitizer CI and TLS fixtures on Linux, macOS and Windows pass.
+The fixtures verify signing, peer validation,
 control/data history and recovery; the decoder avoids redundant per-frame parsing.
 **P2 remains data-dependent, not complete:** real authenticated sequence/subscription
 acceptance and representative multi-event collection have not been validated.
@@ -165,6 +169,17 @@ immediate-fill scenario is an optimistic benchmark; call it an upper bound only
 if its bound over the defined search, liquidity and capital scope is justified.
 
 ### P3 — Complete the economic execution loop
+
+**Status, 2026-09-15:** the first acquisition-to-settlement simulation is implemented
+on `feat/simulated-settlement-lifecycle`. Schema 3 compares parallel acquisition
+with bounded sequential completion, explicit leg order, delayed responses,
+partial/failed fills, conservative EOF reservations, exact settlement cash and
+paid capital holding time. Independent synthetic ledgers validate accounting;
+legacy policy output is preserved. See [LIFECYCLE_STUDY.md](LIFECYCLE_STUDY.md).
+This advances P3; it does not close all acceptance. Representative observations,
+response/fill calibration, residual sale policies, external cancellation races and
+operational restart/reconciliation remain pending. No actual net returns have
+been measured, and no production policy is selected from synthetic examples.
 
 **Deliverable:** compare the aggressive baseline with one sequential completion
 policy, including what happens when only part of the portfolio is acquired.
