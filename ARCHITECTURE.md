@@ -4,7 +4,7 @@ Event Market Execution Engine is a deterministic C++20 foundation for consuming,
 recording, replaying, and validating event-market data. It deliberately separates
 market-data correctness from strategy, connectivity, and order submission.
 
-Updated against local code `7cf248f` on 2026-09-15. Work order is owned by
+Updated on 2026-09-15 for merged P1 sizing and P2 persistence preparation. Work order is owned by
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md); future boundaries below are
 identified separately from implemented components.
 
@@ -22,15 +22,18 @@ verified session + replay plan + policy -> offline cost/depth/funding evaluation
                                       -> scheduled IOC simulation -> JSONL study
 ```
 
-Live input and replay use the same decoder, normalizer, and state transition path.
-The raw payload is journaled before interpretation so parser and normalization
-changes can be evaluated reproducibly against the original bytes.
+The current replay reads verified raw records. Future live input feeds the same
+decoder, normalizer and state transitions after retaining the original bytes.
+The optional background recorder queues owned raw records and performs journal
+I/O on one worker. Queue acceptance is not durability; transport/controller
+integration must stop on recording failure. See [READONLY_CAPTURE.md](READONLY_CAPTURE.md).
 
 ## Components
 
 - `eme_core` contains fixed-point domain types, order books, multi-market state,
   the raw journal, constraint/payoff model, incremental candidate tracker and
-  exact fill-charge arithmetic with explicit fee policies. It has no Kalshi or
+  exact fill-charge arithmetic and bounded net-profit sizing with explicit fee
+  policies. It has no Kalshi or
   JSON dependency.
 - `eme_kalshi_gateway` is the venue boundary. It strictly decodes Kalshi JSON,
   resolves tickers through an explicitly versioned registry, normalizes YES/NO
@@ -41,8 +44,10 @@ changes can be evaluated reproducibly against the original bytes.
 - `eme_session` composes the gateway metadata loader and core journal into a
   finalized offline artifact. It owns publication/integrity, explicit controller
   plans, structured replay, capture import and the current fixed-policy execution
-  study. The study uses core fee arithmetic and books but currently owns sizing,
-  scheduling, reservations and simulated fills. Session JSON and SHA-256 remain
+  study. The study prepares available depth and calls core fee/sizing/reservation
+  functions; it owns scheduling and simulated fills. An optional single-producer
+  background recorder moves journal I/O to one worker without sharing mutable
+  market state. Session JSON and SHA-256 remain
   at this boundary; gateway JSON remains in the gateway.
   See [SESSION_FORMAT.md](SESSION_FORMAT.md) and [OFFLINE_STUDY.md](OFFLINE_STUDY.md).
 

@@ -62,7 +62,7 @@ not market profitability. Details and reproductions are in
 
 ## Delivery order
 
-**P1 is implemented; P2 preparation is next.** Start P2 collection as soon as its
+**P1 is merged; P2 persistence preparation is implemented.** Start P2 collection as soon as its
 recorder is ready; it must not wait for all simulator or product features. P3 can
 be developed against fixtures while data is collected, but passing its economic
 acceptance requires suitable observations from P2. P4 follows P3. P5 requires
@@ -78,7 +78,8 @@ separate authorization and operational readiness.
 
 ### P1 — Profit-aware sizing
 
-**Status, 2026-09-15:** implemented on `feat/net-profit-sizing`. The documented
+**Status, 2026-09-15:** merged as [PR #8](https://github.com/DamianAcri/event-market-execution-engine/pull/8),
+`e7b7644`, with portability and sanitizer CI passing. The documented
 smaller-size opportunity is recovered through replay, generated cases match an
 independent exhaustive fee ledger, and the old policy retains identical output.
 Core sizing and whole-study comparisons are measured in [PERFORMANCE.md](PERFORMANCE.md).
@@ -116,6 +117,14 @@ follows from synthetic cases.
 its measured comparison before starting another major strategy feature.
 
 ### P2 — Opportunity supply and read-only capture
+
+**Status, 2026-09-15:** persistence preparation implemented on
+`feat/bounded-capture-writer`: bounded background recording, explicit overload
+failure, reusable encoding and byte-identical replay tests. The read-only WS
+transport/controller and representative data campaign remain pending; P2 is not
+complete. [READONLY_CAPTURE.md](READONLY_CAPTURE.md) records the interface,
+memory/ownership contract, protocol research and next delivery. No credentials
+are needed to develop or test this preparation.
 
 **Deliverable:** reproducible observed sessions and a report showing where net
 margin exists, at what quantities, and which constraints prevent acquisition.
@@ -255,8 +264,9 @@ another implementation sequence. Research stays in
 These were differences in status, priority and model scope, not evidence that the
 core strategy requires incompatible architectures. The chosen consolidation follows
 incremental delivery and outcome ownership, explicit contracts, existing stack and
-adding complexity when needed. No external dependency or runtime architecture
-change is selected by this documentation update.
+adding complexity when needed. P2 now adds one bounded writer thread at the
+persistence boundary; mutable market state still has one owner and no external
+transport dependency has been selected.
 
 ## Delivery discipline
 

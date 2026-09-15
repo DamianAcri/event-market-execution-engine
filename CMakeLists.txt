@@ -86,6 +86,7 @@ if(EME_BUILD_KALSHI_GATEWAY)
     eme_enable_warnings(eme_kalshi_gateway)
 
     add_library(eme_session
+        src/session/async_capture.cpp
         src/session/capture_session.cpp
         src/session/session_files.cpp
         src/session/replay.cpp
@@ -93,8 +94,9 @@ if(EME_BUILD_KALSHI_GATEWAY)
         src/session/import_capture.cpp
     )
     target_include_directories(eme_session PUBLIC ${PROJECT_SOURCE_DIR}/include)
+    find_package(Threads REQUIRED)
     target_include_directories(eme_session SYSTEM PRIVATE ${PROJECT_SOURCE_DIR}/third_party/picosha2)
-    target_link_libraries(eme_session PUBLIC eme_kalshi_gateway PRIVATE nlohmann_json::nlohmann_json)
+    target_link_libraries(eme_session PUBLIC eme_kalshi_gateway PRIVATE nlohmann_json::nlohmann_json Threads::Threads)
     eme_enable_warnings(eme_session)
 endif()
 
@@ -152,6 +154,12 @@ if(EME_BUILD_BENCHMARKS)
         add_test(NAME eme_benchmark_smoke COMMAND eme_benchmarks --smoke)
     endif()
     if(EME_BUILD_KALSHI_GATEWAY)
+        add_executable(eme_capture_benchmarks benchmarks/capture_benchmarks.cpp)
+        target_link_libraries(eme_capture_benchmarks PRIVATE eme_session)
+        eme_enable_warnings(eme_capture_benchmarks)
+        if(BUILD_TESTING)
+            add_test(NAME eme_capture_benchmark_smoke COMMAND eme_capture_benchmarks --smoke)
+        endif()
         add_executable(eme_study_benchmarks benchmarks/study_benchmarks.cpp)
         set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
             ${PROJECT_SOURCE_DIR}/benchmarks/study_benchmarks.cpp)
@@ -223,6 +231,8 @@ if(BUILD_TESTING)
         eme_add_test(eme_metadata_snapshot_tests tests/metadata_snapshot_tests.cpp eme_kalshi_gateway)
         target_link_libraries(eme_metadata_snapshot_tests PRIVATE nlohmann_json::nlohmann_json)
         eme_add_test(eme_session_tests tests/session_tests.cpp eme_session)
+        eme_add_test(eme_async_capture_tests tests/async_capture_tests.cpp eme_session)
+        set_tests_properties(eme_async_capture_tests PROPERTIES TIMEOUT 30)
         eme_add_test(eme_candidate_replay_tests tests/candidate_replay_tests.cpp eme_session)
         eme_add_test(eme_study_tests tests/study_tests.cpp eme_session)
         target_include_directories(eme_study_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)

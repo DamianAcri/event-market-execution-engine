@@ -84,10 +84,16 @@ private:
 }  // namespace
 
 EncodeResult encode(const RawMarketRecord& record) {
+    std::vector<char> bytes;
+    if (const auto error = encode_into(record, bytes)) { return *error; }
+    return bytes;
+}
+
+std::optional<JournalErrorCode> encode_into(const RawMarketRecord& record, std::vector<char>& bytes) {
     if (!valid(record)) {
         return JournalErrorCode::invalid_record;
     }
-    std::vector<char> bytes;
+    bytes.clear();
     bytes.reserve(80U + record.channel.size() + record.payload.size());
     append_unsigned(bytes, record.schema_version);
     append_unsigned(bytes, record.metadata_version);
@@ -109,7 +115,7 @@ EncodeResult encode(const RawMarketRecord& record) {
     append_unsigned(bytes, static_cast<std::uint32_t>(record.payload.size()));
     bytes.insert(bytes.end(), record.channel.begin(), record.channel.end());
     bytes.insert(bytes.end(), record.payload.begin(), record.payload.end());
-    return bytes;
+    return std::nullopt;
 }
 
 JournalReadResult decode(

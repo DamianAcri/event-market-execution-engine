@@ -82,6 +82,15 @@ void test_generated_records(eme::test::Context& test) {
         const auto* result = std::get_if<journal::RawMarketRecord>(&decoded);
         test.expect(result != nullptr && *result == record,
                     "all generated record fields round trip exactly");
+        std::vector<char> reused;
+        reused.reserve(1024U);
+        const auto* storage = reused.data();
+        test.expect(!journal::codec::encode_into(record, reused) && reused == *bytes && reused.data() == storage,
+                    "reused encoding preserves every byte and existing capacity");
+        const auto before = reused;
+        auto invalid = record; invalid.metadata_version = 0U;
+        test.expect(journal::codec::encode_into(invalid, reused).has_value() && reused == before,
+                    "invalid record cannot partially replace a reusable encoding buffer");
         for (std::size_t cut = 0; cut < bytes->size(); ++cut) {
             test.expect(std::holds_alternative<journal::JournalError>(
                             journal::codec::decode(std::span{*bytes}.first(cut), size)),

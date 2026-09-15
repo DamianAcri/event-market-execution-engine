@@ -117,3 +117,23 @@ jobs:
 
       - name: Test
         run: ctest --test-dir build-sanitized --output-on-failure
+
+  thread-sanitizer:
+    name: ThreadSanitizer capture ownership
+    runs-on: macos-15
+    env:
+      TSAN_OPTIONS: halt_on_error=1
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+      - name: Configure
+        run: >-
+          cmake -S . -B build-tsan
+          -DCMAKE_BUILD_TYPE=Debug
+          -DEME_BUILD_CLI=OFF
+          -DCMAKE_CXX_FLAGS=-fsanitize=thread\ -fno-omit-frame-pointer
+          -DCMAKE_EXE_LINKER_FLAGS=-fsanitize=thread
+      - name: Build capture tests
+        run: cmake --build build-tsan --target eme_async_capture_tests --parallel 3
+      - name: Test capture ownership
+        run: ctest --test-dir build-tsan -R eme_async_capture_tests --output-on-failure

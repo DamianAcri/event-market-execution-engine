@@ -126,12 +126,10 @@ OpenWriterResult open_raw_journal_writer(const std::filesystem::path& path) {
 }
 
 std::optional<JournalError> RawJournalWriter::append(const RawMarketRecord& record) {
-    auto encoded_result = codec::encode(record);
-    if (const auto* error = std::get_if<JournalErrorCode>(&encoded_result);
-        error != nullptr) {
+    if (const auto error = codec::encode_into(record, encode_buffer_)) {
         return JournalError{*error, records_written_};
     }
-    const auto& encoded = std::get<std::vector<char>>(encoded_result);
+    const auto& encoded = encode_buffer_;
     if (encoded.size() > codec::maximum_record_bytes ||
         encoded.size() > std::numeric_limits<std::uint32_t>::max()) {
         return JournalError{JournalErrorCode::record_too_large, records_written_};

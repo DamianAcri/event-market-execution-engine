@@ -21,6 +21,9 @@ inline constexpr std::size_t minimum_record_bytes = 53U;
 using EncodeResult = std::variant<std::vector<char>, JournalErrorCode>;
 
 [[nodiscard]] EncodeResult encode(const RawMarketRecord& record);
+// Reuse caller-owned storage; invalid input leaves the buffer unchanged.
+[[nodiscard]] std::optional<JournalErrorCode> encode_into(
+    const RawMarketRecord& record, std::vector<char>& bytes);
 [[nodiscard]] JournalReadResult decode(
     std::span<const char> bytes,
     std::uint64_t record_index);
