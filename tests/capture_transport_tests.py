@@ -167,7 +167,7 @@ def main():
                                         pong_seen.append(payload)
                             except (EOFError, ConnectionError, ssl.SSLError):
                                 pass
-                except (BrokenPipeError, ConnectionResetError, ssl.SSLError):
+                except (ConnectionError, ssl.SSLError):
                     if scenario not in ('oversize', 'overflow', 'snapshot_timeout', 'untrusted', 'hostname'):
                         errors.append('unexpected disconnect')
                 except Exception as error:
@@ -215,6 +215,8 @@ def main():
                 assert summary['reason'] == 'snapshot_timeout', summary
             if scenario == 'handshake_timeout':
                 assert summary['reason'] == 'connect_timeout', summary
+            if scenario == 'oversize':
+                assert summary['reason'] == 'read_failure' and summary['market_updates'] == 2, summary
             passed += 1
             print('PASS', scenario, summary, flush=True)
         print('PASS', passed, 'TLS/WS fixture scenarios')
