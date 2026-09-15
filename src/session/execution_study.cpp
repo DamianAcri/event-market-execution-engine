@@ -1,5 +1,6 @@
 #include "eme/session/execution_study.hpp"
 #include "eme/core/execution_cost.hpp"
+#include "eme/core/net_sizing.hpp"
 #include "study_json.hpp"
 
 #include <algorithm>
@@ -17,6 +18,8 @@ constexpr std::int64_t cash_limit = 1'000'000'000'000'000LL;
 constexpr std::int64_t quantity_limit = 100'000'000LL;
 
 struct Policy final {
+    bool optimal_sizing{};
+    std::uint64_t max_sizing_evaluations{};
     std::int64_t capital{};
     std::int64_t operating_cost{};
     std::int64_t quantity_cap{};
@@ -34,14 +37,23 @@ struct Policy final {
 Policy load_policy(const std::filesystem::path& path, const ReplayInput& input) {
     const auto bytes = detail::read_text(path);
     const auto root = detail::parse_strict(bytes);
-    detail::shape(root, {"schema_version", "strategy", "fee_provenance", "capital_micro_usd", "operating_cost_micro_usd",
-        "quantity_cap_centicontracts", "quantity_step_centicontracts", "min_margin_micro_usd", "max_book_age_ns",
-        "leg_latency_ns", "reject_legs", "available_liquidity_bps", "fees"});
-    if (detail::integer(root, "schema_version") != 1U || root["strategy"] != "one_attempt_per_constraint_v1") {
+    const auto version = detail::integer(root, "schema_version");
+    const bool optimal = version == 2U && root.value("strategy", "") == "one_attempt_net_profit_v2";
+    if (!optimal && (version != 1U || root.value("strategy", "") != "one_attempt_per_constraint_v1")) {
         detail::invalid("policy schema/strategy");
     }
+    auto shape = root;
+    if (optimal) { shape.erase("max_sizing_evaluations"); }
+    detail::shape(shape, {"schema_version", "strategy", "fee_provenance", "capital_micro_usd", "operating_cost_micro_usd",
+        "quantity_cap_centicontracts", "quantity_step_centicontracts", "min_margin_micro_usd", "max_book_age_ns",
+        "leg_latency_ns", "reject_legs", "available_liquidity_bps", "fees"});
     (void)detail::string(root, "fee_provenance");
     Policy policy;
+    policy.optimal_sizing = optimal;
+    if (optimal) {
+        policy.max_sizing_evaluations = detail::integer(root, "max_sizing_evaluations", 1'000'000U);
+        if (policy.max_sizing_evaluations == 0U) { detail::invalid("sizing evaluation budget"); }
+    }
     policy.capital = static_cast<std::int64_t>(detail::integer(root, "capital_micro_usd", cash_limit));
     policy.operating_cost = static_cast<std::int64_t>(detail::integer(root, "operating_cost_micro_usd", cash_limit));
     policy.quantity_cap = static_cast<std::int64_t>(detail::integer(root, "quantity_cap_centicontracts", quantity_limit));
@@ -149,9 +161,9 @@ public:
             if (a == attempt.quantity && b == attempt.quantity) { ++complete; }
             if (a != b) { ++legged; }
         }
-        emit({{"type", "study_complete"}, {"schema_version", 1U}, {"policy_sha256", policy_.hash},
+        Json result{{"type", "study_complete"}, {"schema_version", 1U}, {"policy_sha256", policy_.hash},
             {"manifest_sha256", input_.plan.manifest_sha256}, {"plan_sha256", input_.plan.plan_sha256},
-            {"source_kind", input_.plan.source_kind}, {"strategy", "one_attempt_per_constraint_v1"},
+            {"source_kind", input_.plan.source_kind}, {"strategy", policy_.json["strategy"]},
             {"evidence_status", input_.plan.source_kind == "synthetic" ? "synthetic_validation_only" : "observational_simulation_not_profitability_proof"},
             {"attempts", attempts_.size()}, {"completed_pairs", complete}, {"unbalanced_pairs", legged},
             {"unobserved_orders", unobserved_}, {"decisions_evaluated", evaluated_},
@@ -160,7 +172,11 @@ public:
             {"fees_micro_usd", spent_ - notional_}, {"spent_micro_usd", spent_},
             {"settlement_floor_micro_usd", floor}, {"operating_cost_micro_usd", policy_.operating_cost},
             {"net_settlement_bound_micro_usd", floor - spent_ - policy_.operating_cost},
-            {"realized_pnl_micro_usd", nullptr}});
+            {"realized_pnl_micro_usd", nullptr}};
+        if (policy_.optimal_sizing) {
+            result["sizing"] = {{"evaluated_quantities", sizing_evaluations_}, {"intervals_pruned", sizing_pruned_}};
+        }
+        emit(result);
     }
     void start() {
         emit({{"type", "study_start"}, {"schema_version", 1U}, {"policy_sha256", policy_.hash},
@@ -216,29 +232,61 @@ private:
         return result;
     }
     std::int64_t reserve(const constraint::PayoffLegTemplate leg, const std::int64_t q, const std::int64_t price) const {
-        const auto fee = policy_.fees.at(leg.market_id);
-        core::FeeAccumulator accumulator;
-        const auto peak = core::charge_buy_fill(*core::Quantity::from_raw(q), *core::Price::from_raw(5000), fee, accumulator);
-        if (!peak) { detail::invalid("reservation overflow"); }
-        const auto fills = q / policy_.quantity_step;
-        // Price limit + peak curvature fee + per-fill ceil and balance rounding.
-        // Ignores rebates, giving an upper bound even if the fill partitions change.
-        return q * price + peak->trade_fee.raw() + fills * (static_cast<std::int64_t>(fee.balance_quantum_micro) + 1);
+        const auto value = core::buy_reservation(*core::Quantity::from_raw(q),
+            *core::Quantity::from_raw(policy_.quantity_step), *core::Price::from_raw(price), policy_.fees.at(leg.market_id));
+        if (!value) { detail::invalid("reservation overflow"); }
+        return value->raw();
+    }
+    std::optional<core::SizedPair> optimal_quote(const std::array<constraint::PayoffLegTemplate, 2U>& legs,
+                                               const market::MarketState& state) {
+        std::array<core::BuyDepth, 2U> depth;
+        for (std::size_t i = 0U; i < 2U; ++i) {
+            auto& levels = sizing_depth_[i];
+            levels.clear();
+            std::int64_t total = 0;
+            const auto leg = legs[i];
+            state.find_book(leg.market_id)->visit_levels(leg.outcome == Outcome::yes ? book::Side::ask : book::Side::bid,
+                [&](const book::Level level) {
+                    const auto price = leg.outcome == Outcome::yes ? level.price.raw() : 10'000 - level.price.raw();
+                    const auto found = consumed_.find({leg.market_id, leg.outcome, price});
+                    const auto used = found == consumed_.end() ? 0 : found->second;
+                    const auto available = level.quantity.raw() > used ? level.quantity.raw() - used : 0;
+                    const auto take = std::min(available, policy_.quantity_cap - total) / policy_.quantity_step * policy_.quantity_step;
+                    if (take != 0) {
+                        levels.push_back({*core::Price::from_raw(price), *core::Quantity::from_raw(take)});
+                        total += take;
+                    }
+                    return total < policy_.quantity_cap / policy_.quantity_step * policy_.quantity_step;
+                });
+            depth[i] = {levels, policy_.fees.at(leg.market_id)};
+        }
+        const auto result = core::size_buy_pair(depth, {*core::Quantity::from_raw(policy_.quantity_cap),
+            *core::Quantity::from_raw(policy_.quantity_step), *core::Cash::from_raw(available_),
+            *core::Cash::from_raw(policy_.min_margin), policy_.max_sizing_evaluations});
+        if (sizing_evaluations_ > std::numeric_limits<std::uint64_t>::max() - result.evaluated_quantities ||
+            sizing_pruned_ > std::numeric_limits<std::uint64_t>::max() - result.intervals_pruned) {
+            detail::invalid("sizing counter overflow");
+        }
+        sizing_evaluations_ += result.evaluated_quantities;
+        sizing_pruned_ += result.intervals_pruned;
+        switch (result.status) {
+        case core::SizingStatus::optimal: return result.quote;
+        case core::SizingStatus::no_positive_margin: decline("non_positive_costed_margin"); break;
+        case core::SizingStatus::no_depth: decline("no_depth"); break;
+        case core::SizingStatus::insufficient_cash: decline("insufficient_cash"); break;
+        case core::SizingStatus::search_budget_exceeded: decline("sizing_search_budget_exceeded"); break;
+        default: detail::invalid("net sizing input/arithmetic invariant");
+        }
+        return std::nullopt;
     }
     void decline(const std::string& reason) { ++declines_[reason]; }
-    void decide(const constraint::ConstraintId id, const ReplayFrame& frame, const market::MarketState& state) {
-        ++evaluated_;
-        const auto& compiled = *input_.session.metadata.constraints().find(id);
-        auto templates = compiled.guaranteed_leg_templates;
-        if (templates.size() != 2U) { detail::invalid("unsupported portfolio"); }
-        std::sort(templates.begin(), templates.end(), [](const auto& a, const auto& b) { return a.market_id < b.market_id; });
-        const std::array<constraint::PayoffLegTemplate, 2U> legs{templates[0U], templates[1U]};
-        if (!fresh(legs[0U], frame.time_ns, state) || !fresh(legs[1U], frame.time_ns, state)) { decline("stale_or_missing_book"); return; }
+    std::optional<core::SizedPair> legacy_quote(const std::array<constraint::PayoffLegTemplate, 2U>& legs,
+                                              const market::MarketState& state) {
         auto quantity = policy_.quantity_cap / policy_.quantity_step * policy_.quantity_step;
         const auto depth0 = walk(legs[0U], quantity, 10'000, state, false);
         const auto depth1 = walk(legs[1U], quantity, 10'000, state, false);
         quantity = std::min(depth0.quantity, depth1.quantity);
-        if (quantity == 0) { decline("no_depth"); return; }
+        if (quantity == 0) { decline("no_depth"); return std::nullopt; }
         const auto quotes = [&](const std::int64_t q) {
             return std::array{walk(legs[0U], q, 10'000, state, false), walk(legs[1U], q, 10'000, state, false)};
         };
@@ -260,14 +308,33 @@ private:
                 if (needed <= available_) { lo = mid; } else { hi = mid - 1; }
             }
             quantity = lo * policy_.quantity_step;
-            if (quantity == 0) { decline("insufficient_cash"); return; }
+            if (quantity == 0) { decline("insufficient_cash"); return std::nullopt; }
             quote = quotes(quantity);
         }
         const auto cost = quote[0U].debit + quote[1U].debit;
-        if (quantity * 10'000 - cost <= policy_.min_margin) { decline("non_positive_costed_margin"); return; }
+        if (quantity * 10'000 - cost <= policy_.min_margin) { decline("non_positive_costed_margin"); return std::nullopt; }
+        return core::SizedPair{*core::Quantity::from_raw(quantity),
+            {{{*core::Price::from_raw(quote[0U].worst_price), *core::Cash::from_raw(quote[0U].notional),
+               *core::Cash::from_raw(quote[0U].debit), *core::Cash::from_raw(reserve(legs[0U], quantity, quote[0U].worst_price))},
+              {*core::Price::from_raw(quote[1U].worst_price), *core::Cash::from_raw(quote[1U].notional),
+               *core::Cash::from_raw(quote[1U].debit), *core::Cash::from_raw(reserve(legs[1U], quantity, quote[1U].worst_price))}}},
+            *core::Cash::from_raw(quantity * 10'000), *core::Cash::from_raw(quantity * 10'000 - cost)};
+    }
+    void decide(const constraint::ConstraintId id, const ReplayFrame& frame, const market::MarketState& state) {
+        ++evaluated_;
+        const auto& compiled = *input_.session.metadata.constraints().find(id);
+        auto templates = compiled.guaranteed_leg_templates;
+        if (templates.size() != 2U) { detail::invalid("unsupported portfolio"); }
+        std::sort(templates.begin(), templates.end(), [](const auto& a, const auto& b) { return a.market_id < b.market_id; });
+        const std::array<constraint::PayoffLegTemplate, 2U> legs{templates[0U], templates[1U]};
+        if (!fresh(legs[0U], frame.time_ns, state) || !fresh(legs[1U], frame.time_ns, state)) { decline("stale_or_missing_book"); return; }
+        const auto selected = policy_.optimal_sizing ? optimal_quote(legs, state) : legacy_quote(legs, state);
+        if (!selected) { return; }
+        const auto quantity = selected->quantity.raw();
+        const auto cost = selected->legs[0U].debit.raw() + selected->legs[1U].debit.raw();
         Attempt attempt{id, legs, *state.connection_generation(), quantity,
-            {quote[0U].worst_price, quote[1U].worst_price},
-            {reserve(legs[0U], quantity, quote[0U].worst_price), reserve(legs[1U], quantity, quote[1U].worst_price)}, {}};
+            {selected->legs[0U].limit.raw(), selected->legs[1U].limit.raw()},
+            {selected->legs[0U].reservation.raw(), selected->legs[1U].reservation.raw()}, {}};
         for (std::size_t leg = 0U; leg < 2U; ++leg) {
             if (frame.time_ns > std::numeric_limits<std::int64_t>::max() - policy_.latency[leg]) { detail::invalid("arrival clock overflow"); }
             pending_.push_back({frame.time_ns + policy_.latency[leg], attempts_.size(), leg});
@@ -314,12 +381,15 @@ private:
     std::int64_t notional_{};
     std::map<market::MarketId, std::int64_t> last_update_;
     std::map<LiquidityKey, std::int64_t> consumed_;
+    std::array<std::vector<core::BuyLevel>, 2U> sizing_depth_;
     std::vector<Attempt> attempts_;
     std::set<constraint::ConstraintId> attempted_;
     std::vector<Pending> pending_;
     std::map<std::string, std::uint64_t> declines_;
     std::uint64_t evaluated_{};
     std::uint64_t unobserved_{};
+    std::uint64_t sizing_evaluations_{};
+    std::uint64_t sizing_pruned_{};
 };
 }  // namespace
 

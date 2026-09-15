@@ -457,3 +457,42 @@ raw CSVs, binary hashes and the baseline source/binary are retained in the local
 `calci-execution-study-20260914/performance` artifacts. Re-run on other architectures
 before making hardware recommendations. The measured speedup says nothing about
 whether a local time saving changes an economic result.
+
+## Exact net-profit sizing (2026-09-15)
+
+`eme_sizing_benchmarks` compares bounded exact selection with exhaustive selection
+over 10,000 quantity choices, using identical fees, depth and funding. It checks
+equal quantity/margin before timing. Each scenario has 12 alternating paired
+samples of ten calls; construction is outside timing. Apple M2 Pro, AppleClang 21,
+CMake Release, no native tuning, PGO or LTO. These are synthetic prepared-depth
+microbenchmarks, not network-to-decision or exchange latency.
+
+| Scenario | Bounded exact median/call | Exhaustive median/call | Quantities evaluated by bounded search |
+|---|---:|---:|---:|
+| Interior profitable size | 0.827 µs | 307.858 µs | 16 |
+| Fractional grid, 32 levels per leg | 19.313 µs | 1,988.725 µs | 506 |
+| Funding-constrained size | 0.683 µs | 304.688 µs | 14 |
+| Zero gross edge, zero fee | 0.010 µs | 207.558 µs | 0 |
+
+These ratios compare equivalent exact algorithms, **not the old strategy**.
+The old strategy asks a simpler question and can miss profitable smaller sizes.
+The exact solver allocates no heap memory; the caller prepares/reuses contiguous
+depth buffers. Worst-case rounding can prevent pruning, so the explicit budget
+and incomplete status remain necessary. No universal microsecond deadline follows
+from these four fixtures.
+
+As a compatibility check, six alternating old/new binary pairs, 50 measured
+whole-study runs per process with three warmups, retained identical full-output
+digests for the legacy policy on the 96-record REST pilot. Median per-process
+p50 was 3.952 ms before and 3.927 ms after: effectively unchanged. Both the legacy
+and new policy still find zero attempts on that limited pilot. A separate six-pair comparison on the current binary measured 3.954 ms for the
+legacy policy and 3.898 ms for the new policy: no material regression in this
+rejection-heavy case. The new policy uses a proven nonpositive-gross-edge filter
+and aggregates search counters instead of formatting JSON for every rejected
+search. This result does not predict cost on opportunity-rich captures.
+
+Raw sizing CSV, paired study CSVs, source copies/diff, input policies and binary
+hashes are retained in local `calci-sizing-20260915` artifacts. Reproduce with
+`eme_sizing_benchmarks` and `eme_study_benchmarks`; CI checks the same algorithm on
+MSVC/x64, GCC/x64 and ARM64, and Clang/x64 and ARM64. Local measurements do not
+establish performance on those other architectures or a hardware recommendation.

@@ -21,6 +21,7 @@ configure_file(
 
 add_library(eme_core
     src/core/execution_cost.cpp
+    src/core/net_sizing.cpp
     src/book/order_book.cpp
     src/constraint/payoff.cpp
     src/journal/journal_codec.cpp
@@ -116,6 +117,12 @@ endif()
 include(CTest)
 
 if(EME_BUILD_BENCHMARKS)
+    add_executable(eme_sizing_benchmarks benchmarks/sizing_benchmarks.cpp)
+    target_link_libraries(eme_sizing_benchmarks PRIVATE eme_core)
+    eme_enable_warnings(eme_sizing_benchmarks)
+    if(BUILD_TESTING)
+        add_test(NAME eme_sizing_benchmark_smoke COMMAND eme_sizing_benchmarks --smoke)
+    endif()
     add_executable(eme_candidate_benchmarks benchmarks/candidate_benchmarks.cpp)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
         ${PROJECT_SOURCE_DIR}/benchmarks/candidate_benchmarks.cpp)
@@ -189,6 +196,7 @@ if(BUILD_TESTING)
 
     eme_add_test(eme_fixed_point_tests tests/fixed_point_tests.cpp eme_core)
     eme_add_test(eme_execution_cost_tests tests/execution_cost_tests.cpp eme_core)
+    eme_add_test(eme_net_sizing_tests tests/net_sizing_tests.cpp eme_core)
     eme_add_test(eme_constraint_tests tests/constraint_tests.cpp eme_core)
     eme_add_test(eme_candidate_tests tests/candidate_tests.cpp eme_core)
     eme_add_test(eme_order_book_tests tests/order_book_tests.cpp eme_core)

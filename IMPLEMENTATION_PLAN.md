@@ -50,7 +50,7 @@ status. Integrating completed work does not count as implementing another phase.
 | Implemented | Reviewed metadata, finalized sessions, incremental gross candidates and general structured replay. |
 | Implemented reference | Costed depth, per-order fees, conservative reserves, separate IOC arrivals, shared depletion and partial-position bounds. |
 | Implemented engineering checks | Independent arithmetic/generated/differential cases, CI configuration and portable benchmark tooling. Broader campaigns remain targeted work, not a reason to restart the foundation. |
-| Next | Net-profit sizing and comparison against the current largest-funded-size policy. |
+| Implemented and locally measured | Exact bounded net-profit sizing, independent exhaustive oracle and versioned replay policy; see [NET_SIZING.md](NET_SIZING.md). |
 | Pending | Read-only live capture, representative observations, response/hedge/settlement accounting and calibrated execution. |
 | Pending | Operational order lifecycle, reconciliation and separately authorized execution. |
 
@@ -62,7 +62,7 @@ not market profitability. Details and reproductions are in
 
 ## Delivery order
 
-**Next development block: P1.** Start P2 preparation and collection as soon as its
+**P1 is implemented; P2 preparation is next.** Start P2 collection as soon as its
 recorder is ready; it must not wait for all simulator or product features. P3 can
 be developed against fixtures while data is collected, but passing its economic
 acceptance requires suitable observations from P2. P4 follows P3. P5 requires
@@ -77,6 +77,13 @@ separate authorization and operational readiness.
 | P5 | Measure actual net results before considering scale. | P4 readiness, a frozen policy and explicit execution authorization. | Authorized account access. |
 
 ### P1 — Profit-aware sizing
+
+**Status, 2026-09-15:** implemented on `feat/net-profit-sizing`. The documented
+smaller-size opportunity is recovered through replay, generated cases match an
+independent exhaustive fee ledger, and the old policy retains identical output.
+Core sizing and whole-study comparisons are measured in [PERFORMANCE.md](PERFORMANCE.md).
+This closes P1's two-leg quantity-selection scope. Portfolio allocation, uncertain
+fills and operational execution remain in their separately defined phases below.
 
 **Deliverable:** a versioned policy for existing two-leg implications/complements
 that chooses the quantity with maximum fully acquired net settlement margin among

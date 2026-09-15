@@ -5,6 +5,10 @@ candidate events, costed depth and a deterministic aggressive IOC simulator.
 It has no order transport or credentials. The replay and simulator use the same
 decoder, market state, constraint metadata and fixed-point types as the engine.
 
+The legacy policy remains reproducible. Policy schema 2 adds exact, bounded
+net-profit sizing for the same two-leg portfolios; see [NET_SIZING.md](NET_SIZING.md)
+for its required budget, fee-bound proof and explicit incomplete-search status.
+
 ```sh
 event-engine session import metadata.json capture.json new-session
 event-engine session replay new-session new-session/replay.json > replay.jsonl
