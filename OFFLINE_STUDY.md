@@ -5,6 +5,10 @@ candidate events, costed depth and a deterministic aggressive IOC simulator.
 It has no order transport or credentials. The replay and simulator use the same
 decoder, market state, constraint metadata and fixed-point types as the engine.
 
+The legacy policy remains reproducible. Policy schema 2 adds exact, bounded
+net-profit sizing for the same two-leg portfolios; see [NET_SIZING.md](NET_SIZING.md)
+for its required budget, fee-bound proof and explicit incomplete-search status.
+
 ```sh
 event-engine session import metadata.json capture.json new-session
 event-engine session replay new-session new-session/replay.json > replay.jsonl
@@ -211,8 +215,8 @@ nor the absence of opportunities in other periods. Public REST requires no keys;
 [authenticated WS data](https://docs.kalshi.com/getting_started/quick_start_market_data)
 is needed to progress toward representative timing/sequence observations.
 
-Next: collect representative sessions with preserved real subscription/controller
-history, freeze chronological holdouts, calibrate fill fragmentation and latency,
-compare smaller-size policies, and measure capital holding time and losses on
-partial portfolios. Settlements, response latency, portfolio netting, passive
-queues and venue execution remain separate work.
+Work order is maintained in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md):
+P1 improves sizing, P2 owns observed capture/coverage, and P3 extends this simulator
+through response, residual-position and settlement accounting. Netting, passive
+queues and other models are conditional extensions, not prerequisites to P1.
+The implemented policy and format limitations described above remain unchanged.

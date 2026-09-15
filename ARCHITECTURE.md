@@ -4,6 +4,10 @@ Event Market Execution Engine is a deterministic C++20 foundation for consuming,
 recording, replaying, and validating event-market data. It deliberately separates
 market-data correctness from strategy, connectivity, and order submission.
 
+Updated against local code `7cf248f` on 2026-09-15. Work order is owned by
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md); future boundaries below are
+identified separately from implemented components.
+
 ## Data path
 
 ```text
@@ -13,6 +17,9 @@ Kalshi frame -> raw journal -> strict decoder -> venue normalizer
 versioned constraint registry -> compiled worlds -> payoff verification
                                       |
 normalized books + compiled legs -> incremental gross candidate lifecycle
+                                      |
+verified session + replay plan + policy -> offline cost/depth/funding evaluation
+                                      -> scheduled IOC simulation -> JSONL study
 ```
 
 Live input and replay use the same decoder, normalizer, and state transition path.
@@ -22,16 +29,22 @@ changes can be evaluated reproducibly against the original bytes.
 ## Components
 
 - `eme_core` contains fixed-point domain types, order books, multi-market state,
-  the raw journal, and the constraint/payoff model. It has no Kalshi or JSON
-  dependency.
+  the raw journal, constraint/payoff model, incremental candidate tracker and
+  exact fill-charge arithmetic with explicit fee policies. It has no Kalshi or
+  JSON dependency.
 - `eme_kalshi_gateway` is the venue boundary. It strictly decodes Kalshi JSON,
   resolves tickers through an explicitly versioned registry, normalizes YES/NO
   data, and applies records through the shared processor.
-- `event-engine` is a thin operator CLI. It reports implemented capabilities and
-  verifies journals without changing them.
+- `event-engine` is the operator CLI. It provides journal/metadata inspection and
+  session pack, verify, import, replay and study commands. These are offline
+  operations and do not submit orders.
 - `eme_session` composes the gateway metadata loader and core journal into a
-  finalized offline artifact. It owns publication and integrity verification,
-  with JSON and SHA-256 confined to this layer. See [SESSION_FORMAT.md](SESSION_FORMAT.md).
+  finalized offline artifact. It owns publication/integrity, explicit controller
+  plans, structured replay, capture import and the current fixed-policy execution
+  study. The study uses core fee arithmetic and books but currently owns sizing,
+  scheduling, reservations and simulated fills. Session JSON and SHA-256 remain
+  at this boundary; gateway JSON remains in the gateway.
+  See [SESSION_FORMAT.md](SESSION_FORMAT.md) and [OFFLINE_STUDY.md](OFFLINE_STUDY.md).
 
 ## Correctness invariants
 
@@ -57,10 +70,24 @@ changes can be evaluated reproducibly against the original bytes.
 ## Safety boundary
 
 The repository currently has no authenticated transport and cannot place orders.
-The core can track gross candidates using compiled two-leg templates and best
-prices. Connectivity, fee/depth and funding evaluation, risk approval, and
-execution are later layers. Production submission must remain disabled by default
-and must not bypass centralized limits or a kill switch.
+The core tracks gross candidates using compiled two-leg templates and best prices.
+Offline fee/depth/funding evaluation and assumed IOC fills exist in `eme_session`;
+they are not an exchange connection or production risk approval. Transport,
+operational order management and actual execution remain pending. Production
+submission must remain disabled by default and must not bypass centralized
+limits or a kill switch.
+
+## Planned reuse boundary
+
+P1 extracts the smallest reusable costed sizing decision into `eme_core`.
+Simulation retains assumed arrivals and fills; a later venue adapter supplies
+observed responses. Both call the same decision/ledger functions with explicit
+state and time. Mutable state has one owner; asynchronous inputs must not retain
+borrowed book views beyond their lifetime. Research oracles can be slower and
+independent, but are not separate production implementations.
+
+The plan does not select microservices, a generic strategy plugin framework,
+an optimizer on every market update or a separate live strategy rewrite.
 
 ## Dependency direction
 

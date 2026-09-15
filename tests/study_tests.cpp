@@ -166,6 +166,34 @@ int main(const int argc, const char* const argv[]) {
         std::ostringstream rejected_output;
         test.expect(session::run_execution_study(input, fixture.root / "bad-policy.json", rejected_output).has_value() &&
             rejected_output.str().empty(), "incomplete fee policy fails before output");
+        auto sizing_policy = policy();
+        sizing_policy["schema_version"] = 2U;
+        sizing_policy["strategy"] = "one_attempt_net_profit_v2";
+        sizing_policy["max_sizing_evaluations"] = 100'000U;
+        auto sizing_capture = capture();
+        sizing_capture["records"].erase(sizing_capture["records"].begin() + 2, sizing_capture["records"].end());
+        sizing_capture["controls"][1U]["before_record"] = 2U;
+        sizing_capture["records"][1U]["payload"]["msg"]["no_dollars_fp"][1U][0U] = "0.8000";
+        const auto sizing_input = fixture.build(sizing_capture);
+        test.expect(fixture.run(sizing_input).first["attempts"] == 0U, "legacy policy preserves its documented maximum-size behavior");
+        const auto [sized, sized_transcript] = fixture.run(sizing_input, sizing_policy);
+        test.expect(sized["completed_pairs"] == 1U && sized["settlement_floor_micro_usd"] == 2'000'000 &&
+            sized["spent_micro_usd"] == 1'863'000 && sized["net_settlement_bound_micro_usd"] == 137'000 &&
+            sized["strategy"] == "one_attempt_net_profit_v2", "new policy recovers smaller profitable size through actual replay fills");
+        test.expect(sized_transcript == fixture.run(sizing_input, sizing_policy).second, "optimized policy replay is byte deterministic");
+        sizing_policy["reject_legs"] = {false, true};
+        const auto sized_rejected = fixture.run(sizing_input, sizing_policy).first;
+        test.expect(sized_rejected["unbalanced_pairs"] == 1U && sized_rejected["net_settlement_bound_micro_usd"] == -629'400,
+            "optimal sizing does not bypass independent leg rejection and exposure");
+        sizing_policy["max_sizing_evaluations"] = 1U;
+        const auto exhausted = fixture.run(sizing_input, sizing_policy).first;
+        test.expect(exhausted["attempts"] == 0U && exhausted["declined"]["sizing_search_budget_exceeded"] == 1U,
+            "incomplete economic search remains distinguishable from no opportunity");
+        sizing_policy.erase("max_sizing_evaluations");
+        write(fixture.root / "bad-policy.json", sizing_policy);
+        std::ostringstream missing_budget;
+        test.expect(session::run_execution_study(sizing_input, fixture.root / "bad-policy.json", missing_budget).has_value() &&
+            missing_budget.str().empty(), "version two requires an explicit bounded search budget");
         bad_plan = Json::parse(session::detail::read_text(input.directory / "replay.json"));
         std::ofstream dup{fixture.root / "duplicate.json"};
         auto text = bad_plan.dump(); text.insert(1U, "\"schema_version\":1,"); dup << text; dup.close();

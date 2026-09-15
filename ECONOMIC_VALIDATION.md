@@ -1,8 +1,9 @@
-# Evidence required to continue the economic hypothesis
+# Economic evidence and decision criteria
 
-This is the decision plan for the existing two-market implication/complement
-acquisition model. It complements [implementation deliverables](IMPLEMENTATION_PLAN.md)
-and [the research supplement](QUANT_RESEARCH.md). Engineering completion and
+This defines evidence for the existing two-market implication/complement
+acquisition model. Work order and phase status belong exclusively to
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md); this is not a parallel backlog.
+The criteria complement [the research supplement](QUANT_RESEARCH.md). Engineering completion and
 economic evidence are separate: a synthetic positive example, a fast benchmark,
 or a clean replay is not evidence of realized profit.
 
@@ -47,6 +48,14 @@ margin, simulated execution result and realized net cash are separate columns.
 Unknown account eligibility cannot silently enable collateral-dependent funding.
 Use explicit hypothetical profiles until their configuration has been observed.
 
+A result is an upper bound only when its coverage of the declared search,
+execution, liquidity and capital scope is justified. An immediate-fill scenario
+is not automatically such a bound. In particular, the current largest-funded-size,
+one-attempt policy can miss smaller quantities and later episodes. A negative
+result from that policy or from a budget-limited search cannot establish absence
+of profitable opportunities. P1 improves sizing; P2 owns coverage and this scope
+qualification. Neither turns a limited dataset into proof of general viability.
+
 ## The first useful report
 
 For each recorded session and fixed policy, report:
@@ -66,10 +75,11 @@ held-out periods and calibration against observed execution.
 
 ## Where infrastructure work stops being the immediate priority
 
-Finish the replay/control-history boundary needed for the first report, then
-implement the costed evaluator and simulator. Keep correctness tests and portable
-benchmarks with each change. Add infrastructure when a measured limitation or a
-specific validity requirement blocks that chain.
+Structured replay, the first costed evaluator and IOC simulator already exist.
+Follow P1–P3 in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): improve sizing,
+observe supply and complete the economic execution loop. Keep correctness and
+portable measurement with each change. Add infrastructure when a measured
+limitation or a specific validity requirement blocks that chain.
 
 Do not postpone observed data collection until the rest of the product is
 finished: once recording and replay can preserve the needed inputs, transport

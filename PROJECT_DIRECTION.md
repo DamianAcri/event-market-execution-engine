@@ -19,8 +19,10 @@ The [quantitative research supplement](QUANT_RESEARCH.md) records evidence,
 limitations and proposed experiments, including the September 2026 review.
 
 This makes the project a structural-arbitrage and execution optimizer. It extends
-the existing market-data and payoff-verification foundation. It does not change
-the development order or execution gates in the [roadmap](ROADMAP.md).
+the existing market-data and payoff-verification foundation.
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) is the single source for work
+order, current status and adoption of research proposals. The roadmap only maps
+those capabilities to release milestones.
 
 ## Economic mechanism
 
@@ -47,7 +49,9 @@ account/event eligibility. Measure peak funding along the acquisition path and
 remaining capital-time exposure, including any eligible early collateral return.
 An early cash release must not be counted twice as profit. Fee accounting must
 preserve per-order rounding state across partial fills. These are requirements
-for the planned evaluator, with source details in [the supplement](QUANT_RESEARCH.md).
+for evaluation: an offline fee/funding reference is implemented, while eligible
+collateral release and capital-time accounting remain extensions. Source details
+are in [the supplement](QUANT_RESEARCH.md).
 
 ## Intended decisions
 
@@ -71,29 +75,23 @@ about the current implementation.
 
 ## Current implementation and next layers
 
-At the documentation baseline of September 14, 2026 (`main` at `1693eba`), the
-repository contains exact fixed-point types, local order books, generation-aware
-market state, Kalshi decoding and normalization, a checksummed raw journal,
-deterministic replay tests, and versioned constraint/payoff verification.
+At the reviewed local baseline `7cf248f` on September 15, 2026, exact types,
+books, generation-aware processing, decoding, journal and payoff verification
+are implemented, together with metadata/session binding, incremental gross
+candidates and general structured replay. The offline study adds costed depth,
+exact fee accounting, conservative reservations and delayed IOC simulation.
+The CLI can inspect metadata, pack/verify/import sessions, replay and study them.
 
-The constraint registry already indexes dependencies by market. The order-book
-processor does not yet use that index to emit economically evaluated opportunities.
-There is no authenticated transport, order submission, or demonstrated trading
-profitability. The CLI exposes status, version, and journal verification.
+The current sizing policy chooses the largest funded size, which can omit a
+smaller profitable trade. The simulator does not yet provide response/hedge/
+settlement accounting. There is no authenticated capture, order transport or
+demonstrated realized profitability. See [OFFLINE_STUDY.md](OFFLINE_STUDY.md)
+for the implemented contracts and limitations.
 
-The next layers follow the existing milestones:
-
-- **Finish v0.2:** reviewed metadata loading and persistence, deterministic
-  opportunity identity and lifecycle, and generated correctness tests.
-- **Build v0.3:** incremental evaluation using executable depth, fees, slippage,
-  and partial-execution scenarios; explain opportunities and measure performance.
-- **Build v0.4:** authenticated demo connectivity, recovery orchestration,
-  operational visibility, centralized limits, and a kill switch.
-- **Later:** separately gated execution, reconciliation, and evidence from actual
-  operation. Earlier milestones do not authorize or imply production submission.
-
-See [README](README.md), [Architecture](ARCHITECTURE.md), and [Roadmap](ROADMAP.md)
-for the maintained implementation details and milestone boundaries.
+The next work is profit-aware sizing and representative read-only observations,
+followed by execution-policy comparison and operational integration. Exact
+dependencies, acceptance criteria and conditional extensions are maintained in
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), rather than duplicated here.
 
 ## Optimization policy
 
