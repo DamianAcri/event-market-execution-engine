@@ -496,3 +496,50 @@ hashes are retained in local `calci-sizing-20260915` artifacts. Reproduce with
 `eme_sizing_benchmarks` and `eme_study_benchmarks`; CI checks the same algorithm on
 MSVC/x64, GCC/x64 and ARM64, and Clang/x64 and ARM64. Local measurements do not
 establish performance on those other architectures or a hardware recommendation.
+
+## Bounded background capture (2026-09-15)
+
+`eme_capture_benchmarks` measures synchronous journal append against ownership
+handoff to the background writer. Both use the reusable encoding buffer; both
+must produce identical journal hashes. Payload creation and session/thread
+construction are outside timing. The producer distributions measure the append
+call; total time also includes drain and verified finalization. Eight alternating
+pairs per scenario, Apple M2 Pro, AppleClang 21, CMake Release without native
+tuning. No builds or tests ran concurrently with this measurement.
+
+| Arrival pattern / payload | Synchronous producer p99 | Background producer p99 | Synchronous total | Background total |
+|---|---:|---:|---:|---:|
+| Burst, 128 B | 9.459 µs | 0.209 µs | 12.197 ms | 12.015 ms |
+| Burst, 512 B | 11.854 µs | 0.125 µs | 34.323 ms | 34.149 ms |
+| Burst, 4,096 B | 56.250 µs | 0.083 µs | 235.221 ms | 233.603 ms |
+| Scheduled 100 µs, 128 B | 56.542 µs | 7.562 µs | 53.326 ms | 53.202 ms |
+| Scheduled 100 µs, 512 B | 28.271 µs | 8.438 µs | 54.624 ms | 54.749 ms |
+| Scheduled 100 µs, 4,096 B | 93.146 µs | 9.917 µs | 72.164 ms | 71.808 ms |
+
+Values are medians of each run's percentile/total. Bursts contain 4,096 records;
+scheduled cases contain 512 and their total includes the arrival schedule. Raw
+CSV also records start lateness: its p99 was roughly 44–64 µs in scheduled cases,
+so these are ordinary OS scheduling measurements, not perfectly timed arrivals.
+The schedule is fixed before work; delays do not reset it or hide overdue inputs.
+Single-call burst medians were close to timer overhead and should not be treated
+as precise nanosecond guarantees.
+
+This moves storage stalls off the producer and improves the measured tail. It
+does **not** materially speed up complete storage/verification. At low message
+sizes, waking the worker can cost more than the typical synchronous call: for
+scheduled 128 B messages p50 went from 0.855 to 1.271 µs, while p99 improved.
+The synchronous path remains available. CPU/scheduler and buffering costs must
+be considered when choosing the future live recorder's budget.
+
+Burst tests deliberately allow the whole burst: 4,096 slots and 64 MiB retained
+budget. Observed high-water marks ranged from about 1.05 to 17.32 MB; paced cases
+used far less. These settings are test assumptions, not new default production
+limits. Saturation aborts a capture instead of silently dropping messages, and
+finalization is not a power-loss durability guarantee.
+
+The journal codec also reuses its encoding storage. Generated buffer tests and
+an old/new binary fixture comparison preserve exact bytes and checksums. Local
+ThreadSanitizer passes the capture ownership suite; CI now carries that check.
+Raw CSV, hashes, source copies, old/new fixtures and build provenance are in the
+local `calci-capture-20260915` artifacts. No live feed or economic return was
+measured in these persistence tests.

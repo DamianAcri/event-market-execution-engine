@@ -12,6 +12,7 @@
 #include <string_view>
 #include <utility>
 #include <variant>
+#include <vector>
 
 namespace eme::journal {
 
@@ -101,6 +102,7 @@ private:
         : stream_{std::move(stream)}, records_written_{records_written} {}
 
     std::ofstream stream_;
+    std::vector<char> encode_buffer_;
     std::uint64_t records_written_{};
 };
 

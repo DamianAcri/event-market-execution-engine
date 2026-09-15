@@ -15,8 +15,9 @@ state.
 ## Current state: offline replay and execution studies
 
 **Start with [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)** for the current
-work order and acceptance criteria. Next: profit-aware two-leg sizing, with
-representative read-only capture prepared alongside it. Research documents contain
+work order and acceptance criteria. [Exact net-profit sizing](NET_SIZING.md) is
+implemented; [read-only capture preparation](READONLY_CAPTURE.md) now includes
+bounded background persistence. Transport and observed validation are next. Research documents contain
 evidence and conditional proposals; they do not create additional work queues.
 The package version remains 0.2.0, and capability status is described below.
 
@@ -74,7 +75,9 @@ templates at the best available prices, with stable identity and incremental
 opened/updated/invalidated events. These exclude fees, funding and execution risk;
 the [offline study pipeline](OFFLINE_STUDY.md) adds structured replay, explicit
 controller plans, costed depth, conservative funding and delayed IOC simulation.
-Live capture and calibrated execution remain pending. The
+Exact two-leg sizing now chooses the best funded margin after fees. Background
+recording preserves raw bytes with explicit memory limits and overload failure.
+Live transport/controller integration and calibrated execution remain pending. The
 [economic validation plan](ECONOMIC_VALIDATION.md) defines the evidence needed
 to judge the hypothesis.
 

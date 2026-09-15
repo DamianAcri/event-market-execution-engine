@@ -1,4 +1,5 @@
 #include "eme/session/execution_study.hpp"
+#include "eme/session/async_capture.hpp"
 #include "session/study_json.hpp"
 #include "test_support.hpp"
 
@@ -106,6 +107,21 @@ int main(const int argc, const char* const argv[]) {
             immediate["fees_micro_usd"] == 154'900 && immediate["net_settlement_bound_micro_usd"] == 195'100,
             "five-contract depth sweep matches independently calculated costs and settlement floor");
         test.expect(transcript == fixture.run(input).second, "byte-identical repeated full study");
+        const auto repacked_path = fixture.root / "background-copy";
+        auto recorder = std::move(std::get<std::unique_ptr<session::AsyncCaptureWriter>>(
+            session::create_async_capture(repacked_path, input.session.metadata)));
+        auto reader = std::move(std::get<std::unique_ptr<eme::journal::RawJournalReader>>(
+            eme::journal::open_raw_journal_reader(input.directory / session::journal_filename)));
+        for (;;) {
+            auto next = reader->read_next();
+            if (std::holds_alternative<eme::journal::EndOfJournal>(next)) { break; }
+            test.expect(recorder->try_append(std::move(std::get<eme::journal::RawMarketRecord>(next))) ==
+                session::CaptureAppendResult::queued, "replay fixture recorded through background writer");
+        }
+        test.expect(std::get<session::SessionManifest>(recorder->finish()) == input.session.manifest,
+            "background copy preserves manifest binding and raw data");
+        const auto repacked = std::get<session::ReplayInput>(session::load_replay(repacked_path, input.directory / "replay.json"));
+        test.expect(fixture.run(repacked).second == transcript, "background capture reproduces identical causal decisions and simulated fills");
         test.expect(immediate["realized_pnl_micro_usd"].is_null() && immediate["evidence_status"] == "synthetic_validation_only",
             "synthetic profit is never labeled realized profitability");
         auto delayed = policy(); delayed["leg_latency_ns"] = {2000, 2000};
