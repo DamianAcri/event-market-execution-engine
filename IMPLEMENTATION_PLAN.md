@@ -166,6 +166,17 @@ if its bound over the defined search, liquidity and capital scope is justified.
 
 ### P3 — Complete the economic execution loop
 
+**Status, 2026-09-15:** the first acquisition-to-settlement simulation is implemented
+on `feat/simulated-settlement-lifecycle`. Schema 3 compares parallel acquisition
+with bounded sequential completion, explicit leg order, delayed responses,
+partial/failed fills, conservative EOF reservations, exact settlement cash and
+paid capital holding time. Independent synthetic ledgers validate accounting;
+legacy policy output is preserved. See [LIFECYCLE_STUDY.md](LIFECYCLE_STUDY.md).
+This advances P3; it does not close all acceptance. Representative observations,
+response/fill calibration, residual sale policies, external cancellation races and
+operational restart/reconciliation remain pending. No actual net returns have
+been measured, and no production policy is selected from synthetic examples.
+
 **Deliverable:** compare the aggressive baseline with one sequential completion
 policy, including what happens when only part of the portfolio is acquired.
 Reuse P1 sizing and the existing ledger; extend the simulator that already exists.

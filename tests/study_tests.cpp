@@ -214,6 +214,155 @@ int main(const int argc, const char* const argv[]) {
         std::ofstream dup{fixture.root / "duplicate.json"};
         auto text = bad_plan.dump(); text.insert(1U, "\"schema_version\":1,"); dup << text; dup.close();
         test.expect(std::holds_alternative<session::ReplayError>(session::load_replay(input.directory, fixture.root / "duplicate.json")), "duplicate keys rejected");
+        auto life = policy();
+        life["schema_version"] = 3U; life["strategy"] = "execution_lifecycle_v3";
+        life["max_sizing_evaluations"] = 100'000U;
+        life["lifecycle"] = {{"execution_policy", "parallel_hold"}, {"first_leg", 0U}, {"response_latency_ns", {500U, 500U}},
+            {"completion_timeout_ns", 5000U}, {"completion_loss_limit_micro_usd", 0U}, {"maximum_completion_orders", 2U},
+            {"settlements", Json::array({{{"market_id", 1U}, {"yes_wins", true}, {"time_ns", 1'000'000U}, {"provenance", "Synthetic settlement scenario"}},
+                {{"market_id", 2U}, {"yes_wins", true}, {"time_ns", 1'000'000U}, {"provenance", "Synthetic settlement scenario"}}})}};
+        const auto [life_result, life_trace] = fixture.run(input, life);
+        const auto& ledger = life_result["lifecycle"];
+        test.expect(ledger["accounting_complete"] == true && ledger["cash_micro_usd"] == 100'195'100 &&
+            ledger["settlement_cash_micro_usd"] == 5'000'000 && ledger["simulated_net_pnl_micro_usd"] == 195'100,
+            "full acquisition, delayed responses and settlement conserve cash through positive synthetic result");
+        test.expect(ledger["capital_time_micro_usd_seconds"] == 4795U &&
+            ledger["capital_time_fractional_micro_usd_nanoseconds"] == 290'200'000U,
+            "capital-time matches independent exact product 4804900 * 998000 nanoseconds");
+        test.expect(life_trace == fixture.run(input, life).second, "complete lifecycle replay is deterministic");
+        auto sequential = life; sequential["lifecycle"]["execution_policy"] = "sequential_complete";
+        const auto sequence_result = fixture.run(input, sequential).first;
+        test.expect(sequence_result["lifecycle"]["orders"] == 2U &&
+            sequence_result["lifecycle"]["simulated_net_pnl_micro_usd"] == 195'100 &&
+            sequence_result["lifecycle"]["capital_time_micro_usd_seconds"] == 4793U &&
+            sequence_result["lifecycle"]["capital_time_fractional_micro_usd_nanoseconds"] == 674'500'000U,
+            "sequential completion waits for response; same quiet-book profit, shorter paid capital holding");
+        auto reverse = sequential; reverse["lifecycle"]["first_leg"] = 1U;
+        const auto reversed_result = fixture.run(input, reverse);
+        const auto first_fill = reversed_result.second.find("\"type\":\"fill\"");
+        const auto preceding = reversed_result.second.rfind('\n', first_fill);
+        const auto fill_line = Json::parse(reversed_result.second.substr(preceding + 1U, reversed_result.second.find('\n', first_fill) - preceding - 1U));
+        test.expect(reversed_result.first["lifecycle"]["simulated_net_pnl_micro_usd"] == 195'100 && fill_line["market_id"] == 2U,
+            "policy explicitly selects the first leg without changing payoff semantics");
+        auto first_reject = life; first_reject["reject_legs"] = {true, false};
+        for (auto& value : first_reject["lifecycle"]["settlements"]) { value["yes_wins"] = false; }
+        const auto parallel_reject = fixture.run(input, first_reject).first;
+        first_reject["lifecycle"]["execution_policy"] = "sequential_complete";
+        const auto sequential_reject = fixture.run(input, first_reject).first;
+        test.expect(parallel_reject["lifecycle"]["simulated_net_pnl_micro_usd"] == -3'231'400 &&
+            sequential_reject["lifecycle"]["simulated_net_pnl_micro_usd"] == 0 &&
+            sequential_reject["lifecycle"]["orders"] == 1U,
+            "waiting for rejected first leg avoids second-leg loss in the declared losing world");
+        auto slow_response = sequential; slow_response["lifecycle"]["response_latency_ns"] = {1500U, 0U};
+        const auto slow = fixture.run(input, slow_response).first;
+        test.expect(slow["lifecycle"]["orders"] == 1U && slow["lifecycle"]["simulated_net_pnl_micro_usd"] == -1'573'500,
+            "waiting can lose the opportunity; zero-loss completion limit does not invent an exit");
+        slow_response["lifecycle"]["completion_loss_limit_micro_usd"] = 1'000'000U;
+        const auto partial_completion = fixture.run(input, slow_response).first;
+        test.expect(partial_completion["lifecycle"]["orders"] == 2U &&
+            partial_completion["lifecycle"]["simulated_net_pnl_micro_usd"] == -571'300,
+            "bounded partial completion reduces residual loss with actual remaining depth and per-order fees");
+        auto no_response = life; no_response["lifecycle"]["response_latency_ns"] = {100'000U, 100'000U};
+        const auto unknown_response = fixture.run(input, no_response).first;
+        test.expect(unknown_response["lifecycle"]["unknown_orders"] == 2U &&
+            unknown_response["lifecycle"]["reserved_micro_usd"].get<std::int64_t>() > 0 &&
+            unknown_response["lifecycle"]["simulated_net_pnl_micro_usd"].is_null(),
+            "EOF before response preserves reservations and suppresses a completed PnL claim");
+        auto unknown_arrival = life; unknown_arrival["leg_latency_ns"] = {100'000U, 100'000U};
+        const auto unknown_fill = fixture.run(input, unknown_arrival).first;
+        test.expect(unknown_fill["spent_micro_usd"] == 0 && unknown_fill["lifecycle"]["unknown_orders"] == 2U &&
+            unknown_fill["lifecycle"]["reserved_micro_usd"].get<std::int64_t>() > 0,
+            "future settlement annotations cannot fabricate fills beyond EOF");
+        auto unresolved = life; unresolved["lifecycle"]["settlements"].erase(0U);
+        test.expect(fixture.run(input, unresolved).first["lifecycle"]["simulated_net_pnl_micro_usd"].is_null(),
+            "unresolved positions prevent final simulated PnL");
+        auto label_change = life; label_change["lifecycle"]["settlements"][0U]["yes_wins"] = false;
+        const auto decisions = [](const std::string& lines) {
+            Json result = Json::array(); std::istringstream stream{lines};
+            for (std::string line; std::getline(stream, line);) {
+                const auto entry = Json::parse(line); const auto type = entry.at("type").get<std::string>();
+                if (type == "decision" || type == "order_intent" || type == "order_arrival" || type == "order_response" || type == "fill") { result.push_back(entry); }
+            }
+            return result;
+        };
+        test.expect(decisions(life_trace) == decisions(fixture.run(input, label_change).second),
+            "future settlement outcomes cannot change preceding orders/fills/responses");
+        auto impossible_world = life; impossible_world["lifecycle"]["settlements"][1U]["yes_wins"] = false;
+        write(fixture.root / "bad-policy.json", impossible_world); std::ostringstream invalid_world;
+        test.expect(session::run_execution_study(input, fixture.root / "bad-policy.json", invalid_world).has_value() && invalid_world.str().empty(),
+            "settlement scenario cannot contradict reviewed implication");
+        auto early_resolution = life;
+        for (auto& item : early_resolution["lifecycle"]["settlements"]) { item["time_ns"] = 2000U; }
+        test.expect(fixture.run(input, early_resolution).first["attempts"] == 0U,
+            "settlement at signal time is terminal before making a decision");
+        auto timeout_completion = sequential; timeout_completion["lifecycle"]["completion_timeout_ns"] = 10U;
+        test.expect(fixture.run(input, timeout_completion).first["lifecycle"]["orders"] == 1U,
+            "completion timeout stops new exposure without claiming cancellation of a filled position");
+        auto rejected_completion = sequential; rejected_completion["reject_legs"] = {false, true};
+        rejected_completion["lifecycle"]["response_latency_ns"] = {0U, 0U};
+        const auto repeated = fixture.run(input, rejected_completion).first;
+        test.expect(repeated["lifecycle"]["orders"] == 3U && repeated["lifecycle"]["reserved_micro_usd"] == 0,
+            "completion rejection retries are bounded and reservations reconcile");
+        auto charged_life = life; charged_life["operating_cost_micro_usd"] = 200'000U;
+        test.expect(fixture.run(input, charged_life).first["lifecycle"]["simulated_net_pnl_micro_usd"] == -4900,
+            "economic result deducts operating cost once after settlement");
+        auto low_fund_life = sequential; low_fund_life["capital_micro_usd"] = 2'000'000U;
+        const auto low_funded = fixture.run(input, low_fund_life).first;
+        test.expect(low_funded["lifecycle"]["accounting_complete"] == true && low_funded["lifecycle"]["simulated_net_pnl_micro_usd"] == 137'000,
+            "small funded size completes and settles within conservative reserves");
+        // Independent single-level ledger: integer ceil formula, no production
+        // fee or execution helpers. Vary prices, grids, quantum, fills and worlds.
+        for (std::int64_t scenario = 0; scenario < 90; ++scenario) {
+            const auto q = 1 + scenario % 5;
+            const std::int64_t step = scenario % 2 == 0 ? 1 : 100;
+            const auto p0 = 2000 + (scenario % 7) * 101;
+            const auto p1 = 5000 + (scenario % 11) * 73;
+            const auto bps = std::array<std::int64_t, 4>{0, 2500, 5000, 10000}[static_cast<std::size_t>(scenario % 4)];
+            const auto coefficient = scenario % 2 == 0 ? 70000LL : 0LL;
+            const auto quantum = scenario % 3 == 0 ? 10000LL : 100LL;
+            const bool reject0 = scenario % 7 == 0, reject1 = scenario % 11 == 0;
+            const bool yes0 = scenario % 3 == 0, yes1 = scenario % 3 != 1;
+            const auto decimal = [](const std::int64_t price) { return "0." + std::to_string(10000 + price).substr(1U); };
+            auto quiet = capture(); quiet["records"].erase(quiet["records"].begin() + 2, quiet["records"].end());
+            quiet["controls"][1U]["before_record"] = 2U;
+            quiet["records"][0U]["payload"]["msg"]["yes_dollars_fp"] = Json::array({Json::array({decimal(10000 - p0), std::to_string(q) + ".00"})});
+            quiet["records"][0U]["payload"]["msg"]["no_dollars_fp"] = Json::array({Json::array({"0.9500", "5.00"})});
+            quiet["records"][1U]["payload"]["msg"]["yes_dollars_fp"] = Json::array({Json::array({"0.1000", "5.00"})});
+            quiet["records"][1U]["payload"]["msg"]["no_dollars_fp"] = Json::array({Json::array({decimal(p1), std::to_string(q) + ".00"})});
+            const auto observed = fixture.build(quiet);
+            auto parameters = life; parameters["quantity_cap_centicontracts"] = q * 100;
+            parameters["quantity_step_centicontracts"] = step;
+            parameters["available_liquidity_bps"] = bps; parameters["reject_legs"] = {reject0, reject1};
+            for (auto& fee : parameters["fees"]) { fee["coefficient_ppm"] = coefficient; fee["balance_quantum_micro"] = quantum; }
+            parameters["lifecycle"]["settlements"][0U]["yes_wins"] = yes0;
+            parameters["lifecycle"]["settlements"][1U]["yes_wins"] = yes1;
+            const auto charge = [&](const std::int64_t quantity, const std::int64_t price) {
+                const auto product = quantity * coefficient * price * (10000 - price);
+                const auto fee = (product + 9'999'999'999LL) / 10'000'000'000LL;
+                return ((quantity * price + fee + quantum - 1) / quantum) * quantum;
+            };
+            std::int64_t chosen = 0, best_margin = 0;
+            for (auto candidate = step; candidate <= q * 100; candidate += step) {
+                const auto margin = candidate * 10000 - charge(candidate, p0) - charge(candidate, p1);
+                if (margin > best_margin) { chosen = candidate; best_margin = margin; }
+            }
+            const auto possible_fill = std::min(chosen, (q * 100 * bps / 10000) / step * step);
+            for (const bool sequential_mode : {false, true}) {
+                parameters["lifecycle"]["execution_policy"] = sequential_mode ? "sequential_complete" : "parallel_hold";
+                const auto f0 = reject0 ? 0 : possible_fill;
+                const auto f1 = reject1 || (sequential_mode && f0 == 0) ? 0 : possible_fill;
+                const auto d0 = charge(f0, p0), d1 = charge(f1, p1);
+                const auto payout = ((!yes0 ? f0 : 0) + (yes1 ? f1 : 0)) * 10000;
+                const auto capital_time = d0 * 998000 + d1 * (sequential_mode ? 997500 : 998000);
+                const auto result = fixture.run(observed, parameters).first;
+                const auto& account = result["lifecycle"];
+                test.expect(result["spent_micro_usd"] == d0 + d1 && account["settlement_cash_micro_usd"] == payout &&
+                    account["simulated_net_pnl_micro_usd"] == payout - d0 - d1 && account["accounting_complete"] == true &&
+                    account["capital_time_micro_usd_seconds"] == capital_time / 1'000'000'000LL &&
+                    account["capital_time_fractional_micro_usd_nanoseconds"] == capital_time % 1'000'000'000LL,
+                    "independent generated lifecycle ledger " + std::to_string(scenario) + (sequential_mode ? " sequential" : " parallel"));
+            }
+        }
         return test.result();
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

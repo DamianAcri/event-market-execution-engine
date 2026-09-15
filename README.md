@@ -79,7 +79,9 @@ controller plans, costed depth, conservative funding and delayed IOC simulation.
 Exact two-leg sizing now chooses the best funded margin after fees. Background
 recording preserves raw bytes with explicit memory limits and overload failure.
 Read-only transport/controller integration is tested with local TLS fixtures.
-Real feed validation and calibrated execution remain pending. The
+The [simulated lifecycle](LIFECYCLE_STUDY.md) now compares parallel/sequential
+acquisition through cash settlement, including unknown responses and residual loss.
+Real feed validation, calibration and operational order management remain pending. The
 [economic validation plan](ECONOMIC_VALIDATION.md) defines the evidence needed
 to judge the hypothesis.
 

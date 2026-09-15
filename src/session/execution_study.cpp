@@ -1,12 +1,13 @@
 #include "eme/session/execution_study.hpp"
 #include "eme/core/execution_cost.hpp"
 #include "eme/core/net_sizing.hpp"
-#include "study_json.hpp"
+#include "study_policy.hpp"
 
 #include <algorithm>
 #include <array>
 #include <map>
 #include <ostream>
+#include <queue>
 #include <set>
 #include <tuple>
 
@@ -14,83 +15,11 @@ namespace eme::session {
 namespace {
 using detail::Json;
 using Outcome = constraint::ContractOutcome;
-constexpr std::int64_t cash_limit = 1'000'000'000'000'000LL;
-constexpr std::int64_t quantity_limit = 100'000'000LL;
-
-struct Policy final {
-    bool optimal_sizing{};
-    std::uint64_t max_sizing_evaluations{};
-    std::int64_t capital{};
-    std::int64_t operating_cost{};
-    std::int64_t quantity_cap{};
-    std::int64_t quantity_step{};
-    std::int64_t min_margin{};
-    std::int64_t max_age{};
-    std::array<std::int64_t, 2U> latency{};
-    std::array<bool, 2U> reject{};
-    std::int64_t fill_bps{};
-    std::map<market::MarketId, core::FeePolicy> fees;
-    Json json;
-    std::string hash;
-};
-
-Policy load_policy(const std::filesystem::path& path, const ReplayInput& input) {
-    const auto bytes = detail::read_text(path);
-    const auto root = detail::parse_strict(bytes);
-    const auto version = detail::integer(root, "schema_version");
-    const bool optimal = version == 2U && root.value("strategy", "") == "one_attempt_net_profit_v2";
-    if (!optimal && (version != 1U || root.value("strategy", "") != "one_attempt_per_constraint_v1")) {
-        detail::invalid("policy schema/strategy");
-    }
-    auto shape = root;
-    if (optimal) { shape.erase("max_sizing_evaluations"); }
-    detail::shape(shape, {"schema_version", "strategy", "fee_provenance", "capital_micro_usd", "operating_cost_micro_usd",
-        "quantity_cap_centicontracts", "quantity_step_centicontracts", "min_margin_micro_usd", "max_book_age_ns",
-        "leg_latency_ns", "reject_legs", "available_liquidity_bps", "fees"});
-    (void)detail::string(root, "fee_provenance");
-    Policy policy;
-    policy.optimal_sizing = optimal;
-    if (optimal) {
-        policy.max_sizing_evaluations = detail::integer(root, "max_sizing_evaluations", 1'000'000U);
-        if (policy.max_sizing_evaluations == 0U) { detail::invalid("sizing evaluation budget"); }
-    }
-    policy.capital = static_cast<std::int64_t>(detail::integer(root, "capital_micro_usd", cash_limit));
-    policy.operating_cost = static_cast<std::int64_t>(detail::integer(root, "operating_cost_micro_usd", cash_limit));
-    policy.quantity_cap = static_cast<std::int64_t>(detail::integer(root, "quantity_cap_centicontracts", quantity_limit));
-    policy.quantity_step = static_cast<std::int64_t>(detail::integer(root, "quantity_step_centicontracts", 100U));
-    policy.min_margin = static_cast<std::int64_t>(detail::integer(root, "min_margin_micro_usd", cash_limit));
-    policy.max_age = static_cast<std::int64_t>(detail::integer(root, "max_book_age_ns", cash_limit));
-    policy.fill_bps = static_cast<std::int64_t>(detail::integer(root, "available_liquidity_bps", 10'000U));
-    if (policy.capital == 0 || policy.quantity_cap == 0 ||
-        (policy.quantity_step != 1 && policy.quantity_step != 100) || policy.quantity_cap < policy.quantity_step) {
-        detail::invalid("policy bounds/grid");
-    }
-    if (!root["leg_latency_ns"].is_array() || root["leg_latency_ns"].size() != 2U ||
-        !root["reject_legs"].is_array() || root["reject_legs"].size() != 2U) { detail::invalid("leg policy"); }
-    for (std::size_t leg = 0U; leg < 2U; ++leg) {
-        policy.latency[leg] = static_cast<std::int64_t>(detail::integer(Json{{"latency", root["leg_latency_ns"][leg]}}, "latency", cash_limit));
-        if (!root["reject_legs"][leg].is_boolean()) { detail::invalid("reject_legs"); }
-        policy.reject[leg] = root["reject_legs"][leg].get<bool>();
-    }
-    if (!root["fees"].is_array() || root["fees"].size() > input.session.metadata.markets().size()) { detail::invalid("fees"); }
-    for (const auto& item : root["fees"]) {
-        detail::shape(item, {"market_id", "coefficient_ppm", "balance_quantum_micro"});
-        const auto id = static_cast<market::MarketId>(detail::integer(item, "market_id", std::numeric_limits<market::MarketId>::max()));
-        const core::FeePolicy fee{static_cast<std::uint32_t>(detail::integer(item, "coefficient_ppm", 1'000'000U)),
-            static_cast<std::uint32_t>(detail::integer(item, "balance_quantum_micro", 10'000U))};
-        if (!input.session.metadata.markets().find(id) ||
-            (fee.balance_quantum_micro != 100U && fee.balance_quantum_micro != 10'000U) ||
-            !policy.fees.emplace(id, fee).second) { detail::invalid("fee market/quantum"); }
-    }
-    for (const auto id : input.session.metadata.constraints().sorted_ids()) {
-        for (const auto market : input.session.metadata.constraints().find(id)->dependent_markets) {
-            if (!policy.fees.contains(market)) { detail::invalid("missing market fee policy"); }
-        }
-    }
-    policy.json = root;
-    policy.hash = detail::fingerprint_bytes(bytes).sha256;
-    return policy;
-}
+using detail::Policy;
+using detail::Settlement;
+using detail::cash_limit;
+using detail::quantity_limit;
+using detail::load_policy;
 
 // The ledger uses microdollars/centicontracts explicitly. Its input caps prove
 // aggregate cash <= 1e15 and any single position <= 1e8 centicontracts.
@@ -110,6 +39,8 @@ struct Attempt final {
     std::array<std::int64_t, 2U> limit{};
     std::array<std::int64_t, 2U> reserve{};
     std::array<Execution, 2U> fills;
+    std::int64_t started{};
+    std::uint64_t completion_orders{};
 };
 struct Pending final {
     std::int64_t arrival{};
@@ -117,10 +48,64 @@ struct Pending final {
     std::size_t leg{};
 };
 
+// Independent order arrivals/responses are explicit events. The min-heap avoids
+// scanning all pending orders at every market observation as this lifecycle grows.
+struct LifecycleOrder final {
+    std::size_t attempt{}, leg{};
+    std::int64_t quantity{}, limit{}, reserve{};
+    Execution fill;
+    bool arrived{}, responded{};
+};
+struct LifecycleEvent final {
+    std::int64_t time{};
+    std::size_t order{};
+    bool response{};
+    bool operator<(const LifecycleEvent& other) const {
+        return std::tie(time, order, response) > std::tie(other.time, other.order, other.response);
+    }
+};
+struct PositionLot final {
+    constraint::PayoffLegTemplate leg;
+    std::int64_t quantity{}, debit{}, acquired{};
+    bool settled{};
+};
+// Exact base-1e9 accumulation of microUSD * nanoseconds. No float/wide-int
+// extension; excessive aggregate durations fail explicitly instead of wrapping.
+struct CapitalTime final {
+    std::uint64_t micro_usd_seconds{}, fractional_micro_usd_nanoseconds{};
+    void add(const std::int64_t cash, const std::int64_t nanoseconds) {
+        if (cash < 0 || nanoseconds < 0) { detail::invalid("negative capital-time input"); }
+        constexpr std::uint64_t scale = 1'000'000'000U;
+        const auto amount = static_cast<std::uint64_t>(cash);
+        const auto time = static_cast<std::uint64_t>(nanoseconds);
+        const auto seconds = time / scale;
+        const auto ns = time % scale;
+        const auto maximum = std::numeric_limits<std::uint64_t>::max();
+        if (seconds != 0U && amount > maximum / seconds) { detail::invalid("capital-time overflow"); }
+        const auto whole = amount * seconds;
+        const auto fractional = (amount % scale) * ns + fractional_micro_usd_nanoseconds;
+        const auto extra = (amount / scale) * ns + fractional / scale;
+        if (whole > maximum - extra || micro_usd_seconds > maximum - whole - extra) { detail::invalid("capital-time overflow"); }
+        micro_usd_seconds += whole + extra;
+        fractional_micro_usd_nanoseconds = fractional % scale;
+    }
+};
+
 class Simulation final : public ReplayObserver {
 public:
     Simulation(const ReplayInput& input, Policy policy, std::ostream& output)
-        : input_{input}, policy_{std::move(policy)}, output_{output}, available_{policy_.capital} {}
+        : input_{input}, policy_{std::move(policy)}, output_{output}, available_{policy_.capital} {
+        if (policy_.lifecycle) {
+            const auto per_attempt = policy_.lifecycle->sequential ? 1U + policy_.lifecycle->maximum_completion_orders : 2U;
+            const auto bound = input.session.metadata.constraints().size() * static_cast<std::size_t>(per_attempt);
+            // At most one attempt per constraint, with a fixed retry budget.
+            // Allocate event/order/position capacity before processing the feed.
+            attempts_.reserve(input.session.metadata.constraints().size());
+            orders_.reserve(bound); lots_.reserve(bound);
+            std::vector<LifecycleEvent> storage; storage.reserve(bound);
+            events_ = decltype(events_){std::less<LifecycleEvent>{}, std::move(storage)};
+        }
+    }
 
     void before(const std::int64_t time, const market::MarketState& state) override {
         // All observations at an equal timestamp precede simulated arrivals.
@@ -139,6 +124,19 @@ public:
     }
     void finish(const std::int64_t time, const market::MarketState& state) override {
         drain(time, true, state);
+        if (policy_.lifecycle) {
+            // An arrival/response beyond EOF is uncertain, not a cancelled order.
+            // Keep its reservation; future labels never create unobserved fills.
+            while (!events_.empty()) {
+                const auto event = events_.top(); events_.pop();
+                emit({{"type", "unobserved_order_event"}, {"order_id", event.order + 1U},
+                    {"event", event.response ? "response" : "arrival"}, {"time_ns", event.time}, {"observation_end_ns", time}});
+                ++unobserved_;
+            }
+            while (settlement_index_ < policy_.lifecycle->settlements.size()) { settle(policy_.lifecycle->settlements[settlement_index_++]); }
+            for (const auto& lot : lots_) { if (!lot.settled) { capital_time_.add(lot.debit, time - lot.acquired); } }
+            return;
+        }
         for (const auto& pending : pending_) {
             auto& attempt = attempts_[pending.attempt];
             available_ += attempt.reserve[pending.leg];
@@ -175,6 +173,24 @@ public:
             {"realized_pnl_micro_usd", nullptr}};
         if (policy_.optimal_sizing) {
             result["sizing"] = {{"evaluated_quantities", sizing_evaluations_}, {"intervals_pruned", sizing_pruned_}};
+        }
+        if (policy_.lifecycle) {
+            const auto unresolved = std::count_if(lots_.begin(), lots_.end(), [](const auto& lot) { return !lot.settled; });
+            const auto unknown = std::count_if(orders_.begin(), orders_.end(), [](const auto& order) { return !order.responded; });
+            const auto final_cash = policy_.capital - spent_ + settlement_cash_;
+            std::int64_t reserved = 0;
+            for (const auto& attempt : attempts_) { reserved += attempt.reserve[0U] + attempt.reserve[1U]; }
+            const bool accounting_complete = unresolved == 0 && unknown == 0 && reserved == 0;
+            if (reserved != reserved_total_) { detail::invalid("reservation ledger disagreement"); }
+            check_cash();
+            result["lifecycle"] = {{"execution_policy", policy_.lifecycle->sequential ? "sequential_complete" : "parallel_hold"},
+                {"first_leg", policy_.lifecycle->reverse_legs ? 1U : 0U},
+                {"orders", orders_.size()}, {"unknown_orders", unknown}, {"unsettled_lots", unresolved},
+                {"reserved_micro_usd", reserved}, {"settlement_cash_micro_usd", settlement_cash_},
+                {"cash_micro_usd", final_cash}, {"accounting_complete", accounting_complete},
+                {"simulated_net_pnl_micro_usd", accounting_complete ? Json(final_cash - policy_.capital - policy_.operating_cost) : Json(nullptr)},
+                {"capital_time_micro_usd_seconds", capital_time_.micro_usd_seconds},
+                {"capital_time_fractional_micro_usd_nanoseconds", capital_time_.fractional_micro_usd_nanoseconds}};
         }
         emit(result);
     }
@@ -326,8 +342,12 @@ private:
         auto templates = compiled.guaranteed_leg_templates;
         if (templates.size() != 2U) { detail::invalid("unsupported portfolio"); }
         std::sort(templates.begin(), templates.end(), [](const auto& a, const auto& b) { return a.market_id < b.market_id; });
+        if (policy_.lifecycle && policy_.lifecycle->reverse_legs) { std::swap(templates[0U], templates[1U]); }
         const std::array<constraint::PayoffLegTemplate, 2U> legs{templates[0U], templates[1U]};
         if (!fresh(legs[0U], frame.time_ns, state) || !fresh(legs[1U], frame.time_ns, state)) { decline("stale_or_missing_book"); return; }
+        if (policy_.lifecycle && (settled_markets_.contains(legs[0U].market_id) || settled_markets_.contains(legs[1U].market_id))) {
+            decline("settled_market"); return;
+        }
         const auto selected = policy_.optimal_sizing ? optimal_quote(legs, state) : legacy_quote(legs, state);
         if (!selected) { return; }
         const auto quantity = selected->quantity.raw();
@@ -335,22 +355,30 @@ private:
         Attempt attempt{id, legs, *state.connection_generation(), quantity,
             {selected->legs[0U].limit.raw(), selected->legs[1U].limit.raw()},
             {selected->legs[0U].reservation.raw(), selected->legs[1U].reservation.raw()}, {}};
-        for (std::size_t leg = 0U; leg < 2U; ++leg) {
-            if (frame.time_ns > std::numeric_limits<std::int64_t>::max() - policy_.latency[leg]) { detail::invalid("arrival clock overflow"); }
-            pending_.push_back({frame.time_ns + policy_.latency[leg], attempts_.size(), leg});
-            available_ -= attempt.reserve[leg];
-        }
         emit({{"type", "decision"}, {"record_index", frame.record_index}, {"time_ns", frame.time_ns},
               {"constraint_id", id}, {"quantity_centicontracts", quantity}, {"limits_1e4", attempt.limit},
               {"quoted_debit_micro_usd", cost}, {"quoted_net_margin_micro_usd", quantity * 10'000 - cost},
               {"reserved_micro_usd", attempt.reserve[0U] + attempt.reserve[1U]}});
+        attempt.started = frame.time_ns;
+        for (std::size_t leg = 0U; leg < 2U; ++leg) {
+            if (frame.time_ns > std::numeric_limits<std::int64_t>::max() - policy_.latency[leg]) { detail::invalid("arrival clock overflow"); }
+            if (policy_.lifecycle) {
+                if (!policy_.lifecycle->sequential || leg == 0U) {
+                    submit(attempts_.size(), leg, quantity, attempt.limit[leg], attempt.reserve[leg], frame.time_ns + policy_.latency[leg]);
+                }
+            } else { pending_.push_back({frame.time_ns + policy_.latency[leg], attempts_.size(), leg}); }
+            available_ -= attempt.reserve[leg];
+            if (policy_.lifecycle) { reserved_total_ += attempt.reserve[leg]; }
+        }
         attempted_.insert(id);
         attempts_.push_back(std::move(attempt));
+        if (policy_.lifecycle) { check_cash(); }
         std::sort(pending_.begin(), pending_.end(), [](const auto& a, const auto& b) {
             return std::tie(a.arrival, a.attempt, a.leg) < std::tie(b.arrival, b.attempt, b.leg);
         });
     }
     void drain(const std::int64_t time, const bool inclusive, const market::MarketState& state) {
+        if (policy_.lifecycle) { drain_lifecycle(time, inclusive, state); return; }
         std::size_t count = 0U;
         for (const auto& pending : pending_) {
             if (pending.arrival > time || (!inclusive && pending.arrival == time)) { break; }
@@ -373,6 +401,124 @@ private:
         pending_.erase(pending_.begin(), pending_.begin() + static_cast<std::ptrdiff_t>(count));
     }
 
+    void check_cash() const {
+        if (available_ < 0 || reserved_total_ < 0 || unconfirmed_debit_ < 0 ||
+            available_ + reserved_total_ - unconfirmed_debit_ != policy_.capital - spent_ + settlement_cash_) {
+            detail::invalid("cash conservation");
+        }
+    }
+    void submit(const std::size_t attempt, const std::size_t leg, const std::int64_t quantity,
+                const std::int64_t limit, const std::int64_t reservation, const std::int64_t arrival) {
+        events_.push({arrival, orders_.size(), false});
+        orders_.push_back({attempt, leg, quantity, limit, reservation, {}, false, false});
+        emit({{"type", "order_intent"}, {"order_id", orders_.size()}, {"attempt_index", attempt},
+            {"leg", leg}, {"quantity_centicontracts", quantity}, {"limit_1e4", limit},
+            {"reserved_micro_usd", reservation}, {"arrival_ns", arrival}});
+    }
+    void hold_residual(const std::size_t index, const std::string_view reason) {
+        auto& attempt = attempts_[index];
+        reserved_total_ -= attempt.reserve[1U];
+        available_ += attempt.reserve[1U];
+        attempt.reserve[1U] = 0;
+        emit({{"type", "residual_hold"}, {"constraint_id", attempt.id}, {"reason", reason},
+            {"unpaired_centicontracts", attempt.fills[0U].quantity - attempt.fills[1U].quantity}});
+    }
+    void complete_second(const std::size_t index, const std::int64_t time, const market::MarketState& state) {
+        auto& attempt = attempts_[index];
+        const auto& config = *policy_.lifecycle;
+        const auto remaining = attempt.fills[0U].quantity - attempt.fills[1U].quantity;
+        if (remaining <= 0) { hold_residual(index, "balanced"); return; }
+        if (time < attempt.started || time - attempt.started > config.completion_timeout ||
+            policy_.latency[1U] > config.completion_timeout - (time - attempt.started) ||
+            attempt.completion_orders >= config.maximum_completion_orders) { hold_residual(index, "completion_budget"); return; }
+        const auto leg = attempt.legs[1U];
+        if (!fresh(leg, time, state) || state.connection_generation() != attempt.generation || settled_markets_.contains(leg.market_id)) {
+            hold_residual(index, "unavailable_book"); return;
+        }
+        const auto quote = walk(leg, remaining, 10'000, state, false);
+        if (quote.quantity == 0) { hold_residual(index, "no_depth"); return; }
+        const auto total_cost = attempt.fills[0U].debit + attempt.fills[1U].debit + quote.debit;
+        const auto matched_payout = (attempt.fills[1U].quantity + quote.quantity) * 10'000;
+        if (total_cost - matched_payout > config.completion_loss_limit) { hold_residual(index, "completion_loss_limit"); return; }
+        const auto needed = reserve(leg, quote.quantity, quote.worst_price);
+        if (needed > available_ + attempt.reserve[1U]) { hold_residual(index, "insufficient_cash"); return; }
+        reserved_total_ += needed - attempt.reserve[1U];
+        available_ += attempt.reserve[1U] - needed;
+        attempt.reserve[1U] = needed;
+        ++attempt.completion_orders;
+        if (time > std::numeric_limits<std::int64_t>::max() - policy_.latency[1U]) { detail::invalid("completion clock overflow"); }
+        submit(index, 1U, quote.quantity, quote.worst_price, needed, time + policy_.latency[1U]);
+    }
+    void settle(const Settlement& settlement) {
+        settled_markets_.insert(settlement.market_id);
+        std::int64_t payout = 0;
+        std::int64_t quantity = 0;
+        for (auto& lot : lots_) {
+            if (lot.settled || lot.leg.market_id != settlement.market_id) { continue; }
+            if (settlement.time < lot.acquired) { detail::invalid("settlement before acquisition"); }
+            capital_time_.add(lot.debit, settlement.time - lot.acquired);
+            lot.settled = true;
+            quantity += lot.quantity;
+            if ((lot.leg.outcome == Outcome::yes) == settlement.yes_wins) { payout += lot.quantity * 10'000; }
+        }
+        if (payout > cash_limit - settlement_cash_ || payout > cash_limit - available_) { detail::invalid("settlement cash bound"); }
+        settlement_cash_ += payout;
+        available_ += payout;
+        check_cash();
+        emit({{"type", "simulated_settlement"}, {"market_id", settlement.market_id}, {"time_ns", settlement.time},
+            {"yes_wins", settlement.yes_wins}, {"closed_centicontracts", quantity}, {"payout_micro_usd", payout}});
+    }
+    void drain_lifecycle(const std::int64_t time, const bool inclusive, const market::MarketState& state) {
+        const auto due = [&](const std::int64_t at) { return at < time || (inclusive && at == time); };
+        const auto& settlements = policy_.lifecycle->settlements;
+        for (;;) {
+            const bool settlement_due = settlement_index_ < settlements.size() && settlements[settlement_index_].time <= time;
+            const bool order_due = !events_.empty() && due(events_.top().time);
+            if (!settlement_due && !order_due) { break; }
+            // Terminal settlement wins ties: no assumed trading after resolution.
+            if (settlement_due && (!order_due || settlements[settlement_index_].time <= events_.top().time)) {
+                settle(settlements[settlement_index_++]); continue;
+            }
+            const auto event = events_.top(); events_.pop();
+            auto& order = orders_[event.order];
+            auto& attempt = attempts_[order.attempt];
+            if (event.response) {
+                if (!order.arrived || order.responded) { detail::invalid("response lifecycle"); }
+                order.responded = true;
+                reserved_total_ -= order.reserve;
+                unconfirmed_debit_ -= order.fill.debit;
+                available_ += order.reserve - order.fill.debit;
+                attempt.reserve[order.leg] = 0;
+                emit({{"type", "order_response"}, {"order_id", event.order + 1U}, {"time_ns", event.time},
+                    {"filled_centicontracts", order.fill.quantity}, {"cancelled_centicontracts", order.quantity - order.fill.quantity},
+                    {"debit_micro_usd", order.fill.debit}});
+                if (policy_.lifecycle->sequential) { complete_second(order.attempt, event.time, state); }
+                check_cash();
+                continue;
+            }
+            if (order.arrived) { detail::invalid("duplicate order arrival"); }
+            order.arrived = true;
+            const auto leg = attempt.legs[order.leg];
+            emit({{"type", "order_arrival"}, {"order_id", event.order + 1U}, {"constraint_id", attempt.id}, {"leg", order.leg}, {"time_ns", event.time}});
+            if (!policy_.reject[order.leg] && !settled_markets_.contains(leg.market_id) &&
+                state.connection_generation() == attempt.generation && fresh(leg, event.time, state)) {
+                order.fill = walk(leg, order.quantity, order.limit, state, true);
+            }
+            const auto& fill = order.fill;
+            if (fill.debit > order.reserve || fill.debit > cash_limit - spent_) { detail::invalid("lifecycle cash reservation"); }
+            auto& aggregate = attempt.fills[order.leg];
+            aggregate.quantity += fill.quantity; aggregate.notional += fill.notional; aggregate.debit += fill.debit;
+            aggregate.worst_price = std::max(aggregate.worst_price, fill.worst_price); aggregate.levels += fill.levels;
+            spent_ += fill.debit; notional_ += fill.notional;
+            unconfirmed_debit_ += fill.debit;
+            check_cash();
+            if (fill.quantity != 0) { lots_.push_back({leg, fill.quantity, fill.debit, event.time, false}); }
+            const auto latency = policy_.lifecycle->response_latency[order.leg];
+            if (event.time > std::numeric_limits<std::int64_t>::max() - latency) { detail::invalid("response clock overflow"); }
+            events_.push({event.time + latency, event.order, true});
+        }
+    }
+
     const ReplayInput& input_;
     Policy policy_;
     std::ostream& output_;
@@ -390,6 +536,14 @@ private:
     std::uint64_t unobserved_{};
     std::uint64_t sizing_evaluations_{};
     std::uint64_t sizing_pruned_{};
+    std::vector<LifecycleOrder> orders_;
+    std::priority_queue<LifecycleEvent> events_;
+    std::vector<PositionLot> lots_;
+    std::set<market::MarketId> settled_markets_;
+    std::size_t settlement_index_{};
+    std::int64_t settlement_cash_{};
+    std::int64_t reserved_total_{}, unconfirmed_debit_{};
+    CapitalTime capital_time_;
 };
 }  // namespace
 

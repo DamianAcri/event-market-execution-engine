@@ -567,3 +567,34 @@ scheduling/allocator variation; it is not a venue latency measurement, an econom
 return, or a cross-hardware speed guarantee. The earlier capture benchmark still
 owns persistence measurements. Local CSVs, source snapshots and executable hashes
 are preserved in the task's `calci-live-20260915` artifact directory.
+
+## Acquisition-to-settlement study (2026-09-15)
+
+The schema-3 simulator adds delayed responses, bounded completion orders, cash
+settlement and exact paid capital holding time. A bounded min-heap schedules
+arrivals/responses instead of scanning pending orders on each market update;
+order, event and position capacity is reserved before replay. The policy parser
+is separated from simulation, with no additional production strategy engine.
+
+M2 Pro, AppleClang 21, portable CMake Release flags. Eight alternating process
+pairs compare the previous schema-2 path before/after, each with 3 warmups and
+100 measured complete-study samples. The complete JSON transcript is identical.
+Eight independent processes per schema-3 policy use the same sampling procedure.
+Each sample includes study policy loading, validated replay, accounting and JSON
+output to an in-memory stream. Construction and I/O costs are therefore part of
+these complete-study timings; they are not feed-update latency.
+
+| Policy / implementation | Median of process p50 | Median of process p99 |
+|---|---:|---:|
+| Schema 2 before lifecycle | 153.355 us | 259.917 us |
+| Schema 2 with lifecycle available | 153.083 us | 243.813 us |
+| Schema 3 parallel acquisition | 180.334 us | 284.813 us |
+| Schema 3 sequential completion | 181.854 us | 293.958 us |
+
+The previous path shows no material change in median time in this fixture. The
+new policies perform additional work and emit different events; their extra cost
+is reported rather than presented as an equivalent-output optimization. The
+fixture has two markets and one attempt and does not establish scaling or venue
+latency. OS scheduling contributes to tails. No compilation/tests ran concurrently
+with the final measurements. Policies, transcripts, raw CSVs, executable hashes
+and scenario outputs are in the local `calci-lifecycle-20260915` artifacts.

@@ -220,3 +220,13 @@ P1 improves sizing, P2 owns observed capture/coverage, and P3 extends this simul
 through response, residual-position and settlement accounting. Netting, passive
 queues and other models are conditional extensions, not prerequisites to P1.
 The implemented policy and format limitations described above remain unchanged.
+
+## Acquisition through settlement
+
+Policy schema 3 adds separate IOC responses, bounded sequential completion, explicit
+leg ordering and exact scenario settlement/capital holding accounting. See
+[LIFECYCLE_STUDY.md](LIFECYCLE_STUDY.md) for the contract, incomplete EOF handling and
+remaining model limits. This extends the same simulator; schemas 1/2 remain the
+historical behavior and retain their existing transcript, including the older EOF
+reservation convention. Do not interpret a schema-1/2 floor bound as a settled cash
+result, or a schema-3 synthetic result as observed realized profit.
