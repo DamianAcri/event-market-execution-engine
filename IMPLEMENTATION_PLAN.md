@@ -51,11 +51,12 @@ inspection and generated payout checks. See [METADATA_FORMAT.md](METADATA_FORMAT
 Step 3 was merged in PR #5: new-directory session
 publication, exact artifact fingerprints, count validation and offline pack/verify.
 See [SESSION_FORMAT.md](SESSION_FORMAT.md) for its integrity and durability scope.
-Step 4 is implemented for the current gross two-leg candidates on
-`feat/incremental-candidates`: deterministic identity, incremental updates and
-opened/updated/invalidated events. See [CANDIDATES.md](CANDIDATES.md); these are not
-net executable opportunities. Next is structured session replay with explicit
-connection/recovery control history before claiming full live replay.
+Step 4 was merged in PR #6: deterministic identity, incremental updates and
+opened/updated/invalidated gross events. Step 5 now has a general offline CLI,
+manifest-bound controller plans and deterministic structured output.
+[OFFLINE_STUDY.md](OFFLINE_STUDY.md) documents the first depth/fee/funding evaluator
+and aggressive IOC simulation, including a small observed REST pilot. Live
+controller capture and venue sequence-scope validation still require transport.
 
 Implement in this order:
 1. Define a strict, versioned snapshot format for stable market IDs, tickers and

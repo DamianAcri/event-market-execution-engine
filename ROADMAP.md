@@ -30,14 +30,22 @@ Current milestone. Implemented:
 - generated truth-table checks of loaded relationships and fractional payouts;
 - finalized sessions binding canonical metadata, exact journal bytes and count;
 - offline session pack/verify CLI with incomplete-session detection;
-- deterministic gross candidate identity and lifecycle, updated by market dependency.
+- deterministic gross candidate identity and lifecycle, updated by market dependency;
+- structured CLI replay with manifest-bound explicit controller plans;
+- strict offline capture import and reproducible candidate/event output.
 
 Remaining before declaring the milestone complete:
 
-- structured CLI replay and explicit control-history recording for live recovery;
+- actual live subscription/controller-history recording and venue sequence-scope validation;
 - property-based tests over generated worlds and malformed journal frames.
 
 ## v0.3 — Executable opportunity evaluation
+
+First offline reference implemented: depth, exact fee rounding, conservative
+funding reservations, scheduled IOC fills, shared liquidity, partial-leg exposure
+and structured economic reports. See [OFFLINE_STUDY.md](OFFLINE_STUDY.md).
+Observed profitability remains unestablished. Remaining: sizing/allocator policy
+comparisons, calibrated execution/settlement and representative held-out data.
 
 - evaluate available depth, fees, slippage, and partial fills;
 - maintain incremental dependency-driven opportunity updates;

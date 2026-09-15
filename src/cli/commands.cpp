@@ -31,6 +31,9 @@ void print_help() {
               << "  event-engine metadata canonical <path>\n"
               << "  event-engine session pack <metadata> <journal> <new-directory>\n"
               << "  event-engine session verify <directory>\n"
+              << "  event-engine session import <metadata> <capture.json> <new-directory>\n"
+              << "  event-engine session replay <directory> <replay.json>\n"
+              << "  event-engine session study <directory> <replay.json> <policy.json>\n"
 #endif
               << "  event-engine --version\n";
 }

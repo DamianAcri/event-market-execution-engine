@@ -419,3 +419,41 @@ The pre-existing core-only `eme_benchmark_smoke` was again killed by this Mac,
 as previously recorded above; the outside-sandbox retry was not authorized.
 That local smoke remains unverified. Cross-platform CI remains required before
 delivery and must independently exercise the complete core-only configuration.
+
+
+## Costed study replay: funding-search reuse (2026-09-14)
+
+The first costed implementation is commit `c2bc62e`. The optimization reuses the
+initial depth quote and skips binary sizing search when full size is already
+funded. If funding is tight, the same bounded search and acceptance policy apply.
+No SIMD, architecture-specific instructions, new dependencies or speculative
+concurrency are introduced.
+
+`eme_study_benchmarks <session> <plan> <policy> <samples>` verifies the session
+once outside timing, then measures policy reading/hashing, streaming journal
+replay/CRC/JSON processing, cost evaluation, simulation and full JSONL formatting
+into a digest sink. Each run rebuilds its simulation state; no output is elided.
+The benchmark requires equal full-output digests for every repetition. It is an
+offline study cost, not a hot-message or exchange round-trip latency measurement.
+
+Benchmark source SHA-256: `3b799b905816a7988ee76f928768a2fa76b0a16fb7c19da4ba7fd7b0e27e3190`.
+Apple M2 Pro, AppleClang 21, CMake Release/O3, no native tuning, PGO or LTO.
+Six alternating baseline/candidate pairs per budget, 50 measured complete runs
+and three warmups per process. No concurrent compilation/tests during measurement.
+Input: the same 96-record observed REST pilot described in [OFFLINE_STUDY.md](OFFLINE_STUDY.md),
+28 relationships, cap 100 contracts, 1 ms symmetric arrival assumption, direct
+account quantum and declared general 0.07 fee coefficient. Neither version finds
+an opportunity, so these measurements describe rejection-heavy replay; they do
+not establish performance while filling orders.
+
+| Scenario | Baseline median run mean | Optimized median run mean | Ratio | Interpretation |
+|---|---:|---:|---:|---|
+| $100 budget, funding search usually needed | 4.312328 ms | 4.283664 ms | 1.0067x | Difference within observed noise; paired ratios 0.9750–1.0642. |
+| $1,000 budget, full-size reservation fits | 4.295766 ms | 4.007557 ms | 1.0719x | 6.71% less time; all six paired ratios improve, 1.0463–1.0883. |
+
+Both scenarios retain identical complete-output digests across implementations:
+`4507955345570429261` ($100), `1749662937826656227` ($1,000). Input fingerprints,
+raw CSVs, binary hashes and the baseline source/binary are retained in the local
+`calci-execution-study-20260914/performance` artifacts. Re-run on other architectures
+before making hardware recommendations. The measured speedup says nothing about
+whether a local time saving changes an economic result.

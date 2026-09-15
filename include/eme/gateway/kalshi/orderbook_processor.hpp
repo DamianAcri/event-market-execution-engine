@@ -40,10 +40,16 @@ public:
         const journal::RawMarketRecord& record);
 
     [[nodiscard]] const market::MarketState& state() const noexcept { return state_; }
+    // Set only after decoding/normalizing this record; also available when the
+    // state machine rejects an update and invalidates its book.
+    [[nodiscard]] std::optional<market::MarketId> last_market_id() const noexcept {
+        return last_market_id_;
+    }
 
 private:
     const MarketRegistry& markets_;
     market::MarketState state_;
+    std::optional<market::MarketId> last_market_id_;
 };
 
 }  // namespace eme::gateway::kalshi

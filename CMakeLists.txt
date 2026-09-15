@@ -20,6 +20,7 @@ configure_file(
 )
 
 add_library(eme_core
+    src/core/execution_cost.cpp
     src/book/order_book.cpp
     src/constraint/payoff.cpp
     src/journal/journal_codec.cpp
@@ -86,6 +87,9 @@ if(EME_BUILD_KALSHI_GATEWAY)
     add_library(eme_session
         src/session/capture_session.cpp
         src/session/session_files.cpp
+        src/session/replay.cpp
+        src/session/execution_study.cpp
+        src/session/import_capture.cpp
     )
     target_include_directories(eme_session PUBLIC ${PROJECT_SOURCE_DIR}/include)
     target_include_directories(eme_session SYSTEM PRIVATE ${PROJECT_SOURCE_DIR}/third_party/picosha2)
@@ -141,6 +145,14 @@ if(EME_BUILD_BENCHMARKS)
         add_test(NAME eme_benchmark_smoke COMMAND eme_benchmarks --smoke)
     endif()
     if(EME_BUILD_KALSHI_GATEWAY)
+        add_executable(eme_study_benchmarks benchmarks/study_benchmarks.cpp)
+        set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+            ${PROJECT_SOURCE_DIR}/benchmarks/study_benchmarks.cpp)
+        file(SHA256 ${PROJECT_SOURCE_DIR}/benchmarks/study_benchmarks.cpp EME_STUDY_BENCH_SOURCE_SHA256)
+        target_compile_definitions(eme_study_benchmarks PRIVATE
+            EME_STUDY_BENCH_SOURCE_SHA256="${EME_STUDY_BENCH_SOURCE_SHA256}")
+        target_link_libraries(eme_study_benchmarks PRIVATE eme_session)
+        eme_enable_warnings(eme_study_benchmarks)
         add_executable(eme_metadata_benchmarks benchmarks/metadata_benchmarks.cpp)
         set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
             ${PROJECT_SOURCE_DIR}/benchmarks/metadata_benchmarks.cpp)
@@ -176,6 +188,7 @@ if(BUILD_TESTING)
     endfunction()
 
     eme_add_test(eme_fixed_point_tests tests/fixed_point_tests.cpp eme_core)
+    eme_add_test(eme_execution_cost_tests tests/execution_cost_tests.cpp eme_core)
     eme_add_test(eme_constraint_tests tests/constraint_tests.cpp eme_core)
     eme_add_test(eme_candidate_tests tests/candidate_tests.cpp eme_core)
     eme_add_test(eme_order_book_tests tests/order_book_tests.cpp eme_core)
@@ -203,6 +216,9 @@ if(BUILD_TESTING)
         target_link_libraries(eme_metadata_snapshot_tests PRIVATE nlohmann_json::nlohmann_json)
         eme_add_test(eme_session_tests tests/session_tests.cpp eme_session)
         eme_add_test(eme_candidate_replay_tests tests/candidate_replay_tests.cpp eme_session)
+        eme_add_test(eme_study_tests tests/study_tests.cpp eme_session)
+        target_include_directories(eme_study_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_study_tests PRIVATE nlohmann_json::nlohmann_json)
         target_include_directories(eme_session_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
         target_link_libraries(eme_session_tests PRIVATE nlohmann_json::nlohmann_json)
     endif()
@@ -222,6 +238,11 @@ if(BUILD_TESTING)
                 -DFIXTURE_WRITER=$<TARGET_FILE:eme_session_tests>
                 -DTEST_DIR=${PROJECT_BINARY_DIR}/session-cli-test
                 -P ${PROJECT_SOURCE_DIR}/tests/session_cli_tests.cmake)
+            add_test(NAME eme_cli_study COMMAND ${CMAKE_COMMAND}
+                -DENGINE=$<TARGET_FILE:event-engine>
+                -DFIXTURE_WRITER=$<TARGET_FILE:eme_study_tests>
+                -DTEST_DIR=${PROJECT_BINARY_DIR}/study-cli-test
+                -P ${PROJECT_SOURCE_DIR}/tests/study_cli_tests.cmake)
         endif()
         add_test(NAME eme_cli_status COMMAND event-engine status)
         add_test(NAME eme_cli_version COMMAND event-engine --version)

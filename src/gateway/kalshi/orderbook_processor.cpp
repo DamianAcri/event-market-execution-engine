@@ -6,6 +6,7 @@ namespace eme::gateway::kalshi {
 
 ProcessingResult OrderBookProcessor::process(
     const journal::RawMarketRecord& record) {
+    last_market_id_.reset();
     if (record.schema_version != journal::current_schema_version) {
         return ProcessingError::schema_version_mismatch;
     }
@@ -39,7 +40,9 @@ ProcessingResult OrderBookProcessor::process(
             error != nullptr) {
             return *error;
         }
-        const auto applied = state_.apply(std::get<market::BookSnapshot>(normalized));
+        const auto& event = std::get<market::BookSnapshot>(normalized);
+        last_market_id_ = event.market_id;
+        const auto applied = state_.apply(event);
         return std::visit([](const auto result) -> ProcessingResult { return result; }, applied);
     }
 
@@ -49,7 +52,9 @@ ProcessingResult OrderBookProcessor::process(
         error != nullptr) {
         return *error;
     }
-    const auto applied = state_.apply(std::get<market::BookDelta>(normalized));
+    const auto& event = std::get<market::BookDelta>(normalized);
+    last_market_id_ = event.market_id;
+    const auto applied = state_.apply(event);
     return std::visit([](const auto result) -> ProcessingResult { return result; }, applied);
 }
 
