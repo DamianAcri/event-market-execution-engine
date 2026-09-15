@@ -1,4 +1,4 @@
-#include "eme/gateway/kalshi/orderbook_decoder.hpp"
+#include "orderbook_json.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -87,6 +87,13 @@ DecodedOrderBookMessage decode_orderbook_message(
     if (root.is_discarded()) {
         return error(DecodeErrorCode::invalid_json, "$");
     }
+    return detail::decode_orderbook_json(root, connection_generation, received_at, markets);
+}
+
+DecodedOrderBookMessage detail::decode_orderbook_json(
+    const Json& root, const market::ConnectionGeneration connection_generation,
+    const market::ReceiveTime received_at, const MarketRegistry& markets) {
+    if (connection_generation == 0U) { return error(DecodeErrorCode::invalid_field_value, "connection_generation"); }
     if (!root.is_object()) {
         return error(DecodeErrorCode::invalid_root, "$");
     }

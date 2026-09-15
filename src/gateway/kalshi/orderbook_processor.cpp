@@ -33,6 +33,12 @@ ProcessingResult OrderBookProcessor::process(
         return ProcessingError::sequence_mismatch;
     }
 
+    return process_decoded(decoded);
+}
+
+ProcessingResult OrderBookProcessor::process_decoded(const DecodedOrderBookMessage& decoded) {
+    last_market_id_.reset();
+    if (const auto* error = std::get_if<DecodeError>(&decoded)) { return *error; }
     if (const auto* snapshot = std::get_if<WireOrderBookSnapshot>(&decoded);
         snapshot != nullptr) {
         const auto normalized = normalize_orderbook_snapshot(*snapshot);

@@ -4,7 +4,7 @@ Event Market Execution Engine is a deterministic C++20 foundation for consuming,
 recording, replaying, and validating event-market data. It deliberately separates
 market-data correctness from strategy, connectivity, and order submission.
 
-Updated on 2026-09-15 for merged P1 sizing and P2 persistence preparation. Work order is owned by
+Updated on 2026-09-15 for merged P1 sizing and P2 read-only transport/controller. Work order is owned by
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md); future boundaries below are
 identified separately from implemented components.
 
@@ -74,17 +74,17 @@ integration must stop on recording failure. See [READONLY_CAPTURE.md](READONLY_C
 
 ## Safety boundary
 
-The repository currently has no authenticated transport and cannot place orders.
+The optional authenticated transport captures market data only and cannot place orders.
 The core tracks gross candidates using compiled two-leg templates and best prices.
 Offline fee/depth/funding evaluation and assumed IOC fills exist in `eme_session`;
-they are not an exchange connection or production risk approval. Transport,
-operational order management and actual execution remain pending. Production
+they are not observed fills or production risk approval. Authenticated venue
+validation, operational order management and actual execution remain pending. Production
 submission must remain disabled by default and must not bypass centralized
 limits or a kill switch.
 
 ## Planned reuse boundary
 
-P1 extracts the smallest reusable costed sizing decision into `eme_core`.
+P1 extracted the smallest reusable costed sizing decision into `eme_core`.
 Simulation retains assumed arrivals and fills; a later venue adapter supplies
 observed responses. Both call the same decision/ledger functions with explicit
 state and time. Mutable state has one owner; asynchronous inputs must not retain
@@ -100,3 +100,14 @@ The venue gateway depends on the core, never the reverse. The full CLI depends o
 the session library, which depends on the gateway and core; it has no trading
 authority. A core-only CLI depends directly on the core, with gateway and session
 libraries disabled, and performs no JSON dependency download.
+
+## Read-only transport
+
+`eme_readonly_transport` optionally links Boost.Beast/Asio (Boost Software License
+1.0) and OpenSSL >=3.0 (Apache-2.0). Both are permissive dependencies supplied by
+the build environment, not vendored. The default offline/core build excludes them.
+The choice follows the architecture guide's existing-stack, explicit-contract and
+reuse principles: keep C++20 and use maintained TLS/WS implementations. It adds
+build dependencies and uses a conservative one-market subscription layout; measured
+feed validation remains portable, without native CPU tuning. See
+[READONLY_CAPTURE.md](READONLY_CAPTURE.md) for timeouts, history and validation.

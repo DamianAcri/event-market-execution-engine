@@ -1,5 +1,6 @@
 #include "eme/session/replay.hpp"
 #include "study_json.hpp"
+#include "eme/session/readonly_feed.hpp"
 
 #include <algorithm>
 #include <ostream>
@@ -61,15 +62,29 @@ std::variant<ReplayInput, ReplayError> load_replay(
         auto session = std::get<VerifiedSession>(std::move(verified));
         const auto bytes = detail::read_text(plan_path);
         const auto root = detail::parse_strict(bytes);
-        detail::shape(root, {"schema_version", "source_kind", "provenance", "manifest_sha256", "use_yes_price", "controls"});
-        if (detail::integer(root, "schema_version") != 1U || root["use_yes_price"] != true) { detail::invalid("replay schema/price convention"); }
+        const auto version = detail::integer(root, "schema_version");
+        if (version == 2U) {
+            detail::shape(root, {"schema_version", "source_kind", "provenance", "manifest_sha256", "use_yes_price", "markets"});
+        } else {
+            detail::shape(root, {"schema_version", "source_kind", "provenance", "manifest_sha256", "use_yes_price", "controls"});
+        }
+        if ((version != 1U && version != 2U) || root["use_yes_price"] != true) { detail::invalid("replay schema/price convention"); }
         ReplayPlan plan{detail::string(root, "source_kind"), detail::string(root, "provenance"),
-                        detail::string(root, "manifest_sha256"), detail::fingerprint_bytes(bytes).sha256, {}};
+                        detail::string(root, "manifest_sha256"), detail::fingerprint_bytes(bytes).sha256, {}, false, {}};
         if (plan.source_kind != "synthetic" && plan.source_kind != "observed_ws" &&
             plan.source_kind != "observed_rest_samples") { detail::invalid("source_kind"); }
         const auto fingerprint = detail::fingerprint_file(directory / manifest_filename);
         const auto* bound = std::get_if<ArtifactFingerprint>(&fingerprint);
         if (!bound || bound->sha256 != plan.manifest_sha256) { detail::invalid("manifest binding"); }
+        if (version == 2U) {
+            plan.ws_controller = true;
+            if (plan.source_kind == "observed_rest_samples" || !root["markets"].is_array() || root["markets"].empty() || root["markets"].size() > 64U) { detail::invalid("WS source/markets"); }
+            for (const auto& id : root["markets"]) {
+                plan.markets.push_back(static_cast<market::MarketId>(detail::integer(Json{{"id", id}}, "id", std::numeric_limits<market::MarketId>::max())));
+            }
+            ReadOnlyFeed validation{session.metadata.markets(), plan.markets};
+            return ReplayInput{directory, std::move(session), std::move(plan)};
+        }
         const auto& controls = root["controls"];
         if (!controls.is_array() || controls.empty() || controls.size() > 100'000U) { detail::invalid("controls"); }
         for (const auto& item : controls) {
@@ -98,6 +113,9 @@ std::variant<ReplayInput, ReplayError> load_replay(
 std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
     ReplayObserver& observer, std::ostream* output) {
     gateway::kalshi::OrderBookProcessor processor{input.session.metadata.markets()};
+    std::unique_ptr<ReadOnlyFeed> feed;
+    if (input.plan.ws_controller) { feed = std::make_unique<ReadOnlyFeed>(input.session.metadata.markets(), input.plan.markets); }
+    const auto state = [&]() -> const market::MarketState& { return feed ? feed->state() : processor.state(); };
     opportunity::CandidateTracker tracker{input.session.manifest.metadata_version, input.session.metadata.constraints()};
     auto opened = journal::open_raw_journal_reader(input.directory / journal_filename);
     if (!std::holds_alternative<std::unique_ptr<journal::RawJournalReader>>(opened)) { return ReplayError{"journal open", 0U}; }
@@ -114,14 +132,14 @@ std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
         for (const auto& event : events) { line["candidates"].push_back(candidate_json(event)); }
         summary.candidate_events += events.size();
         emit(line);
-        observer.after(frame, events, processor.state());
+        observer.after(frame, events, state());
     };
     while (true) {
         while (control_index < input.plan.controls.size() &&
                input.plan.controls[control_index].before_record == summary.records) {
             const auto& control = input.plan.controls[control_index++];
             if (control.time_ns < summary.last_time_ns) { return ReplayError{"control clock regression", summary.records}; }
-            observer.before(control.time_ns, processor.state());
+            observer.before(control.time_ns, state());
             summary.last_time_ns = control.time_ns;
             bool accepted = false;
             switch (control.action) {
@@ -131,7 +149,7 @@ std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
             }
             if (!accepted) { return ReplayError{"rejected control: " + std::string{action_name(control.action)}, summary.records}; }
             ++summary.controls;
-            after({summary.records, control.time_ns, std::nullopt, false}, tracker.refresh_all(processor.state()),
+            after({summary.records, control.time_ns, std::nullopt, false}, tracker.refresh_all(state()),
                   {{"type", "control"}, {"action", action_name(control.action)}, {"target", control.target}});
         }
         const auto next = reader.read_next();
@@ -141,8 +159,21 @@ std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
         if (summary.records >= input.session.manifest.records) { return ReplayError{"record count changed", summary.records}; }
         const auto time = record->received_at.time_since_epoch().count();
         if (time < summary.last_time_ns) { return ReplayError{"receive clock regression", summary.records}; }
-        observer.before(time, processor.state());
+        observer.before(time, state());
         summary.last_time_ns = time;
+        if (feed) {
+            const auto update = feed->accept(*record);
+            if (update.event == FeedEvent::invalid_history) { return ReplayError{std::string{update.reason}, summary.records}; }
+            const bool applied = update.event == FeedEvent::market;
+            if (update.event == FeedEvent::invalidated) { ++summary.rejected_updates; }
+            if (!applied) { ++summary.controls; }
+            const auto events = update.market_id ? tracker.refresh(*update.market_id, state()) : tracker.refresh_all(state());
+            after({summary.records, time, update.market_id, applied}, events,
+                  {{"type", applied ? "market" : "feed_control"}, {"channel", record->channel},
+                   {"generation", record->connection_generation}, {"status", update.reason}});
+            ++summary.records;
+            continue;
+        }
         const auto processed = processor.process(*record);
         const auto* result = std::get_if<book::BookUpdateResult>(&processed);
         const auto market_id = processor.last_market_id();
@@ -150,7 +181,7 @@ std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
         if (!result || !market_id) { return ReplayError{"payload/metadata/connection rejected", summary.records}; }
         const bool applied = *result == book::BookUpdateResult::applied;
         if (!applied) { ++summary.rejected_updates; }
-        after({summary.records, time, market_id, applied}, tracker.refresh(*market_id, processor.state()),
+        after({summary.records, time, market_id, applied}, tracker.refresh(*market_id, state()),
             {{"type", "market"}, {"market_id", *market_id}, {"generation", record->connection_generation},
              {"sequence", record->sequence}, {"status", status(*result)}});
         ++summary.records;
@@ -158,7 +189,8 @@ std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
     if (summary.records != input.session.manifest.records || control_index != input.plan.controls.size()) {
         return ReplayError{"incomplete replay", summary.records};
     }
-    observer.finish(summary.last_time_ns, processor.state());
+    if (feed && !feed->closed()) { return ReplayError{"WS history missing terminal close", summary.records}; }
+    observer.finish(summary.last_time_ns, state());
     emit({{"type", "replay_complete"}, {"records", summary.records}, {"controls", summary.controls},
           {"candidate_events", summary.candidate_events}, {"rejected_updates", summary.rejected_updates},
           {"last_time_ns", summary.last_time_ns}});

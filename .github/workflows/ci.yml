@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -137,3 +138,65 @@ jobs:
         run: cmake --build build-tsan --target eme_async_capture_tests --parallel 3
       - name: Test capture ownership
         run: ctest --test-dir build-tsan -R eme_async_capture_tests --output-on-failure
+
+  live-capture:
+    name: read-only TLS ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2022]
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libboost-dev libssl-dev
+      - name: Install macOS dependencies
+        if: runner.os == 'macOS'
+        run: brew install boost openssl@3
+      - name: Identify Windows dependency cache
+        if: runner.os == 'Windows'
+        id: vcpkg-cache-key
+        shell: pwsh
+        run: |
+          $revision = git -C $env:VCPKG_INSTALLATION_ROOT rev-parse HEAD
+          "key=readonly-vcpkg-openssl-tools-x64-$revision" >> $env:GITHUB_OUTPUT
+          "path=$env:LOCALAPPDATA/vcpkg/archives" >> $env:GITHUB_OUTPUT
+      - name: Restore Windows dependency binaries
+        if: runner.os == 'Windows'
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: ${{ steps.vcpkg-cache-key.outputs.path }}
+          key: ${{ steps.vcpkg-cache-key.outputs.key }}
+      - name: Install Windows dependencies
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: vcpkg install boost-beast:x64-windows "openssl[tools]:x64-windows"
+      - name: Save Windows dependency binaries
+        if: runner.os == 'Windows'
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: ${{ steps.vcpkg-cache-key.outputs.path }}
+          key: ${{ steps.vcpkg-cache-key.outputs.key }}
+      - name: Configure Unix transport
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          extra=()
+          if [[ "$RUNNER_OS" == macOS ]]; then
+            extra+=("-DEME_BOOST_INCLUDE_DIR=$(brew --prefix boost)/include" "-DOPENSSL_ROOT_DIR=$(brew --prefix openssl@3)" "-DEME_OPENSSL_EXECUTABLE=$(brew --prefix openssl@3)/bin/openssl")
+          fi
+          cmake -S . -B build-live -DCMAKE_BUILD_TYPE=Release -DEME_BUILD_LIVE_CAPTURE=ON "${extra[@]}"
+      - name: Configure Windows transport
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: >-
+          cmake -S . -B build-live
+          -DEME_BUILD_LIVE_CAPTURE=ON
+          -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+          -DEME_OPENSSL_EXECUTABLE="$env:VCPKG_INSTALLATION_ROOT/installed/x64-windows/tools/openssl/openssl.exe"
+      - name: Build transport and fixtures
+        run: cmake --build build-live --config Release --parallel 3
+      - name: Test transport and replay
+        run: ctest --test-dir build-live -C Release --output-on-failure

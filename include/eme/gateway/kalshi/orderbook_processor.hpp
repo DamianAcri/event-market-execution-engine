@@ -38,6 +38,9 @@ public:
 
     [[nodiscard]] ProcessingResult process(
         const journal::RawMarketRecord& record);
+    // Already-decoded venue boundary. Caller binds metadata and input provenance;
+    // normalization, connection, stream and sequence checks still apply here.
+    [[nodiscard]] ProcessingResult process_decoded(const DecodedOrderBookMessage& message);
 
     [[nodiscard]] const market::MarketState& state() const noexcept { return state_; }
     // Set only after decoding/normalizing this record; also available when the

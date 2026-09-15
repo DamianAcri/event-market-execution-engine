@@ -9,6 +9,7 @@ project(
 
 option(EME_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 option(EME_BUILD_KALSHI_GATEWAY "Build the Kalshi JSON boundary" ON)
+option(EME_BUILD_LIVE_CAPTURE "Build optional authenticated read-only WS collector" OFF)
 option(EME_BUILD_CLI "Build the operator command-line interface" ON)
 option(EME_BUILD_BENCHMARKS "Build deterministic offline performance workloads" OFF)
 
@@ -87,13 +88,14 @@ if(EME_BUILD_KALSHI_GATEWAY)
 
     add_library(eme_session
         src/session/async_capture.cpp
+        src/session/readonly_feed.cpp
         src/session/capture_session.cpp
         src/session/session_files.cpp
         src/session/replay.cpp
         src/session/execution_study.cpp
         src/session/import_capture.cpp
     )
-    target_include_directories(eme_session PUBLIC ${PROJECT_SOURCE_DIR}/include)
+    target_include_directories(eme_session PUBLIC ${PROJECT_SOURCE_DIR}/include PRIVATE ${PROJECT_SOURCE_DIR}/src)
     find_package(Threads REQUIRED)
     target_include_directories(eme_session SYSTEM PRIVATE ${PROJECT_SOURCE_DIR}/third_party/picosha2)
     target_link_libraries(eme_session PUBLIC eme_kalshi_gateway PRIVATE nlohmann_json::nlohmann_json Threads::Threads)
@@ -154,6 +156,12 @@ if(EME_BUILD_BENCHMARKS)
         add_test(NAME eme_benchmark_smoke COMMAND eme_benchmarks --smoke)
     endif()
     if(EME_BUILD_KALSHI_GATEWAY)
+        add_executable(eme_feed_benchmarks benchmarks/feed_benchmarks.cpp)
+        target_link_libraries(eme_feed_benchmarks PRIVATE eme_session)
+        eme_enable_warnings(eme_feed_benchmarks)
+        if(BUILD_TESTING)
+            add_test(NAME eme_feed_benchmark_smoke COMMAND eme_feed_benchmarks --smoke)
+        endif()
         add_executable(eme_capture_benchmarks benchmarks/capture_benchmarks.cpp)
         target_link_libraries(eme_capture_benchmarks PRIVATE eme_session)
         eme_enable_warnings(eme_capture_benchmarks)
@@ -231,6 +239,7 @@ if(BUILD_TESTING)
         eme_add_test(eme_metadata_snapshot_tests tests/metadata_snapshot_tests.cpp eme_kalshi_gateway)
         target_link_libraries(eme_metadata_snapshot_tests PRIVATE nlohmann_json::nlohmann_json)
         eme_add_test(eme_session_tests tests/session_tests.cpp eme_session)
+        eme_add_test(eme_readonly_feed_tests tests/readonly_feed_tests.cpp eme_session)
         eme_add_test(eme_async_capture_tests tests/async_capture_tests.cpp eme_session)
         set_tests_properties(eme_async_capture_tests PROPERTIES TIMEOUT 30)
         eme_add_test(eme_candidate_replay_tests tests/candidate_replay_tests.cpp eme_session)
@@ -267,5 +276,48 @@ if(BUILD_TESTING)
         set_tests_properties(eme_cli_version PROPERTIES
             PASS_REGULAR_EXPRESSION "event-engine ${PROJECT_VERSION}"
         )
+    endif()
+endif()
+
+if(EME_BUILD_LIVE_CAPTURE)
+    if(NOT EME_BUILD_KALSHI_GATEWAY)
+        message(FATAL_ERROR "Live capture requires the Kalshi gateway")
+    endif()
+    find_path(EME_BOOST_INCLUDE_DIR boost/beast.hpp REQUIRED)
+    file(STRINGS "${EME_BOOST_INCLUDE_DIR}/boost/version.hpp" EME_BOOST_VERSION_LINE REGEX "^#define BOOST_VERSION [0-9]+$")
+    string(REGEX REPLACE ".*BOOST_VERSION ([0-9]+).*" "\\1" EME_BOOST_VERSION "${EME_BOOST_VERSION_LINE}")
+    if(EME_BOOST_VERSION LESS 108300)
+        message(FATAL_ERROR "Read-only capture requires Boost 1.83 or later")
+    endif()
+    find_package(OpenSSL 3.0 REQUIRED COMPONENTS SSL Crypto)
+    add_library(eme_readonly_transport src/transport/readonly_capture.cpp)
+    target_include_directories(eme_readonly_transport SYSTEM PRIVATE ${EME_BOOST_INCLUDE_DIR})
+    target_include_directories(eme_readonly_transport PRIVATE ${PROJECT_SOURCE_DIR}/src)
+    target_link_libraries(eme_readonly_transport PUBLIC eme_session PRIVATE OpenSSL::SSL OpenSSL::Crypto nlohmann_json::nlohmann_json)
+    eme_enable_warnings(eme_readonly_transport)
+    if(MSVC)
+        target_compile_options(eme_readonly_transport PRIVATE /bigobj)
+    endif()
+    add_executable(eme-capture src/transport/capture_main.cpp)
+    target_include_directories(eme-capture PRIVATE ${PROJECT_SOURCE_DIR}/src)
+    target_link_libraries(eme-capture PRIVATE eme_readonly_transport nlohmann_json::nlohmann_json)
+    eme_enable_warnings(eme-capture)
+    if(BUILD_TESTING AND EME_BUILD_CLI)
+        find_package(Python3 REQUIRED COMPONENTS Interpreter)
+        find_program(EME_OPENSSL_EXECUTABLE openssl REQUIRED)
+        if(NOT EXISTS "${EME_OPENSSL_EXECUTABLE}")
+            message(FATAL_ERROR "Transport tests require an existing OpenSSL CLI executable")
+        endif()
+        add_executable(eme_capture_fixture_client tests/capture_fixture_client.cpp)
+        target_include_directories(eme_capture_fixture_client PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_capture_fixture_client PRIVATE eme_readonly_transport nlohmann_json::nlohmann_json)
+        eme_enable_warnings(eme_capture_fixture_client)
+        add_test(NAME eme_capture_transport_tests COMMAND ${Python3_EXECUTABLE}
+            ${PROJECT_SOURCE_DIR}/tests/capture_transport_tests.py
+            --client $<TARGET_FILE:eme_capture_fixture_client>
+            --engine $<TARGET_FILE:event-engine>
+            --openssl ${EME_OPENSSL_EXECUTABLE}
+            --metadata ${PROJECT_SOURCE_DIR}/examples/metadata.snapshot.json)
+        set_tests_properties(eme_capture_transport_tests PROPERTIES TIMEOUT 90)
     endif()
 endif()
