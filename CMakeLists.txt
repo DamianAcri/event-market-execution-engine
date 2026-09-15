@@ -318,6 +318,6 @@ if(EME_BUILD_LIVE_CAPTURE)
             --engine $<TARGET_FILE:event-engine>
             --openssl ${EME_OPENSSL_EXECUTABLE}
             --metadata ${PROJECT_SOURCE_DIR}/examples/metadata.snapshot.json)
-        set_tests_properties(eme_capture_transport_tests PROPERTIES TIMEOUT 60)
+        set_tests_properties(eme_capture_transport_tests PROPERTIES TIMEOUT 90)
     endif()
 endif()

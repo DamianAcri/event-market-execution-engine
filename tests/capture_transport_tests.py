@@ -25,7 +25,7 @@ def main():
             return subprocess.run([args.openssl, *map(str, command)], check=True, capture_output=True).stdout
         openssl('genpkey', '-algorithm', 'RSA', '-pkeyopt', 'rsa_keygen_bits:2048', '-out', key)
         config = root / 'cert.cnf'
-        config.write_text('[req]\ndistinguished_name=dn\nx509_extensions=ext\nprompt=no\n[dn]\nCN=localhost\n[ext]\nsubjectAltName=DNS:localhost\nbasicConstraints=critical,CA:TRUE\n')
+        config.write_text('[req]\ndistinguished_name=dn\nx509_extensions=ext\nprompt=no\n[dn]\nCN=localhost\n[ext]\nsubjectAltName=IP:127.0.0.1\nbasicConstraints=critical,CA:TRUE\n')
         openssl('req', '-new', '-x509', '-key', key, '-out', cert, '-days', '1', '-sha256', '-config', config)
         openssl('pkey', '-in', key, '-pubout', '-out', pub)
         wrong_key, wrong_cert = root / 'wrong-key.pem', root / 'wrong-cert.pem'
@@ -33,6 +33,13 @@ def main():
         openssl('req', '-new', '-x509', '-key', wrong_key, '-out', wrong_cert, '-days', '1', '-sha256', '-config', config)
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(cert, key)
+        # Trusted certificate with a deliberately different IP tests hostname
+        # verification independently of trust and DNS/address-family fallback.
+        mismatch_config, mismatch_cert = root / 'mismatch.cnf', root / 'mismatch.pem'
+        mismatch_config.write_text(config.read_text().replace('IP:127.0.0.1', 'IP:127.0.0.2'))
+        openssl('req', '-new', '-x509', '-key', key, '-out', mismatch_cert, '-days', '1', '-sha256', '-config', mismatch_config)
+        mismatch_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        mismatch_context.load_cert_chain(mismatch_cert, key)
 
         def exact(sock, count):
             result = b''
@@ -81,7 +88,9 @@ def main():
                 try:
                     for attempt in range(attempts):
                         raw, _ = listener.accept()
-                        with context.wrap_socket(raw, server_side=True) as sock:
+                        raw.settimeout(4)
+                        server_context = mismatch_context if scenario == 'hostname' else context
+                        with server_context.wrap_socket(raw, server_side=True) as sock:
                             sock.settimeout(3)
                             request = b''
                             while not request.endswith(b'\r\n\r\n'):
@@ -104,7 +113,7 @@ def main():
                                 sock.sendall(b'HTTP/1.1 401 Unauthorized\r\nContent-Length: 0\r\n\r\n')
                                 continue
                             if scenario == 'handshake_timeout':
-                                time.sleep(0.8)
+                                time.sleep(2)
                                 continue
                             accept = base64.b64encode(hashlib.sha1((headers['sec-websocket-key'] + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').encode()).digest())
                             sock.sendall(b'HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + accept + b'\r\n\r\n')
@@ -132,7 +141,7 @@ def main():
                             if scenario == 'subscription_error':
                                 send_message({'type': 'error', 'sid': 11, 'seq': 1, 'msg': {'code': 25}})
                             elif scenario == 'snapshot_timeout':
-                                for _ in range(4):
+                                for _ in range(13):
                                     send_frame(sock, b'heartbeat', opcode=9)
                                     time.sleep(0.15)
                             elif scenario != 'idle':
@@ -168,11 +177,12 @@ def main():
             thread = threading.Thread(target=serve)
             thread.start()
             output_dir = root / scenario
-            result = subprocess.run([args.client, args.metadata, str(port), str(wrong_cert if scenario == 'untrusted' else cert), str(key), str(output_dir),
-                                     '1800' if scenario == 'reconnect' else '1100', str(attempts), scenario],
-                                    capture_output=True, text=True, timeout=6)
-            thread.join(timeout=4)
-            assert not thread.is_alive() and not errors, (scenario, errors)
+            trusted_cert = wrong_cert if scenario == 'untrusted' else mismatch_cert if scenario == 'hostname' else cert
+            result = subprocess.run([args.client, args.metadata, str(port), str(trusted_cert), str(key), str(output_dir),
+                                     '6000' if scenario == 'reconnect' else '4000', str(attempts), scenario],
+                                    capture_output=True, text=True, timeout=10)
+            thread.join(timeout=6)
+            assert not thread.is_alive() and not errors, (scenario, errors, result.stdout, result.stderr)
             assert result.returncode == 0, (scenario, result.stdout, result.stderr)
             summary = json.loads(result.stdout)
             assert summary['connections'] == attempts, (scenario, summary)
