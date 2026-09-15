@@ -562,7 +562,7 @@ of run distributions, with compilation/tests stopped during the final campaign:
 | Initial controller, copy + second JSON parse | 3.916 us | 8.209 us | 41.521 ms |
 | Shared parsed input | 2.583 us | 4.563 us | 27.429 ms |
 
-This workload reduces median update/total CPU time by about 34%. Tails include OS
+This workload reduces median update/total processing time by about 34%. Tails include OS
 scheduling/allocator variation; it is not a venue latency measurement, an economic
 return, or a cross-hardware speed guarantee. The earlier capture benchmark still
 owns persistence measurements. Local CSVs, source snapshots and executable hashes
