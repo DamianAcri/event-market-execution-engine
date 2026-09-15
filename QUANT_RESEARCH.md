@@ -1,5 +1,12 @@
 # Quantitative research and execution methods
 
+Follow-up: [Applied economic research, September 15, 2026](ECONOMIC_STRATEGY_RESEARCH.md)
+reviews the later `7cf248f` offline-study baseline, additional primary papers and a
+reproduced sizing counterexample. Both research documents supply evidence and
+candidate experiments; [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) alone
+selects their priority and entry conditions. The dated implementation references
+below remain historical, not a list of work still to do.
+
 This supplement connects public quantitative-trading research to the engine's
 economic objective: repeatable net profit within capital, execution-risk and
 operating-cost limits. Jane Street and Optiver are examples of relevant firms;
@@ -267,11 +274,11 @@ erase the margin; or when residual losses violate the agreed limits. Reconsider
 infrastructure expenditure when its plausible incremental benefit cannot cover
 its additional cost.
 
-The next research cycle is sufficiently specified: finish reproducible sessions,
-define accounting and funding examples, build the initial detector, add execution
-simulation and collect observations early enough to calibrate it. Subsequent
-papers should answer concrete discrepancies found in that cycle. Current evidence
-supports investigating the opportunity, not declaring the engine profitable.
+The implementation sequence is maintained in
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Sessions, the initial detector,
+accounting reference and first execution simulator have since been implemented;
+their presence does not establish profitability. Further papers should answer
+specific gaps in the selected experiment rather than expand an automatic backlog.
 
 ## Sources
 

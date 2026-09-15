@@ -1,9 +1,9 @@
 # Performance engineering
 
-This document is the maintained performance plan and curated research index.
-It complements [the implementation plan](IMPLEMENTATION_PLAN.md), rather than
-replacing the existing economic direction. No local timing is a claim about
-exchange latency, execution success or profitability.
+This document maintains performance methods, results and candidate experiments.
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) alone selects current priorities;
+the techniques below are not an additional work queue. No local timing is a claim
+about exchange latency, execution success or profitability.
 
 ## Public research translated into experiments
 

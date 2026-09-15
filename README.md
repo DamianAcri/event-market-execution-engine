@@ -12,7 +12,13 @@ correct -> usable -> observable -> measured -> optimized
 It is not a profitability claim and it does not send live orders in its current
 state.
 
-## Current milestone: v0.2 versioned constraint core (in progress)
+## Current state: offline replay and execution studies
+
+**Start with [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)** for the current
+work order and acceptance criteria. Next: profit-aware two-leg sizing, with
+representative read-only capture prepared alongside it. Research documents contain
+evidence and conditional proposals; they do not create additional work queues.
+The package version remains 0.2.0, and capability status is described below.
 
 The completed v0.1 foundation establishes the venue-neutral core used by live,
 recorded, and synthetic event sources:
@@ -74,9 +80,10 @@ to judge the hypothesis.
 
 ## Documentation
 
+- [Single implementation plan: priorities, dependencies and acceptance](IMPLEMENTATION_PLAN.md)
 - [Project direction and research basis](PROJECT_DIRECTION.md)
 - [Quantitative models, execution research and economic experiments](QUANT_RESEARCH.md)
-- [Implementation plan and acceptance criteria](IMPLEMENTATION_PLAN.md)
+- [Applied economic research: search, sizing and joint execution (2026-09-15)](ECONOMIC_STRATEGY_RESEARCH.md)
 - [Performance methodology and research](PERFORMANCE.md)
 - [Architecture](ARCHITECTURE.md)
 - [Raw journal format](JOURNAL_FORMAT.md)

@@ -211,8 +211,8 @@ nor the absence of opportunities in other periods. Public REST requires no keys;
 [authenticated WS data](https://docs.kalshi.com/getting_started/quick_start_market_data)
 is needed to progress toward representative timing/sequence observations.
 
-Next: collect representative sessions with preserved real subscription/controller
-history, freeze chronological holdouts, calibrate fill fragmentation and latency,
-compare smaller-size policies, and measure capital holding time and losses on
-partial portfolios. Settlements, response latency, portfolio netting, passive
-queues and venue execution remain separate work.
+Work order is maintained in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md):
+P1 improves sizing, P2 owns observed capture/coverage, and P3 extends this simulator
+through response, residual-position and settlement accounting. Netting, passive
+queues and other models are conditional extensions, not prerequisites to P1.
+The implemented policy and format limitations described above remain unchanged.
