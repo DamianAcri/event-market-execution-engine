@@ -28,6 +28,9 @@ def main():
         config.write_text('[req]\ndistinguished_name=dn\nx509_extensions=ext\nprompt=no\n[dn]\nCN=localhost\n[ext]\nsubjectAltName=DNS:localhost\nbasicConstraints=critical,CA:TRUE\n')
         openssl('req', '-new', '-x509', '-key', key, '-out', cert, '-days', '1', '-sha256', '-config', config)
         openssl('pkey', '-in', key, '-pubout', '-out', pub)
+        wrong_key, wrong_cert = root / 'wrong-key.pem', root / 'wrong-cert.pem'
+        openssl('genpkey', '-algorithm', 'RSA', '-pkeyopt', 'rsa_keygen_bits:2048', '-out', wrong_key)
+        openssl('req', '-new', '-x509', '-key', wrong_key, '-out', wrong_cert, '-days', '1', '-sha256', '-config', config)
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(cert, key)
 
@@ -165,7 +168,7 @@ def main():
             thread = threading.Thread(target=serve)
             thread.start()
             output_dir = root / scenario
-            result = subprocess.run([args.client, args.metadata, str(port), str(cert), str(key), str(output_dir),
+            result = subprocess.run([args.client, args.metadata, str(port), str(wrong_cert if scenario == 'untrusted' else cert), str(key), str(output_dir),
                                      '1800' if scenario == 'reconnect' else '1100', str(attempts), scenario],
                                     capture_output=True, text=True, timeout=6)
             thread.join(timeout=4)

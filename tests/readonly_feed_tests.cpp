@@ -52,5 +52,17 @@ int main() {
         R"({"type":"ok","sid":11,"seq":42,"msg":{}})",
         R"({"type":"orderbook_delta","type":"error"})", "not JSON", "[]"
     }) { exercise(bad); }
+    session::ReadOnlyFeed zero_feed{markets, selection};
+    journal::RawMarketRecord zero;
+    zero.metadata_version = zero.connection_generation = 1U;
+    const auto initial = [&](std::string channel, std::string payload) {
+        zero.channel = std::move(channel); zero.payload = std::move(payload);
+        return zero_feed.accept(zero);
+    };
+    (void)initial("ws.attempt.v1", "{}"); (void)initial("ws.open.v1", "{}");
+    (void)initial("ws.send.v1", zero_feed.commands().front());
+    (void)initial("ws.receive.v1", R"({"type":"subscribed","id":1,"msg":{"channel":"orderbook_delta","sid":11}})");
+    test.expect(initial("ws.receive.v1", R"({"type":"orderbook_snapshot","sid":11,"seq":0,"msg":{"market_ticker":"A","yes_dollars_fp":[],"no_dollars_fp":[]}})").event == session::FeedEvent::invalidated && zero_feed.state().valid_book_count() == 0U,
+        "WS initial sequence must be positive even though legacy books can represent zero");
     return test.result();
 }

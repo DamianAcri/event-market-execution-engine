@@ -103,6 +103,7 @@ FeedUpdate ReadOnlyFeed::accept(const journal::RawMarketRecord& record) {
         // terminate the generation. No data sequence is skipped or renumbered.
         if (type != "orderbook_snapshot" && type != "orderbook_delta") { return fail("venue control/error"); }
         const auto sid = detail::integer(root, "sid", std::numeric_limits<std::uint64_t>::max());
+        if (detail::integer(root, "seq", std::numeric_limits<std::uint64_t>::max()) == 0U) { return fail("zero venue sequence"); }
         const auto sub = subscriptions_.find(sid);
         if (sub == subscriptions_.end() || markets_.find(detail::string(root.at("msg"), "market_ticker")) != sub->second) {
             return fail("subscription market mismatch");

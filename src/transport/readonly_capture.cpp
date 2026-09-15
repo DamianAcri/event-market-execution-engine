@@ -85,8 +85,10 @@ public:
             session::detail::invalid("capture configuration");
         }
         if (SSL_CTX_set_min_proto_version(context_.native_handle(), TLS1_2_VERSION) != 1) { session::detail::invalid("TLS minimum version"); }
-        context_.set_default_verify_paths();
-        if (!config.ca_file.empty()) { context_.load_verify_file(config.ca_file.string()); }
+        Error trust_error;
+        if (config.ca_file.empty()) { context_.set_default_verify_paths(trust_error); }
+        else { context_.load_verify_file(config.ca_file.string(), trust_error); }
+        if (trust_error) { session::detail::invalid("TLS trust configuration unavailable"); }
         context_.set_verify_mode(ssl::verify_peer);
         auto created = session::create_async_capture(config.directory, metadata, config.queue);
         if (std::holds_alternative<session::SessionError>(created)) { session::detail::invalid("capture directory/writer"); }

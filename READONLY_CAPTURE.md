@@ -18,7 +18,10 @@ eme-capture reviewed-metadata.json new-capture-directory 3600 production
 
 Set `EME_KALSHI_KEY_ID` and `EME_KALSHI_PRIVATE_KEY_PATH` in the launching
 environment. The latter is a path to an unencrypted RSA private key, not the key
-contents. An encrypted/unavailable/non-RSA key fails without prompting. Credentials
+contents. When the OpenSSL installation has no configured trust bundle (which can
+occur on Windows), set `EME_KALSHI_CA_FILE` to a trusted PEM CA bundle. An explicit
+bundle replaces default trust paths; hostname/certificate verification stays enabled.
+An encrypted/unavailable/non-RSA key fails without prompting. Credentials
 are neither command-line arguments nor journal fields. The CLI only accepts the
 production or demo venue; tests use an internal loopback fixture client. Missing
 credentials fail before creating artifacts or opening a connection. No order API

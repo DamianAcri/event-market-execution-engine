@@ -44,6 +44,7 @@ int main(const int argc, const char* const argv[]) {
         config.host = std::string_view{argv[4]} == "production" ? "external-api-ws.kalshi.com" : "external-api-ws.demo.kalshi.co";
         config.key_id = *key_id;
         config.private_key = *key_file;
+        if (const auto ca = environment("EME_KALSHI_CA_FILE")) { config.ca_file = *ca; }
         config.directory = argv[2];
         config.duration = std::chrono::seconds{seconds};
         const auto root = session::detail::Json::parse(metadata.canonical_json());

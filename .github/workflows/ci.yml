@@ -155,10 +155,30 @@ jobs:
       - name: Install macOS dependencies
         if: runner.os == 'macOS'
         run: brew install boost openssl@3
+      - name: Identify Windows dependency cache
+        if: runner.os == 'Windows'
+        id: vcpkg-cache-key
+        shell: pwsh
+        run: |
+          $revision = git -C $env:VCPKG_INSTALLATION_ROOT rev-parse HEAD
+          "key=readonly-vcpkg-x64-$revision" >> $env:GITHUB_OUTPUT
+          "path=$env:LOCALAPPDATA/vcpkg/archives" >> $env:GITHUB_OUTPUT
+      - name: Restore Windows dependency binaries
+        if: runner.os == 'Windows'
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: ${{ steps.vcpkg-cache-key.outputs.path }}
+          key: ${{ steps.vcpkg-cache-key.outputs.key }}
       - name: Install Windows dependencies
         if: runner.os == 'Windows'
         shell: pwsh
         run: vcpkg install boost-beast:x64-windows openssl:x64-windows
+      - name: Save Windows dependency binaries
+        if: runner.os == 'Windows'
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: ${{ steps.vcpkg-cache-key.outputs.path }}
+          key: ${{ steps.vcpkg-cache-key.outputs.key }}
       - name: Configure Unix transport
         if: runner.os != 'Windows'
         shell: bash

@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
     transport::CaptureConfig config;
     config.host = "localhost";
     config.port = argv[2];
-    if (std::string_view{argv[8]} != "untrusted") { config.ca_file = argv[3]; }
+    config.ca_file = argv[3];
     if (std::string_view{argv[8]} == "hostname") { config.host = "127.0.0.1"; }
     config.private_key = argv[4];
     config.key_id = "fixture";

@@ -550,8 +550,8 @@ measured in these persistence tests.
 normalization and application of 10,000 prepared consecutive deltas. Construction,
 TLS/network I/O, journal writing, candidate evaluation and sizing are excluded.
 Each run checks the exact final quantity (10,100 centicontracts) and original wire
-sequence (10,001). The optimization shares the first decoded JSON tree with the
-gateway and removes the full raw-record copy; it does not relax validation.
+sequence (10,001). The final measured path also rejects a zero initial venue sequence. The
+optimization shares the first decoded JSON tree with the gateway and removes the full raw-record copy; it does not relax validation.
 
 M2 Pro, AppleClang 21, CMake Release, portable default flags: eight alternating
 before/after process pairs, each with eight measured 10,000-update runs. Medians
@@ -559,8 +559,8 @@ of run distributions, with compilation/tests stopped during the final campaign:
 
 | Path | Per-update p50 | Per-update p99 | 10,000-update total |
 |---|---:|---:|---:|
-| Initial controller, copy + second JSON parse | 3.917 us | 7.917 us | 41.604 ms |
-| Shared parsed input | 2.583 us | 3.771 us | 27.299 ms |
+| Initial controller, copy + second JSON parse | 3.916 us | 8.209 us | 41.521 ms |
+| Shared parsed input | 2.583 us | 4.563 us | 27.429 ms |
 
 This workload reduces median update/total CPU time by about 34%. Tails include OS
 scheduling/allocator variation; it is not a venue latency measurement, an economic
