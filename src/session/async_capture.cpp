@@ -7,12 +7,20 @@
 #include <utility>
 #include <vector>
 
+#if defined(_MSC_VER)
+// C4324 diagnoses the deliberate cache-line padding of Index and its owner.
+// Keep /W4 /WX globally; suppress only this expected layout diagnostic here.
+#pragma warning(push)
+#pragma warning(disable : 4324)
+#endif
+
 namespace eme::session {
 namespace {
 using Result = CaptureAppendResult;
 // Avoid sharing the producer/consumer publication indices on targets with
 // either 64- or 128-byte coherence lines. No target-specific instruction set.
 struct alignas(128) Index final { std::atomic<std::size_t> value{}; };
+static_assert(sizeof(Index) == 128U && alignof(Index) == 128U);
 static_assert(std::atomic<std::size_t>::is_always_lock_free);
 }  // namespace
 
@@ -137,6 +145,10 @@ struct AsyncCaptureWriter::Impl final {
     std::optional<FinalizeSessionResult> result_; // Worker writes; read after join.
     std::thread thread_; // Last: every shared field is initialized before start.
 };
+
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 
 CreateAsyncCaptureResult create_async_capture(const std::filesystem::path& directory,
     const gateway::kalshi::MetadataSnapshot& metadata, const CaptureQueueLimits limits) {
