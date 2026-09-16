@@ -40,9 +40,11 @@ std::optional<std::uint64_t> ceil_product(const std::uint64_t a, const std::uint
     }
     return quotient;
 }
-}  // namespace
-
-std::optional<FillCharge> charge_buy_fill(const Quantity quantity, const Price price,
+struct FillAmounts final {
+    Cash notional, trade_fee, rounding_fee, rebate, change;
+};
+template<bool Buy>
+std::optional<FillAmounts> fill_amounts(const Quantity quantity, const Price price,
     const FeePolicy policy, FeeAccumulator& accumulator) noexcept {
     const auto quantum = static_cast<std::uint64_t>(policy.balance_quantum_micro);
     if ((quantum != 100U && quantum != 10'000U) || policy.coefficient_ppm > 1'000'000U ||
@@ -52,10 +54,17 @@ std::optional<FillCharge> charge_buy_fill(const Quantity quantity, const Price p
     if (p != 0U && q > maximum / p) { return std::nullopt; }
     const auto notional = q * p;
     const auto fee = ceil_product(q, static_cast<std::uint64_t>(policy.coefficient_ppm) * p * (10'000U - p));
-    if (!fee || notional > maximum - *fee) { return std::nullopt; }
-    const auto total = notional + *fee;
-    const auto rounding = (quantum - total % quantum) % quantum;
-    if (total > maximum - rounding ||
+    if (!fee) { return std::nullopt; }
+    if constexpr (Buy) {
+        if (notional > maximum - *fee) { return std::nullopt; }
+    } else {
+        // For coefficient <= 1 and integer-micro revenue the fee cannot
+        // exceed revenue. Keep this checked contract explicit.
+        if (*fee > notional) { return std::nullopt; }
+    }
+    const auto total = Buy ? notional + *fee : notional - *fee;
+    const auto rounding = Buy ? (quantum - total % quantum) % quantum : total % quantum;
+    if ((Buy && total > maximum - rounding) ||
         accumulator.rounding_micro > std::numeric_limits<std::uint64_t>::max() - rounding) {
         return std::nullopt;
     }
@@ -64,6 +73,21 @@ std::optional<FillCharge> charge_buy_fill(const Quantity quantity, const Price p
     const auto rebate = std::min(accumulated / quantum, (*fee + rounding) / quantum) * quantum;
     accumulator.rounding_micro = accumulated - rebate;
     const auto cash = [](const std::uint64_t raw) { return *Cash::from_raw(static_cast<std::int64_t>(raw)); };
-    return FillCharge{cash(notional), cash(*fee), cash(rounding), cash(rebate), cash(total + rounding - rebate)};
+    return FillAmounts{cash(notional), cash(*fee), cash(rounding), cash(rebate),
+        cash(Buy ? total + rounding - rebate : total - rounding + rebate)};
+}
+}  // namespace
+
+std::optional<FillCharge> charge_buy_fill(const Quantity quantity, const Price price,
+    const FeePolicy policy, FeeAccumulator& accumulator) noexcept {
+    const auto fill = fill_amounts<true>(quantity, price, policy, accumulator);
+    if (!fill) { return std::nullopt; }
+    return FillCharge{fill->notional, fill->trade_fee, fill->rounding_fee, fill->rebate, fill->change};
+}
+std::optional<FillCredit> credit_sell_fill(const Quantity quantity, const Price price,
+    const FeePolicy policy, FeeAccumulator& accumulator) noexcept {
+    const auto fill = fill_amounts<false>(quantity, price, policy, accumulator);
+    if (!fill) { return std::nullopt; }
+    return FillCredit{fill->notional, fill->trade_fee, fill->rounding_fee, fill->rebate, fill->change};
 }
 }  // namespace eme::core

@@ -22,8 +22,13 @@ struct LifecyclePolicy final {
     std::uint64_t maximum_completion_orders{};
     std::vector<Settlement> settlements;
 };
+struct ResidualExitPolicy final {
+    bool reduce{}, reject{};
+    std::int64_t latency{}, response_latency{}, timeout{}, minimum_price{}, fill_bps{};
+};
 struct Policy final {
     std::optional<LifecyclePolicy> lifecycle;
+    std::optional<ResidualExitPolicy> residual_exit;
     bool optimal_sizing{};
     std::uint64_t max_sizing_evaluations{};
     std::int64_t capital{};

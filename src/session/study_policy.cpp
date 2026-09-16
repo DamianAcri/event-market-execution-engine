@@ -7,12 +7,14 @@ Policy load_policy(const std::filesystem::path& path, const ReplayInput& input) 
     const auto bytes = detail::read_text(path);
     const auto root = detail::parse_strict(bytes);
     const auto version = detail::integer(root, "schema_version");
-    const bool lifecycle = version == 3U && root.value("strategy", "") == "execution_lifecycle_v3";
+    const bool residual_exit = version == 4U && root.value("strategy", "") == "residual_exit_v4";
+    const bool lifecycle = residual_exit || (version == 3U && root.value("strategy", "") == "execution_lifecycle_v3");
     const bool optimal = lifecycle || (version == 2U && root.value("strategy", "") == "one_attempt_net_profit_v2");
     if (!optimal && (version != 1U || root.value("strategy", "") != "one_attempt_per_constraint_v1")) {
         detail::invalid("policy schema/strategy");
     }
     auto shape = root;
+    if (residual_exit) { shape.erase("residual_exit"); }
     if (lifecycle) { shape.erase("lifecycle"); }
     if (optimal) { shape.erase("max_sizing_evaluations"); }
     detail::shape(shape, {"schema_version", "strategy", "fee_provenance", "capital_micro_usd", "operating_cost_micro_usd",
@@ -102,6 +104,22 @@ Policy load_policy(const std::filesystem::path& path, const ReplayInput& input) 
             return std::tie(a.time, a.market_id) < std::tie(b.time, b.market_id);
         });
         policy.lifecycle = std::move(life);
+    }
+    if (residual_exit) {
+        const auto& config = root.at("residual_exit");
+        detail::shape(config, {"mode", "arrival_latency_ns", "response_latency_ns", "timeout_ns",
+            "minimum_price_1e4", "reject", "available_liquidity_bps"});
+        const auto mode = detail::string(config, "mode");
+        if (mode != "hold" && mode != "reduce_once") { detail::invalid("residual exit mode"); }
+        if (!config["reject"].is_boolean()) { detail::invalid("residual exit rejection"); }
+        ResidualExitPolicy exit;
+        exit.reduce = mode == "reduce_once"; exit.reject = config["reject"].get<bool>();
+        exit.latency = static_cast<std::int64_t>(detail::integer(config, "arrival_latency_ns", cash_limit));
+        exit.response_latency = static_cast<std::int64_t>(detail::integer(config, "response_latency_ns", cash_limit));
+        exit.timeout = static_cast<std::int64_t>(detail::integer(config, "timeout_ns", cash_limit));
+        exit.minimum_price = static_cast<std::int64_t>(detail::integer(config, "minimum_price_1e4", 10'000U));
+        exit.fill_bps = static_cast<std::int64_t>(detail::integer(config, "available_liquidity_bps", 10'000U));
+        policy.residual_exit = exit;
     }
     policy.json = root;
     policy.hash = detail::fingerprint_bytes(bytes).sha256;

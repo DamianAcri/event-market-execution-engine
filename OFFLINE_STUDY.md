@@ -224,7 +224,9 @@ The implemented policy and format limitations described above remain unchanged.
 ## Acquisition through settlement
 
 Policy schema 3 adds separate IOC responses, bounded sequential completion, explicit
-leg ordering and exact scenario settlement/capital holding accounting. See
+leg ordering and exact scenario settlement/capital holding accounting. Schema 4
+adds a bounded sale of confirmed unmatched holdings, including exit fees, shared
+liquidity and sale proceeds unavailable until response. See
 [LIFECYCLE_STUDY.md](LIFECYCLE_STUDY.md) for the contract, incomplete EOF handling and
 remaining model limits. This extends the same simulator; schemas 1/2 remain the
 historical behavior and retain their existing transcript, including the older EOF

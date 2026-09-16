@@ -599,3 +599,52 @@ fixture has two markets and one attempt and does not establish scaling or venue
 latency. OS scheduling contributes to tails. No compilation/tests ran concurrently
 with the final measurements. Policies, transcripts, raw CSVs, executable hashes
 and scenario outputs are in the local `calci-lifecycle-20260915` artifacts.
+
+## Bounded residual sales (2026-09-16)
+
+Schema 4 adds one optional sale of confirmed unmatched holdings. Buy and sell
+depth traversal share a compile-time direction parameter, keeping direction
+branches out of the traversal loop. Per-attempt/per-leg FIFO index links locate
+owned lots directly; a sale visits only those lots and full-lot closure avoids
+division. The bounded order/event/position storage is reserved before replay.
+Settlement still scans positions; it is not part of every market update.
+
+M2 Pro, AppleClang 21, portable CMake Release flags. Eight alternating old/new
+process pairs compare identical complete transcripts for the previous policies.
+Each process has three warmups and 100 measured studies for the two-market
+fixture, or 20 for 64 independent portfolios (128 markets/snapshots). Eight
+processes per new policy use the same respective sample counts. Timing includes
+policy loading, replay, accounting and JSON output to a hashing stream; initial
+session/plan loading and validation are excluded. No builds or tests ran during
+measurement. These are whole offline studies, not single-update or venue latency.
+
+| Equivalent-output path | Before p50 | After p50 | Before p99 | After p99 |
+|---|---:|---:|---:|---:|
+| Schema 2, one attempt | 152.167 us | 149.458 us | 280.938 us | 265.167 us |
+| Schema 3, one attempt | 182.646 us | 180.063 us | 349.459 us | 337.480 us |
+| Schema 3, 64 attempts | 3.926 ms | 3.906 ms | 4.325 ms | 4.265 ms |
+
+Values are medians of each process's percentile. The differences are small and
+do not establish a speedup; no material legacy regression is apparent in these
+fixtures. Schema 1/2/3 full outputs are byte-identical before/after, including the
+64-attempt schema-3 case. The earlier runtime-direction implementation and its
+measurements are retained separately in `before-static-dispatch` artifacts.
+
+| New schema-4 behavior | Median process p50 | Median process p99 |
+|---|---:|---:|
+| One attempt, hold | 190.813 us | 329.063 us |
+| One attempt, sell unmatched position | 201.105 us | 286.355 us |
+| 64 attempts, hold | 4.060 ms | 4.470 ms |
+| 64 attempts, sell unmatched positions | 4.749 ms | 5.362 ms |
+
+The exit policy performs more work and emits different events: approximately 5%
+and 17% more median time than hold in these fixtures. It is not an
+equivalent-output optimization. Process tails include scheduling/I/O noise, and
+20 samples do not estimate a population p99 reliably. The 64 portfolios have
+independent single-level books; this does not establish scaling for overlapping
+constraints, fragmented fills or representative captures. CI checks portability,
+not performance parity across hardware. No real economic return was measured.
+
+Policies, input sessions, transcripts, raw CSVs, scenario results, source snapshots,
+measurement script and executable hashes are retained in the local
+`calci-residual-20260916` artifacts.
