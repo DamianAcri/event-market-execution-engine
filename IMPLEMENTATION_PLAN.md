@@ -1,6 +1,6 @@
 # Implementation plan
 
-Updated: 2026-09-15. This is the **single execution plan** for the project: priorities,
+Updated: 2026-09-16. This is the **single execution plan** for the project: priorities,
 dependencies, current status and acceptance criteria are maintained here.
 [PROJECT_DIRECTION.md](PROJECT_DIRECTION.md) defines the product objective;
 [ARCHITECTURE.md](ARCHITECTURE.md) defines component boundaries. Research documents
@@ -170,14 +170,20 @@ if its bound over the defined search, liquidity and capital scope is justified.
 
 ### P3 — Complete the economic execution loop
 
-**Status, 2026-09-15:** the first acquisition-to-settlement simulation is implemented
-on `feat/simulated-settlement-lifecycle`. Schema 3 compares parallel acquisition
+**Status, 2026-09-16:** the first acquisition-to-settlement simulation is merged as
+[PR #11](https://github.com/DamianAcri/event-market-execution-engine/pull/11), `898a7a4`.
+Schema 3 compares parallel acquisition
 with bounded sequential completion, explicit leg order, delayed responses,
 partial/failed fills, conservative EOF reservations, exact settlement cash and
 paid capital holding time. Independent synthetic ledgers validate accounting;
 legacy policy output is preserved. See [LIFECYCLE_STUDY.md](LIFECYCLE_STUDY.md).
+Schema 4 adds `hold` versus one bounded sale of confirmed unmatched holdings on
+`feat/residual-position-exits`: shared book depletion across buy/sell directions,
+exact exit fees, FIFO ownership/cost basis, delayed availability of sale proceeds,
+and partial/failed/unknown exits. It preserves the matched portfolio and cannot
+sell unowned contracts. No live submission is added.
 This advances P3; it does not close all acceptance. Representative observations,
-response/fill calibration, residual sale policies, external cancellation races and
+response/fill calibration, external cancellation races and
 operational restart/reconciliation remain pending. No actual net returns have
 been measured, and no production policy is selected from synthetic examples.
 

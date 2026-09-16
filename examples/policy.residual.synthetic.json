@@ -1,0 +1,67 @@
+{
+  "available_liquidity_bps": 10000,
+  "capital_micro_usd": 100000000,
+  "fee_provenance": "Synthetic scenario: general 0.07 coefficient, direct-account precision; not venue fee discovery",
+  "fees": [
+    {
+      "balance_quantum_micro": 100,
+      "coefficient_ppm": 70000,
+      "market_id": 1
+    },
+    {
+      "balance_quantum_micro": 100,
+      "coefficient_ppm": 70000,
+      "market_id": 2
+    }
+  ],
+  "leg_latency_ns": [
+    0,
+    0
+  ],
+  "max_book_age_ns": 100000,
+  "min_margin_micro_usd": 0,
+  "operating_cost_micro_usd": 0,
+  "quantity_cap_centicontracts": 500,
+  "quantity_step_centicontracts": 100,
+  "reject_legs": [
+    true,
+    false
+  ],
+  "schema_version": 4,
+  "strategy": "residual_exit_v4",
+  "max_sizing_evaluations": 100000,
+  "lifecycle": {
+    "execution_policy": "parallel_hold",
+    "first_leg": 0,
+    "response_latency_ns": [
+      500,
+      500
+    ],
+    "completion_timeout_ns": 5000,
+    "completion_loss_limit_micro_usd": 0,
+    "maximum_completion_orders": 2,
+    "settlements": [
+      {
+        "market_id": 1,
+        "yes_wins": false,
+        "time_ns": 1000000,
+        "provenance": "Synthetic fixture outcome; not observed settlement"
+      },
+      {
+        "market_id": 2,
+        "yes_wins": false,
+        "time_ns": 1000000,
+        "provenance": "Synthetic fixture outcome; not observed settlement"
+      }
+    ]
+  },
+  "residual_exit": {
+    "mode": "reduce_once",
+    "arrival_latency_ns": 100,
+    "response_latency_ns": 300,
+    "timeout_ns": 1000000,
+    "minimum_price_1e4": 1000,
+    "reject": false,
+    "available_liquidity_bps": 10000
+  }
+}

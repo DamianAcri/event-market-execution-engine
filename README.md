@@ -80,7 +80,8 @@ Exact two-leg sizing now chooses the best funded margin after fees. Background
 recording preserves raw bytes with explicit memory limits and overload failure.
 Read-only transport/controller integration is tested with local TLS fixtures.
 The [simulated lifecycle](LIFECYCLE_STUDY.md) now compares parallel/sequential
-acquisition through cash settlement, including unknown responses and residual loss.
+acquisition through cash settlement, including unknown responses, residual loss
+and a bounded sale of unmatched holdings with fees and shared depth.
 Real feed validation, calibration and operational order management remain pending. The
 [economic validation plan](ECONOMIC_VALIDATION.md) defines the evidence needed
 to judge the hypothesis.

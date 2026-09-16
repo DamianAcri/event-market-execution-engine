@@ -23,10 +23,23 @@ struct FillCharge final {
     Cash debit;
 };
 
+struct FillCredit final {
+    Cash notional;
+    Cash trade_fee;
+    Cash rounding_fee;
+    Cash rebate;
+    Cash credit;
+};
+
 // ceil(coefficient * contracts * price * (1-price)) to one microdollar,
 // then balance rounding and capped per-order rebates. No floating point or
 // compiler-specific wide integers. Accumulator changes only on success.
 [[nodiscard]] std::optional<FillCharge> charge_buy_fill(
+    Quantity quantity, Price price, FeePolicy policy, FeeAccumulator& accumulator) noexcept;
+
+// Positive sale revenue less fees, floored to the account precision before the
+// capped order rebate. Uses the same fee model and accumulator contract as buys.
+[[nodiscard]] std::optional<FillCredit> credit_sell_fill(
     Quantity quantity, Price price, FeePolicy policy, FeeAccumulator& accumulator) noexcept;
 
 }  // namespace eme::core

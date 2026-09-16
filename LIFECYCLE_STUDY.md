@@ -1,10 +1,10 @@
 # Simulated execution lifecycle
 
-P3 now has a bounded offline acquisition-to-settlement loop. It extends the same
-study engine and fee/sizing functions; it is not a live order adapter. P3 economic
-acceptance remains open: parameters need suitable observations, and selling residual
-positions, external cancel races, persisted operational reconciliation and restart
-recovery are not implemented by this policy. P4 remains subsequent work.
+P3 has a bounded offline acquisition-to-settlement loop and an optional residual
+sale policy. Both use the same study engine and fee/sizing functions. P3 economic
+acceptance remains open: parameters need suitable observations; external cancel
+races, persisted operational reconciliation and restart recovery remain pending.
+P4 remains subsequent work. No live order adapter is included.
 
 ## Policy and causal timeline
 
@@ -54,7 +54,7 @@ path. The simulator still emits detailed JSON for offline analysis.
 
 ## Accounting and incomplete observations
 
-After every relevant transition, the simulator checks:
+Schema 3 checks after every relevant transition:
 
 ```text
 available + reserved - executed_debit_awaiting_response
@@ -118,6 +118,87 @@ multi-level and independent core fee/sizing tests remain in place.
 [PERFORMANCE.md](PERFORMANCE.md) contains complete-study timing and preservation
 of the previous policy's output. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
 remains the sole plan: collect/calibrate the observations, compare frozen policies
-under equal limits, then address residual sales/operational behavior where the
+under equal limits, then address broader exit and operational behavior where the
 results justify them. Same-price fill fragmentation, impact, queue behavior and
 response latency are declared assumptions, not calibrated venue behavior.
+
+## Schema 4: one bounded exit of unmatched holdings
+
+`residual_exit_v4` retains all schema-3 lifecycle fields and requires a root
+`residual_exit` object. Schema 1/2/3 retain their exact transcripts. Use
+`examples/policy.residual.synthetic.json` with the same fixture above.
+
+| Field | Contract |
+|---|---|
+| `mode` | `hold` or `reduce_once`; at most one exit order per attempt. |
+| `arrival_latency_ns` / `response_latency_ns` | Separate delays for the exit order and its reply. |
+| `timeout_ns` | Maximum initial-decision-to-exit-arrival time. |
+| `minimum_price_1e4` | Minimum eligible sale price, in the held outcome's price scale. |
+| `reject` / `available_liquidity_bps` | Explicit sale rejection/liquidity stress assumptions. |
+
+Exit decisions wait for **every acquisition response** for that attempt. In
+sequential mode they follow completion or its declared stopping condition. The
+policy can sell only the excess quantity of one acquired leg over the other,
+using that attempt's still-owned lots. It preserves the matched portfolio. No
+additional buy or sale can race another exit from the same attempt.
+
+The quote uses current depth, account fees, the quantity grid, freshness and
+connection generation. It selects visible unmatched quantity at/above the price
+floor, and submits an IOC limit at the worst included quote price. Arrival checks
+the book and ownership again; deterioration can yield a partial or zero fill.
+No retry or fictitious hedge occurs. Rejection, missing depth, stale books,
+resolution or exhausted time can leave exposure held through settlement.
+
+Selling YES consumes the same physical bids as buying NO; selling NO consumes
+the same asks as buying YES. Both directions share the existing depletion keys.
+An earlier simulated acquisition cannot leave its consumed liquidity available
+for a later exit. This mapping follows the venue's
+[direction and book-pricing contract](https://docs.kalshi.com/getting_started/order_direction)
+(checked 2026-09-16).
+
+Sale fees reuse the buy fee model and per-order rounding accumulator. Positive
+revenue less the microdollar-ceiled fee is floored to the declared account grid;
+rebates remain capped by that fill's fee. This applies Kalshi's
+[signed-revenue rounding contract](https://docs.kalshi.com/getting_started/fee_rounding)
+(checked 2026-09-16). Fee coefficients remain explicit scenario assumptions.
+Each visible price level is one assumed fill; fragmentation is still uncalibrated.
+
+Positions are stored once, with preallocated per-attempt/per-leg FIFO lot links.
+Each acquisition order creates one cost lot, aggregating its price-level fills;
+FIFO ordering is between acquisition orders. Exits traverse only their own lots.
+Cost basis is allocated proportionally in
+integer microdollars; retained quantity keeps the rounding remainder. Full-lot
+closure avoids division. Sold quantity stops accruing paid capital holding time
+at arrival; retained quantity continues until settlement or the observation end.
+An outstanding response still prevents a complete accounting claim. The metric
+does not measure extra waiting time before confirmed proceeds become reusable.
+
+The cash invariant now includes both sale proceeds and unknown sale responses:
+
+```text
+available + reserved - unconfirmed_buy_debit + unconfirmed_sale_credit
+    = initial_capital - acquisition_debit + sale_credit + settlement_cash
+```
+
+Proceeds become available only on response. EOF never manufactures a response or
+an exit beyond observation. Settlement wins equal-time order arrivals and pays
+only the retained quantity. Fully exited lots need no settlement annotation.
+`residual_exit` reports sold quantity, net proceeds, fees, released cost basis and
+proceeds awaiting acknowledgement. Top-level fees include buys and sells; the
+paired-floor bound includes actual simulated sale proceeds. Acquisition counts
+remain historical counts, not a current inventory report. Final simulated PnL
+requires all orders reconciled and all retained lots settled, after operating cost.
+
+Synthetic example: reject the first leg, acquire five YES B contracts for
+$3.2314, then sell them at $0.55 with $0.0867 exit fees. Net proceeds are $2.6633,
+so the result is **-$0.5681**. Holding produces **-$3.2314** if B loses, or
+**+$1.7686** if B wins. The exit decision is identical under either future label:
+it reduces exposure but can sacrifice the eventual winning payoff. No production
+winner or profitability conclusion follows. Other fixtures cover partial sales,
+matched portfolio preservation, vanished/shared depth, stale books, delayed
+responses, unknown EOF events, settlement races and independent generated ledgers.
+
+This is an incremental comparison policy, not a new strategy framework: hold and
+bounded reduction share one event scheduler and accounting implementation. The
+trade-off is deliberately one exit attempt, without adaptive re-entry, prediction
+or external cancellation handling. Observations must justify broader policies.
