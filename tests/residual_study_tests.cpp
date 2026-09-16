@@ -58,8 +58,8 @@ int main() {
         const auto reject = fixture.run(input, rejected).first;
         test.expect(reject["lifecycle"]["orders"] == 3U && reject["residual_exit"]["sold_centicontracts"] == 0U &&
             reject["lifecycle"]["simulated_net_pnl_micro_usd"] == -3'231'400, "rejected exit stays exposed without automatic retries");
-        auto price = params; price["residual_exit"]["minimum_price_1e4"] = 5600U;
-        test.expect(fixture.run(input, price).first["lifecycle"]["orders"] == 2U, "no sale below declared exit price floor");
+        auto price_floor = params; price_floor["residual_exit"]["minimum_price_1e4"] = 5600U;
+        test.expect(fixture.run(input, price_floor).first["lifecycle"]["orders"] == 2U, "no sale below declared exit price floor");
         auto timeout = params; timeout["residual_exit"]["timeout_ns"] = 599U;
         test.expect(fixture.run(input, timeout).first["lifecycle"]["orders"] == 2U, "exit timeout includes arrival latency");
         auto unresolved = params; unresolved["residual_exit"]["response_latency_ns"] = 100'000U;
