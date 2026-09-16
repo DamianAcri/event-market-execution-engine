@@ -323,5 +323,7 @@ if(EME_BUILD_LIVE_CAPTURE)
             --openssl ${EME_OPENSSL_EXECUTABLE}
             --metadata ${PROJECT_SOURCE_DIR}/examples/metadata.snapshot.json)
         set_tests_properties(eme_capture_transport_tests PROPERTIES TIMEOUT 90)
+        add_test(NAME eme_capture_runner_tests COMMAND ${Python3_EXECUTABLE} -B
+            ${PROJECT_SOURCE_DIR}/tests/capture_runner_tests.py)
     endif()
 endif()

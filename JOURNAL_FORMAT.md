@@ -71,7 +71,7 @@ new file rather than silently reinterpreting bytes.
 ## WS controller history
 
 Read-only captures use the versioned `ws.*.v1` channels documented in
-[READONLY_CAPTURE.md](READONLY_CAPTURE.md) and replay-plan schema 2. They retain
+[READONLY_CAPTURE.md](READONLY_CAPTURE.md) and replay-plan schemas 2/3 (per-market/shared subscription respectively). They retain
 schema-2 binary framing, but set the envelope sequence to zero and leave the
 optional exchange timestamp absent. The complete original venue sequence and
 exchange fields remain inside opaque incoming text. Controller validation routes

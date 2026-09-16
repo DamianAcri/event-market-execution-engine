@@ -60,6 +60,14 @@ BookUpdateResult OrderBook::apply_delta(
     const Side side,
     const core::Price price,
     const core::QuantityDelta quantity_delta) {
+    return apply_delta_after(stream_id, last_sequence_.value_or(0U), sequence,
+                             side, price, quantity_delta);
+}
+
+BookUpdateResult OrderBook::apply_delta_after(
+    const StreamId stream_id, const SequenceNumber predecessor,
+    const SequenceNumber sequence, const Side side, const core::Price price,
+    const core::QuantityDelta quantity_delta) {
     if (state_ != BookState::valid || !stream_id_.has_value() || !last_sequence_.has_value()) {
         return BookUpdateResult::requires_snapshot;
     }
@@ -69,7 +77,7 @@ BookUpdateResult OrderBook::apply_delta(
         return BookUpdateResult::stream_mismatch;
     }
 
-    if (sequence <= *last_sequence_ || sequence - *last_sequence_ != 1U) {
+    if (predecessor < *last_sequence_ || sequence <= predecessor || sequence - predecessor != 1U) {
         mark_stale();
         return BookUpdateResult::sequence_gap;
     }

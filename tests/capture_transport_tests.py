@@ -18,6 +18,7 @@ def main():
     for arg in ('client', 'engine', 'openssl', 'metadata'):
         parser.add_argument('--' + arg, required=True)
     args = parser.parse_args()
+    selected_tickers = [m["ticker"] for m in sorted(json.loads(Path(args.metadata).read_text())["markets"], key=lambda m: m["id"]) if m["id"] in (1, 2)]
     with tempfile.TemporaryDirectory(prefix='eme-tls-fixture-') as directory:
         root = Path(directory)
         key, cert, pub = (root / name for name in ('key.pem', 'cert.pem', 'public.pem'))
@@ -76,7 +77,7 @@ def main():
             sock.sendall(header + payload)
 
         passed = 0
-        for scenario in ('untrusted', 'hostname', 'normal', 'reconnect', 'gap', 'duplicate', 'subscription_error', 'malformed', 'auth', 'idle', 'snapshot_timeout', 'handshake_timeout', 'oversize', 'overflow'):
+        for scenario in ('untrusted', 'hostname', 'normal', 'empty_sides', 'reconnect', 'gap', 'duplicate', 'subscription_error', 'malformed', 'auth', 'idle', 'snapshot_timeout', 'handshake_timeout', 'oversize', 'overflow'):
             errors, wire_messages, headers_seen, pong_seen = [], [], [], []
             listener = socket.socket()
             listener.bind(('127.0.0.1', 0))
@@ -118,16 +119,21 @@ def main():
                             accept = base64.b64encode(hashlib.sha1((headers['sec-websocket-key'] + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').encode()).digest())
                             sock.sendall(b'HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + accept + b'\r\n\r\n')
                             commands = []
-                            for _ in range(2):
+                            for _ in range(1):
                                 opcode, payload = read_frame(sock)
                                 assert opcode == 1
                                 command = json.loads(payload)
                                 assert command['cmd'] == 'subscribe'
                                 assert command['params']['use_yes_price'] is True
                                 assert command['params']['channels'] == ['orderbook_delta']
+                                assert command['params']['market_tickers'] == selected_tickers
                                 commands.append(command)
                             def send_message(message, fragment=False):
                                 # Whitespace is intentional: persisted bytes must remain exact.
+                                if scenario == 'empty_sides' and message['type'] == 'orderbook_snapshot':
+                                    message['msg'].pop('no_dollars_fp')
+                                    if message['msg']['market_ticker'] == selected_tickers[1]:
+                                        message['msg'].pop('yes_dollars_fp')
                                 payload = ' ' + json.dumps(message, separators=(', ', ': ')) + '\n'
                                 wire_messages.append(payload)
                                 if fragment:
@@ -145,11 +151,11 @@ def main():
                                     send_frame(sock, b'heartbeat', opcode=9)
                                     time.sleep(0.15)
                             elif scenario != 'idle':
-                                for command in commands:
-                                    send_message({'type': 'orderbook_snapshot', 'sid': 10 + command['id'], 'seq': 40,
-                                        'msg': {'market_ticker': command['params']['market_ticker'],
-                                                'yes_dollars_fp': [['0.5000' if command['id'] == 1 else '0.7000', '5.00']],
-                                                'no_dollars_fp': [['0.6000' if command['id'] == 1 else '0.8000', '5.00']]}}, fragment=scenario == 'normal')
+                                for market_index, ticker in enumerate(commands[0]['params']['market_tickers']):
+                                    send_message({'type': 'orderbook_snapshot', 'sid': 11, 'seq': 40 + market_index,
+                                        'msg': {'market_ticker': ticker,
+                                                'yes_dollars_fp': [['0.5000' if market_index == 0 else '0.7000', '5.00']],
+                                                'no_dollars_fp': [['0.6000' if market_index == 0 else '0.8000', '5.00']]}}, fragment=scenario == 'normal')
                                 if scenario == 'malformed':
                                     send_frame(sock, '{"type":')
                                 elif scenario == 'oversize':
@@ -158,8 +164,8 @@ def main():
                                     send_message({'type': 'ignored', 'padding': 'x' * 8192})
                                 else:
                                     send_message({'type': 'orderbook_delta', 'sid': 11,
-                                        'seq': 43 if scenario in ('gap', 'reconnect') and attempt == 0 else 40 if scenario == 'duplicate' else 41,
-                                        'msg': {'market_ticker': commands[0]['params']['market_ticker'], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
+                                        'seq': 44 if scenario in ('gap', 'reconnect') and attempt == 0 else 41 if scenario == 'duplicate' else 42,
+                                        'msg': {'market_ticker': commands[0]['params']['market_tickers'][0], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
                             try:
                                 while True:
                                     opcode, payload = read_frame(sock)
@@ -203,6 +209,8 @@ def main():
                 assert summary['reason'] == 'tls_verification_or_handshake' and not headers_seen, summary
             if scenario == 'normal':
                 assert summary['market_updates'] == 3 and pong_seen, summary
+            if scenario == 'empty_sides':
+                assert summary['market_updates'] == 3, summary
             if scenario == 'auth':
                 assert summary['reason'] == 'authentication_rejected', summary
             if scenario == 'reconnect':

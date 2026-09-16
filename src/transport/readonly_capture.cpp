@@ -73,7 +73,7 @@ struct Connection final {
 class Runner final {
 public:
     Runner(const CaptureConfig& config, const gateway::kalshi::MetadataSnapshot& metadata)
-        : config_{config}, metadata_{metadata}, feed_{metadata.markets(), config.markets},
+        : config_{config}, metadata_{metadata}, feed_{metadata.markets(), config.markets, session::FeedProtocol::shared_subscription_v1},
           context_{ssl::context::tls_client}, key_{load_key(config.private_key)},
           duration_{io_}, health_{io_}, retry_{io_}, signals_{io_, SIGINT, SIGTERM} {
         if (config.duration.count() <= 0 || config.duration > std::chrono::hours{24} ||
@@ -106,8 +106,8 @@ public:
         if (!std::holds_alternative<session::SessionManifest>(finalized)) { return {false, updates_, generation_, "finalization_failure"}; }
         const auto fingerprint = session::detail::fingerprint_file(config_.directory / session::manifest_filename);
         if (!std::holds_alternative<session::ArtifactFingerprint>(fingerprint)) { return {false, updates_, generation_, "manifest_read_failure"}; }
-        const auto plan = Json{{"schema_version", 2U}, {"source_kind", config_.synthetic ? "synthetic" : "observed_ws"},
-            {"provenance", config_.synthetic ? "local TLS/WebSocket fixture" : "Kalshi read-only WS capture; one market per subscription"},
+        const auto plan = Json{{"schema_version", 3U}, {"source_kind", config_.synthetic ? "synthetic" : "observed_ws"},
+            {"provenance", config_.synthetic ? "local TLS/WebSocket fixture" : "Kalshi read-only WS capture; shared subscription sequence"},
             {"manifest_sha256", std::get<session::ArtifactFingerprint>(fingerprint).sha256},
             {"use_yes_price", true}, {"markets", config_.markets}}.dump();
         if (session::detail::write_new_file(config_.directory / "replay.json", plan)) { return {false, updates_, generation_, "plan_write_failure"}; }

@@ -49,9 +49,10 @@ using Json = nlohmann::json;
 
 [[nodiscard]] std::variant<std::vector<WirePriceLevel>, DecodeError> read_levels(
     const Json& message,
-    const std::string_view name) {
+    const std::string_view name, const bool allow_omitted_empty_sides) {
     const auto* levels = find_field(message, name);
     if (levels == nullptr) {
+        if (allow_omitted_empty_sides) { return std::vector<WirePriceLevel>{}; }
         return error(DecodeErrorCode::missing_field, name);
     }
     if (!levels->is_array()) {
@@ -92,7 +93,8 @@ DecodedOrderBookMessage decode_orderbook_message(
 
 DecodedOrderBookMessage detail::decode_orderbook_json(
     const Json& root, const market::ConnectionGeneration connection_generation,
-    const market::ReceiveTime received_at, const MarketRegistry& markets) {
+    const market::ReceiveTime received_at, const MarketRegistry& markets,
+    const bool allow_omitted_empty_sides) {
     if (connection_generation == 0U) { return error(DecodeErrorCode::invalid_field_value, "connection_generation"); }
     if (!root.is_object()) {
         return error(DecodeErrorCode::invalid_root, "$");
@@ -132,11 +134,11 @@ DecodedOrderBookMessage detail::decode_orderbook_json(
     }
 
     if (std::get<std::string>(type) == "orderbook_snapshot") {
-        auto yes_bids = read_levels(*message, "yes_dollars_fp");
+        auto yes_bids = read_levels(*message, "yes_dollars_fp", allow_omitted_empty_sides);
         if (std::holds_alternative<DecodeError>(yes_bids)) {
             return std::get<DecodeError>(yes_bids);
         }
-        auto no_bids = read_levels(*message, "no_dollars_fp");
+        auto no_bids = read_levels(*message, "no_dollars_fp", allow_omitted_empty_sides);
         if (std::holds_alternative<DecodeError>(no_bids)) {
             return std::get<DecodeError>(no_bids);
         }

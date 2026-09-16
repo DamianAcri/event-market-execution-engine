@@ -4,5 +4,6 @@
 namespace eme::gateway::kalshi::detail {
 // Internal JSON boundary shared by standalone decoding and the WS controller.
 [[nodiscard]] DecodedOrderBookMessage decode_orderbook_json(
-    const nlohmann::json&, market::ConnectionGeneration, market::ReceiveTime, const MarketRegistry&);
+    const nlohmann::json&, market::ConnectionGeneration, market::ReceiveTime, const MarketRegistry&,
+    bool allow_omitted_empty_sides = false);
 }

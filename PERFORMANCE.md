@@ -648,3 +648,18 @@ not performance parity across hardware. No real economic return was measured.
 Policies, input sessions, transcripts, raw CSVs, scenario results, source snapshots,
 measurement script and executable hashes are retained in the local
 `calci-residual-20260916` artifacts.
+
+
+## Shared subscription acceptance (2026-09-16)
+
+The feed benchmark alternates eight legacy and eight shared-protocol runs over
+the same prepared 10,000 deltas, checking final quantity 10,100 and unchanged venue
+sequence 10,001. On this AppleClang 21 arm64 Release build (no native tuning),
+median per-run p50/p99 were 2,583/3,625 ns for legacy and 2,562.5/3,604.5 ns for
+shared. This small difference is timing noise, not a claimed speedup. The change
+adds correct cross-market sequence scope without a measurable regression in this
+single-market workload; multi-market socket/venue latency is not measured by it.
+CSV provenance is retained with the local observed-capture artifacts. Actual
+multi-market acceptance used eight markets for 45 seconds: 2,613 updates, one
+connection and no replay rejection. Optimizing economics still requires longer
+observations and explicit fee/execution assumptions.

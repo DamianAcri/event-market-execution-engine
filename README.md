@@ -17,8 +17,10 @@ state.
 **Start with [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)** for the current
 work order and acceptance criteria. [Exact net-profit sizing](NET_SIZING.md) is
 implemented; [read-only capture](READONLY_CAPTURE.md) includes an optional TLS/WS
-collector, bounded persistence and controller replay. Real authenticated sessions
-and representative observations remain to validate. Research documents contain
+collector, bounded persistence and controller replay. Short authenticated multi-market captures now pass; representative observations
+and economic calibration remain pending. An operator can run
+`python3 scripts/capture_readonly.py --seconds 7200` after installing the optional
+collector as described in [READONLY_CAPTURE.md](READONLY_CAPTURE.md). Research documents contain
 evidence and conditional proposals; they do not create additional work queues.
 The package version remains 0.2.0, and capability status is described below.
 
@@ -82,7 +84,7 @@ Read-only transport/controller integration is tested with local TLS fixtures.
 The [simulated lifecycle](LIFECYCLE_STUDY.md) now compares parallel/sequential
 acquisition through cash settlement, including unknown responses, residual loss
 and a bounded sale of unmatched holdings with fees and shared depth.
-Real feed validation, calibration and operational order management remain pending. The
+Representative feed coverage, calibration and operational order management remain pending. The
 [economic validation plan](ECONOMIC_VALIDATION.md) defines the evidence needed
 to judge the hypothesis.
 
@@ -144,9 +146,8 @@ metadata and journal files into a new finalized directory.
 
 ## Credentials
 
-No credentials are required to build or test the core. Future authenticated
-connectivity will read a Kalshi key ID and a path to an RSA private-key file
-from runtime configuration. Private keys must remain outside the repository.
+No credentials are required to build or test the core. The optional read-only collector reads a Kalshi key ID and a path to an RSA
+private-key file from runtime configuration. Private keys must remain outside the repository.
 
 ## Safety
 

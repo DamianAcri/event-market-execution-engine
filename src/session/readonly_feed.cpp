@@ -8,21 +8,31 @@ namespace eme::session {
 using detail::Json;
 
 ReadOnlyFeed::ReadOnlyFeed(const gateway::kalshi::MarketRegistry& markets,
-                         const std::span<const market::MarketId> selection)
-    : markets_{markets}, processor_{markets}, selection_{selection.begin(), selection.end()} {
+                         const std::span<const market::MarketId> selection,
+                         const FeedProtocol protocol)
+    : markets_{markets}, processor_{markets, protocol == FeedProtocol::shared_subscription_v1
+        ? market::SequenceScope::shared_stream : market::SequenceScope::per_book},
+      protocol_{protocol}, selection_{selection.begin(), selection.end()} {
     if (selection.empty() || selection.size() > 64U) { detail::invalid("capture selection must contain 1..64 markets"); }
     std::sort(selection_.begin(), selection_.end());
     if (std::adjacent_find(selection_.begin(), selection_.end()) != selection_.end()) {
         detail::invalid("duplicate capture market");
     }
+    Json tickers = Json::array();
     for (const auto id : selection_) {
         const auto ticker = markets.find(id);
         if (!ticker) { detail::invalid("unknown capture market"); }
-        commands_.push_back(Json{{"id", commands_.size() + 1U}, {"cmd", "subscribe"},
+        tickers.push_back(*ticker);
+        if (protocol_ == FeedProtocol::per_market_v1) { commands_.push_back(Json{{"id", commands_.size() + 1U}, {"cmd", "subscribe"},
             {"params", {{"channels", {"orderbook_delta"}}, {"market_ticker", *ticker},
+                        {"use_yes_price", true}}}}.dump()); }
+    }
+    if (protocol_ == FeedProtocol::shared_subscription_v1) {
+        commands_.push_back(Json{{"id", 1U}, {"cmd", "subscribe"},
+            {"params", {{"channels", {"orderbook_delta"}}, {"market_tickers", tickers},
                         {"use_yes_price", true}}}}.dump());
     }
-    acknowledged_.resize(selection_.size());
+    acknowledged_.resize(commands_.size());
     subscriptions_.reserve(selection_.size());
 }
 
@@ -77,8 +87,12 @@ FeedUpdate ReadOnlyFeed::accept(const journal::RawMarketRecord& record) {
     if (record.channel == "ws.send.v1") {
         if (sent_ >= commands_.size() || record.payload != commands_[sent_]) { return fail("subscription command"); }
         // A new subscription explicitly requests a new snapshot for stale books.
-        const auto id = selection_[sent_];
-        if (processor_.state().find_book(id) && !processor_.begin_recovery(id)) { return fail("recovery transition"); }
+        const auto recover = [&](const market::MarketId id) {
+            return !processor_.state().find_book(id) || processor_.begin_recovery(id);
+        };
+        if (protocol_ == FeedProtocol::shared_subscription_v1) {
+            for (const auto id : selection_) { if (!recover(id)) { return fail("recovery transition"); } }
+        } else if (!recover(selection_[sent_])) { return fail("recovery transition"); }
         ++sent_;
         return {};
     }
@@ -95,7 +109,8 @@ FeedUpdate ReadOnlyFeed::accept(const journal::RawMarketRecord& record) {
             const auto sid = detail::integer(msg, "sid", std::numeric_limits<std::uint64_t>::max());
             if (id == 0U || sid == 0U || root.contains("seq") || acknowledged_[id - 1U] ||
                 detail::string(msg, "channel") != "orderbook_delta" ||
-                !subscriptions_.emplace(sid, selection_[id - 1U]).second) { return fail("subscription acknowledgement"); }
+                !subscriptions_.emplace(sid, protocol_ == FeedProtocol::shared_subscription_v1
+                    ? 0U : selection_[id - 1U]).second) { return fail("subscription acknowledgement"); }
             acknowledged_[id - 1U] = true;
             return {};
         }
@@ -105,19 +120,23 @@ FeedUpdate ReadOnlyFeed::accept(const journal::RawMarketRecord& record) {
         const auto sid = detail::integer(root, "sid", std::numeric_limits<std::uint64_t>::max());
         if (detail::integer(root, "seq", std::numeric_limits<std::uint64_t>::max()) == 0U) { return fail("zero venue sequence"); }
         const auto sub = subscriptions_.find(sid);
-        if (sub == subscriptions_.end() || markets_.find(detail::string(root.at("msg"), "market_ticker")) != sub->second) {
+        const auto market_id = markets_.find(detail::string(root.at("msg"), "market_ticker"));
+        if (sub == subscriptions_.end() || !market_id ||
+            (protocol_ == FeedProtocol::per_market_v1 ? *market_id != sub->second :
+                !std::binary_search(selection_.begin(), selection_.end(), *market_id))) {
             return fail("subscription market mismatch");
         }
-        const auto* existing = processor_.state().find_book(sub->second);
+        const auto* existing = processor_.state().find_book(*market_id);
         if (type == "orderbook_snapshot" && existing && existing->state() == book::BookState::valid) {
             return fail("unsolicited snapshot");
         }
         const auto decoded = gateway::kalshi::detail::decode_orderbook_json(
-            root, record.connection_generation, record.received_at, markets_);
+            root, record.connection_generation, record.received_at, markets_,
+            protocol_ == FeedProtocol::shared_subscription_v1);
         const auto processed = processor_.process_decoded(decoded);
         const auto* result = std::get_if<book::BookUpdateResult>(&processed);
         if (!result || *result != book::BookUpdateResult::applied) { return fail("book rejected"); }
-        return {FeedEvent::market, sub->second, "applied"};
+        return {FeedEvent::market, *market_id, "applied"};
     } catch (const ReplayError&) { return fail("invalid message"); }
     catch (const Json::exception&) { return fail("invalid message"); }
 }

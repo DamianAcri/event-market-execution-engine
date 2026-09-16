@@ -63,12 +63,12 @@ std::variant<ReplayInput, ReplayError> load_replay(
         const auto bytes = detail::read_text(plan_path);
         const auto root = detail::parse_strict(bytes);
         const auto version = detail::integer(root, "schema_version");
-        if (version == 2U) {
+        if (version == 2U || version == 3U) {
             detail::shape(root, {"schema_version", "source_kind", "provenance", "manifest_sha256", "use_yes_price", "markets"});
         } else {
             detail::shape(root, {"schema_version", "source_kind", "provenance", "manifest_sha256", "use_yes_price", "controls"});
         }
-        if ((version != 1U && version != 2U) || root["use_yes_price"] != true) { detail::invalid("replay schema/price convention"); }
+        if ((version != 1U && version != 2U && version != 3U) || root["use_yes_price"] != true) { detail::invalid("replay schema/price convention"); }
         ReplayPlan plan{detail::string(root, "source_kind"), detail::string(root, "provenance"),
                         detail::string(root, "manifest_sha256"), detail::fingerprint_bytes(bytes).sha256, {}, false, {}};
         if (plan.source_kind != "synthetic" && plan.source_kind != "observed_ws" &&
@@ -76,13 +76,15 @@ std::variant<ReplayInput, ReplayError> load_replay(
         const auto fingerprint = detail::fingerprint_file(directory / manifest_filename);
         const auto* bound = std::get_if<ArtifactFingerprint>(&fingerprint);
         if (!bound || bound->sha256 != plan.manifest_sha256) { detail::invalid("manifest binding"); }
-        if (version == 2U) {
+        if (version == 2U || version == 3U) {
             plan.ws_controller = true;
+            plan.shared_subscription = version == 3U;
             if (plan.source_kind == "observed_rest_samples" || !root["markets"].is_array() || root["markets"].empty() || root["markets"].size() > 64U) { detail::invalid("WS source/markets"); }
             for (const auto& id : root["markets"]) {
                 plan.markets.push_back(static_cast<market::MarketId>(detail::integer(Json{{"id", id}}, "id", std::numeric_limits<market::MarketId>::max())));
             }
-            ReadOnlyFeed validation{session.metadata.markets(), plan.markets};
+            ReadOnlyFeed validation{session.metadata.markets(), plan.markets, plan.shared_subscription
+                ? FeedProtocol::shared_subscription_v1 : FeedProtocol::per_market_v1};
             return ReplayInput{directory, std::move(session), std::move(plan)};
         }
         const auto& controls = root["controls"];
@@ -114,7 +116,8 @@ std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
     ReplayObserver& observer, std::ostream* output) {
     gateway::kalshi::OrderBookProcessor processor{input.session.metadata.markets()};
     std::unique_ptr<ReadOnlyFeed> feed;
-    if (input.plan.ws_controller) { feed = std::make_unique<ReadOnlyFeed>(input.session.metadata.markets(), input.plan.markets); }
+    if (input.plan.ws_controller) { feed = std::make_unique<ReadOnlyFeed>(input.session.metadata.markets(), input.plan.markets,
+        input.plan.shared_subscription ? FeedProtocol::shared_subscription_v1 : FeedProtocol::per_market_v1); }
     const auto state = [&]() -> const market::MarketState& { return feed ? feed->state() : processor.state(); };
     opportunity::CandidateTracker tracker{input.session.manifest.metadata_version, input.session.metadata.constraints()};
     auto opened = journal::open_raw_journal_reader(input.directory / journal_filename);

@@ -2,9 +2,9 @@
 
 The optional C++ TLS/WebSocket collector, strict subscription/recovery controller,
 background recorder and replay are implemented. Synthetic TLS fixtures exercise
-the complete path. **P2 observational acceptance remains open**: no authenticated
-Kalshi connection or representative multi-event campaign has been validated with
-this delivery. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) is the execution plan.
+the complete path. **P2 observational acceptance remains open**: authenticated single-market and
+eight-market production data captures have now passed (2026-09-16), but a
+representative campaign and economic calibration remain pending. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) is the execution plan.
 
 ## Running the optional collector
 
@@ -27,13 +27,26 @@ production or demo venue; tests use an internal loopback fixture client. Missing
 credentials fail before creating artifacts or opening a connection. No order API
 exists in the collector.
 
-The selected markets are the 1..64 explicit IDs in the reviewed metadata file.
-The initial policy sends one `orderbook_delta` subscription per market with
-`use_yes_price:true`; acknowledgements bind command ID, subscription ID and market.
-This intentionally avoids ambiguous interleaved market sequence scopes. Actual
-venue acceptance and scope must still be checked in a captured session; if the
-venue merges subscriptions or uses a different scope, the controller stops that
-generation. It never rewrites venue `sid` or `seq` to appear valid.
+The selected markets are the 1..64 explicit IDs in reviewed metadata. New captures
+send one `orderbook_delta` command with `market_tickers` and `use_yes_price:true`.
+Kalshi was observed to merge repeated same-channel subscriptions: the previous
+one-market-per-subscription controller correctly stopped at the second `ok`
+response, but could not record multiple markets. A single explicit group avoids
+that incremental-subscription protocol. Dynamic membership is unsupported.
+
+One acknowledgement binds the command to its nonzero subscription ID. A common
+consecutive sequence covers every snapshot and delta in that subscription;
+selection membership, per-market initial snapshots and recovery remain mandatory.
+The venue-neutral `MarketState` checks the common predecessor before allowing a
+book to advance past other markets' messages. This private book operation retains
+the original sequence; a gap closes the connection and invalidates all books.
+No sequence rewriting or public unchecked-delta API is introduced.
+
+The official schema permits absent snapshot sides when that side is empty. The
+new controller accepts these as empty vectors; present non-array/null/malformed
+sides still fail. Legacy replay keeps its previous decoder semantics. Sources:
+[orderbook protocol](https://docs.kalshi.com/websockets/orderbook-updates),
+[complete schema](https://docs.kalshi.com/asyncapi.yaml).
 
 TLS verifies the certificate chain and hostname, requires TLS >=1.2, and sets SNI.
 OpenSSL signs a fresh millisecond timestamp + `GET` + `/trade-api/ws/v2` using
@@ -55,9 +68,11 @@ generation; they are recorded as transport failures, not accepted book data.
 ## Controller history and replay
 
 The collector persists raw text messages and controller actions into the existing
-checksummed journal. Payload whitespace and escapes are preserved. The new
-manifest-bound `replay.json` schema 2 selects this controller and lists market IDs;
-legacy schema 1 plans and transcripts remain supported unchanged.
+checksummed journal. Payload whitespace and escapes are preserved. The
+manifest-bound `replay.json` schema 3 selects the shared-subscription controller
+and lists market IDs. Schema 2 retains the original per-market subscription
+controller; schema 1 retains legacy market-only replay. Existing captures are
+never silently reinterpreted or renumbered.
 
 | Channel | Meaning |
 |---|---|
@@ -74,14 +89,13 @@ that unchanged sequence. This differs explicitly from legacy market-only records
 where envelope and payload sequences must agree. Binary framing stays schema 2;
 versioned channel names and replay-plan schema select interpretation.
 
-A subscription acknowledgement must match a sent command, assign a unique nonzero
-`sid`, and identify the requested channel. A first snapshot establishes each
-subscription. Consecutive deltas then go through unchanged core checks. Duplicate
-acks, extra snapshots, gaps, wrong-market/wrong-subscription messages, malformed
-JSON (including duplicate keys), or venue errors invalidate every book and close
-the generation. Reconnection resubscribes each market, explicitly transitions
-existing stale books to recovery, and requires fresh snapshots. No valid old
-liquidity survives a failed generation. Replay requires terminal close history.
+An acknowledgement must match the only sent command and identify the requested
+channel. A first snapshot establishes each selected market. Every following
+snapshot or delta advances the common stream sequence by exactly one. Duplicate
+acks, extra snapshots, gaps, unknown markets/subscriptions, malformed messages or
+venue errors invalidate every book and close the generation. Reconnection resets
+the sequence scope, transitions stale books to recovery, and requires fresh
+snapshots for each market. Replay requires terminal close history.
 
 `manifest.json` certifies byte integrity, not venue authenticity or economic
 validity. A successful run also writes `replay.json` and checks controller replay.
@@ -197,11 +211,59 @@ Official Kalshi documentation was checked on 2026-09-15:
   responses, including subscription errors. Do not feed interleaved subscriptions
   into the current per-book consecutive-sequence assumption without validating
   actual scope. Keep original `sid`/`seq` bytes; do not renumber wire records to
-  make replay pass. The controller now validates the conservative one-market subscription contract
-  described above; actual venue acceptance remains to be observed. [Official schema](https://docs.kalshi.com/asyncapi.yaml).
+  make replay pass. The initial controller validated a conservative per-market subscription contract.
+  The observed shared-subscription correction is documented above. [Official schema](https://docs.kalshi.com/asyncapi.yaml).
 
-The implemented controller/transport addresses this preparation. Actual venue
-sequence-scope and same-session replay acceptance still require an observed
-authenticated session. No user credentials or additional representative sessions
-were used in this delivery. The original short REST pilot remains inconclusive;
-the multi-date, reviewed-family and held-out-event criteria are unchanged.
+The initial controller/transport addressed this preparation using local fixtures.
+The subsequent observed acceptance below resolves subscription scope for the
+current bounded group. The multi-date, reviewed-family and held-out-event
+criteria remain unchanged; short connection checks do not complete P2.
+
+## Operator-run research capture
+
+After building the optional target, install `eme-capture` in `out/bin/` (or pass
+`--binary` explicitly). Python 3.9+ and curl are required. Run:
+
+```sh
+python3 scripts/capture_readonly.py --seconds 7200
+```
+
+The runner reads `.config/event-market-execution-engine/.env.local` under the
+user's home directory, containing `EME_KALSHI_KEY_ID` and
+`EME_KALSHI_PRIVATE_KEY_PATH`, with optional `export` prefixes. It parses assignments
+as data, never sources a shell, never prints their values, and never reads the
+private-key contents itself. The collector consumes the key internally.
+
+Public preflight archives the current BTC series, market definitions and contract
+PDF. The PDF hash must match the version reviewed on 2026-09-16. Selection requires
+the exact reviewed above-threshold rule, same event/time/secondary conditions,
+$1 notional and standard series fees. Eight thresholds nearest midpoint 0.5 are
+frozen before capture, producing 28 implications; no title inference or cross-event
+relation is used. The earliest eligible event must stay open for the requested
+window plus ten minutes. A changed contract, partial listing or incompatible rule
+stops preparation. `--prepare-only` does not load credentials or open WebSockets.
+
+Artifacts go to a new `captures/btc-<UTC timestamp>/` directory, ignored by Git:
+public sources, metadata, selection, provenance and binary/script hashes, result,
+and the original finalized session. The default duration is two hours (maximum
+three). The process reports disk usage each minute; Ctrl+C requests finalization.
+A 2 GiB journal budget and 1 GiB free-space floor request early termination.
+Keep the computer awake and connected. A partial capture is diagnostic data, not
+a completed window; never delete it merely because the process failed.
+
+No account/balance/order endpoints are used. No order transport is included.
+The resulting folder can be passed to the offline replay/study tools or reviewed
+in a later task. Repeated chunks must not be summed as independent profit runs:
+funding, position holding, depletion and observation gaps require joint treatment.
+
+## Observed acceptance, 2026-09-16
+
+A 45-second read-only run on eight KXBTCD-26SEP1617 thresholds finalized with
+2,613 market updates, one connection and 2,618 journal records. Controller replay
+reported zero rejected updates and zero gross candidate events. These counts
+validate the corrected protocol and replay, not economic viability. Two published
+schema-2 captures also produced byte-identical old/new replay transcripts.
+
+The longer campaign is deliberately left for the operator to launch. P2 still
+requires broader event/date coverage; no fills, profits or account precision have
+been calibrated. Raw public data and research artifacts stay outside Git.

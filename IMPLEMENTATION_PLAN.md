@@ -62,8 +62,8 @@ not market profitability. Details and reproductions are in
 
 ## Delivery order
 
-**P1 and P2's transport/controller implementation are merged.** P2 collection and
-authenticated venue acceptance remain open. P3's first offline acquisition-to-settlement
+**P1 and P2's transport/controller implementation are merged.** P2 representative collection remains open; short authenticated acceptance
+now passes, including eight markets after the shared-subscription correction. P3's first offline acquisition-to-settlement
 loop is delivered in [PR #11](https://github.com/DamianAcri/event-market-execution-engine/pull/11).
 Start P2 collection now; it must not wait for all simulator or product features. P3 can
 be developed against fixtures while data is collected, but passing its economic
@@ -127,8 +127,14 @@ recording and manifest-bound controller replay are merged as
 Portability/sanitizer CI and TLS fixtures on Linux, macOS and Windows pass.
 The fixtures verify signing, peer validation,
 control/data history and recovery; the decoder avoids redundant per-frame parsing.
-**P2 remains data-dependent, not complete:** real authenticated sequence/subscription
-acceptance and representative multi-event collection have not been validated.
+**Update, 2026-09-16:** real multi-market acceptance exposed same-channel
+subscription merging and omitted empty snapshot sides. The corrected controller
+uses an explicit shared subscription and stream sequence, with versioned replay.
+A 45-second/eight-market capture passed with 2,613 updates and no rejected replay
+updates; two legacy captures retain identical transcripts. The operator runner
+now prepares reviewed metadata and records bounded sessions without orders.
+**P2 remains data-dependent, not complete:** the representative multi-event/date
+campaign and economic calibration still require collected observations.
 [READONLY_CAPTURE.md](READONLY_CAPTURE.md) owns the actual interface and limits.
 
 **Deliverable:** reproducible observed sessions and a report showing where net

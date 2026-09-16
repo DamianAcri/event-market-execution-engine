@@ -25,6 +25,7 @@ struct ReplayPlan final {
     std::vector<ReplayControl> controls;
     bool ws_controller{};
     std::vector<market::MarketId> markets;
+    bool shared_subscription{};
 };
 struct ReplayInput final {
     std::filesystem::path directory;
