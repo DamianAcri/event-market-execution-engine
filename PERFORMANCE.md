@@ -663,3 +663,39 @@ CSV provenance is retained with the local observed-capture artifacts. Actual
 multi-market acceptance used eight markets for 45 seconds: 2,613 updates, one
 connection and no replay rejection. Optimizing economics still requires longer
 observations and explicit fee/execution assumptions.
+
+## Live paper adapter measurement — 2026-09-16
+
+The adapter reuses the exact existing economic observer; no strategy parameters
+were selected by the following performance measurements. The baseline executable
+was built from `6f6e893` before the streaming interface extraction. Both Release
+builds used the existing Apple Clang/arm64 toolchain. Six alternating before/after
+pairs used seven measured runs and three warmups each on each fixture. Economic
+output digests matched across every baseline and candidate run.
+
+| Complete offline study, median of per-run p50 | Before | Streaming interface |
+|---|---:|---:|
+| Recorded eight-market / 2,618-record session | 22.616 ms | 22.626 ms |
+| Synthetic two-market execution fixture | 147.979 us | 148.146 us |
+
+The approximately 0.04% / 0.11% differences are noise-level, not a speed claim.
+These are full-study service costs including parsing and output serialization,
+not network timing, tail guarantees or opportunity-specific order latency.
+
+A separate 20-second live paper preflight processed 17,719 market updates on one
+connection and performed 124,033 relationship evaluations. Its live economic trace
+and complete replay accounting matched. No positive costed candidate was found,
+so this run did not exercise real-data simulated order deadlines; synthetic TLS
+fixtures cover quiet-feed arrivals, partial acquisitions/exits, disconnects,
+unknown EOF responses and a 2,000-delta burst. The preflight's observed local
+processing maximum was 3.162 ms; its coarse p99 upper bound was 262.143 us.
+That preflight measured from envelope construction after payload copying; the
+final adapter moves the timestamp to the WS callback before copying. These host
+measurements are illustrative and do not establish portability or hardware needs.
+
+The final adapter keeps fixed-memory latency histograms and bounded raw/economic
+writer queues. Sparse economic output incurs a short publication lock, never disk
+I/O on the decision thread. Timers are rearmed only when the earliest outstanding
+simulated deadline changes. [LIVE_PAPER.md](LIVE_PAPER.md) defines the clocks,
+percentile rounding and uncalibrated execution assumptions. Re-measure on the
+actual deployment host and on representative active sessions before specializing.

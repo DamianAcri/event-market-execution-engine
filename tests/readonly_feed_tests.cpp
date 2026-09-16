@@ -98,9 +98,16 @@ int main() {
                     "each book retains its original last venue sequence");
         test.expect(feed.state().find_book(1U)->quantity_at(book::Side::bid, test::price(7000)).raw() == 600,
                     "interleaved delta updates the correct quantity");
+        test.expect(apply("paper.clock.v1", "{}").event == session::FeedEvent::control &&
+            feed.state().find_book(1U)->last_sequence() == 42U && feed.state().valid_book_count() == 2U,
+            "local paper clock does not consume venue sequence or mutate books");
         test.expect(apply("ws.receive.v1", bad).event == session::FeedEvent::invalidated, "shared invalid input stops generation");
         test.expect(feed.state().valid_book_count() == 0U, "shared failure invalidates every book");
-        (void)apply("ws.close.v1", "{}"); record.connection_generation = 2U;
+        (void)apply("ws.close.v1", "{}");
+        test.expect(apply("paper.clock.v1", "{}").event == session::FeedEvent::control &&
+            !feed.state().connected() && feed.state().valid_book_count() == 0U,
+            "disconnected simulation clock never restores tradability");
+        record.connection_generation = 2U;
         (void)apply("ws.attempt.v1", "{}"); (void)apply("ws.open.v1", "{}");
         (void)apply("ws.send.v1", feed.commands()[0]);
         (void)apply("ws.receive.v1", R"({"type":"subscribed","id":1,"msg":{"channel":"orderbook_delta","sid":11}})");

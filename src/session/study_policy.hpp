@@ -45,5 +45,5 @@ struct Policy final {
     std::string hash;
 };
 
-[[nodiscard]] Policy load_policy(const std::filesystem::path&, const ReplayInput&);
+[[nodiscard]] Policy load_policy(const std::filesystem::path&, const gateway::kalshi::MetadataSnapshot&);
 } // namespace eme::session::detail

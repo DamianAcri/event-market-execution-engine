@@ -220,6 +220,17 @@ or the selected family before building more execution machinery for it.
 
 ### P4 — Operational integration
 
+**Implemented paper adapter (2026-09-16):** optional live simulation and recording
+reuse the existing sizing/lifecycle/residual-exit observer. Pending simulated
+orders advance on recorded local clock events during quiet feeds; sparse output
+is bounded and asynchronous. The finalizer compares economic events and final
+accounting with replay before publishing `paper-summary.json`. The operator owns
+long runs; no order submission or account endpoints are added. See
+[LIVE_PAPER.md](LIVE_PAPER.md). This is an initial fixed simulation scenario,
+not a calibrated production policy. Representative economic evidence, real fill
+calibration and exchange order/restart/reconciliation remain open. Demo and real
+orders remain outside current authorization.
+
 **Deliverable:** an adapter around the same decision core, running in shadow mode
 on observed data, plus order lifecycle/reconciliation exercised with deterministic
 fixtures and appropriate demo access. Add centralized limits, kill switch,

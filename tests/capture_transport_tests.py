@@ -76,8 +76,14 @@ def main():
                 header += bytes([127]) + struct.pack('!Q', length)
             sock.sendall(header + payload)
 
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('runner', Path(__file__).parents[1] / 'scripts/capture_readonly.py')
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        paper_path = root / 'paper-policy.json'
+        params = runner.paper_policy(json.loads(Path(args.metadata).read_text()))
         passed = 0
-        for scenario in ('untrusted', 'hostname', 'normal', 'empty_sides', 'reconnect', 'gap', 'duplicate', 'subscription_error', 'malformed', 'auth', 'idle', 'snapshot_timeout', 'handshake_timeout', 'oversize', 'overflow'):
+        for scenario in ('untrusted', 'hostname', 'normal', 'empty_sides', 'reconnect', 'gap', 'duplicate', 'subscription_error', 'malformed', 'auth', 'idle', 'snapshot_timeout', 'handshake_timeout', 'oversize', 'overflow', 'paper_quiet', 'paper_partial', 'paper_disconnect', 'paper_eof', 'paper_burst'):
             errors, wire_messages, headers_seen, pong_seen = [], [], [], []
             listener = socket.socket()
             listener.bind(('127.0.0.1', 0))
@@ -166,11 +172,31 @@ def main():
                                     send_message({'type': 'orderbook_delta', 'sid': 11,
                                         'seq': 44 if scenario in ('gap', 'reconnect') and attempt == 0 else 41 if scenario == 'duplicate' else 42,
                                         'msg': {'market_ticker': commands[0]['params']['market_tickers'][0], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
+                            if scenario == 'paper_disconnect':
+                                send_message({'type': 'orderbook_delta', 'sid': 11, 'seq': 100,
+                                    'msg': {'market_ticker': selected_tickers[0], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
+                            if scenario == 'paper_burst':
+                                for seq in range(43, 2043):
+                                    send_message({'type': 'orderbook_delta', 'sid': 11, 'seq': seq,
+                                        'msg': {'market_ticker': selected_tickers[0], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
+                            if scenario == 'paper_quiet':
+                                # No market message follows the signal. Orders must
+                                # complete before idle timeout, while client lives.
+                                deadline = time.monotonic() + 0.5
+                                while time.monotonic() < deadline:
+                                    trace = root / scenario / 'paper.jsonl'
+                                    if trace.exists() and 'order_response' in trace.read_text():
+                                        break
+                                    time.sleep(0.005)
+                                else:
+                                    raise AssertionError('paper orders did not advance during silence')
                             try:
                                 while True:
                                     opcode, payload = read_frame(sock)
                                     if opcode == 10:
                                         pong_seen.append(payload)
+                                    else:
+                                        assert opcode == 8, 'unexpected client traffic: only subscription and protocol control allowed'
                             except (EOFError, ConnectionError, ssl.SSLError):
                                 pass
                 except (ConnectionError, ssl.SSLError):
@@ -184,8 +210,16 @@ def main():
             thread.start()
             output_dir = root / scenario
             trusted_cert = wrong_cert if scenario == 'untrusted' else mismatch_cert if scenario == 'hostname' else cert
+            parameters = json.loads(json.dumps(params))
+            if scenario == 'paper_partial':
+                parameters['reject_legs'] = [True, False]
+            if scenario == 'paper_disconnect':
+                parameters['leg_latency_ns'] = [5000000000, 5000000000]
+            if scenario == 'paper_eof':
+                parameters['lifecycle']['response_latency_ns'] = [5000000000, 5000000000]
+            paper_path.write_text(json.dumps(parameters))
             result = subprocess.run([args.client, args.metadata, str(port), str(trusted_cert), str(key), str(output_dir),
-                                     '6000' if scenario == 'reconnect' else '4000', str(attempts), scenario],
+                                     '6000' if scenario == 'reconnect' else '4000', str(attempts), scenario] + ([str(paper_path)] if scenario.startswith('paper_') else []),
                                     capture_output=True, text=True, timeout=10)
             thread.join(timeout=6)
             assert not thread.is_alive() and not errors, (scenario, errors, result.stdout, result.stderr)
@@ -225,6 +259,21 @@ def main():
                 assert summary['reason'] == 'connect_timeout', summary
             if scenario == 'oversize':
                 assert summary['reason'] == 'read_failure' and summary['market_updates'] == 2, summary
+            if scenario.startswith('paper_'):
+                paper = json.loads((output_dir / 'paper-summary.json').read_text())
+                assert paper['live_replay_equal'] is True and paper['attempts'] == 1, (scenario, paper)
+                if scenario in ('paper_quiet', 'paper_burst'):
+                    assert paper['completed_pairs'] == 1 and paper['lifecycle']['unknown_orders'] == 0, paper
+                    assert paper['lifecycle']['simulated_net_pnl_micro_usd'] is None, paper
+                if scenario == 'paper_partial':
+                    assert paper['residual_exit']['sold_centicontracts'] > 0 and paper['lifecycle']['orders'] == 3, paper
+                if scenario == 'paper_disconnect':
+                    assert paper['spent_micro_usd'] == 0, paper
+                if scenario == 'paper_eof':
+                    assert paper['lifecycle']['unknown_orders'] == 2 and paper['lifecycle']['reserved_micro_usd'] > 0, paper
+                if scenario == 'paper_burst':
+                    assert summary['market_updates'] == 2003, summary
+                assert paper['receive_callback_to_decisions']['samples'] == summary['market_updates'], paper
             passed += 1
             print('PASS', scenario, summary, flush=True)
         print('PASS', passed, 'TLS/WS fixture scenarios')

@@ -24,8 +24,8 @@ std::optional<std::string> environment(const char* name) {
 
 int main(const int argc, const char* const argv[]) {
     using namespace eme;
-    if (argc != 5 || (std::string_view{argv[4]} != "production" && std::string_view{argv[4]} != "demo")) {
-        std::cerr << "Usage: eme-capture <metadata.json> <new-directory> <seconds 1..86400> <production|demo>\n"
+    if ((argc != 5 && argc != 6) || (std::string_view{argv[4]} != "production" && std::string_view{argv[4]} != "demo")) {
+        std::cerr << "Usage: eme-capture <metadata.json> <new-directory> <seconds 1..86400> <production|demo> [paper-policy.json]\n"
                   << "Configure EME_KALSHI_KEY_ID and EME_KALSHI_PRIVATE_KEY_PATH. Read-only market data.\n";
         return 2;
     }
@@ -46,6 +46,7 @@ int main(const int argc, const char* const argv[]) {
         config.private_key = *key_file;
         if (const auto ca = environment("EME_KALSHI_CA_FILE")) { config.ca_file = *ca; }
         config.directory = argv[2];
+        if (argc == 6) { config.paper_policy = argv[5]; }
         config.duration = std::chrono::seconds{seconds};
         const auto root = session::detail::Json::parse(metadata.canonical_json());
         for (const auto& market : root["markets"]) { config.markets.push_back(market.at("id").get<market::MarketId>()); }

@@ -3,7 +3,7 @@
 #include <iostream>
 int main(int argc, char** argv) {
     using namespace eme;
-    if (argc != 9) { return 2; }
+    if ((argc != 9 && argc != 10)) { return 2; }
     auto parsed = gateway::kalshi::parse_metadata_snapshot(session::detail::read_text(argv[1]));
     const auto& metadata = std::get<gateway::kalshi::MetadataSnapshot>(parsed);
     transport::CaptureConfig config;
@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
     config.handshake_timeout = std::chrono::milliseconds{1500};
     config.retry_delay = std::chrono::milliseconds{50};
     config.synthetic = true;
+    if (argc == 10) { config.paper_policy = argv[9]; }
     if (std::string_view{argv[8]} == "overflow") { config.queue.retained_bytes = 4096U; }
     const auto result = transport::capture_readonly(config, metadata);
     std::cout << session::detail::Json{{"finalized", result.finalized}, {"market_updates", result.market_updates},

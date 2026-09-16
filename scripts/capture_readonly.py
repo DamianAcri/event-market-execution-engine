@@ -101,6 +101,29 @@ def select_metadata(public, series, now, seconds, count=8):
     return metadata, chosen
 
 
+def paper_policy(metadata):
+    """Frozen starting scenario, not fitted parameters or measured exchange fills."""
+    return {
+        'schema_version': 4, 'strategy': 'residual_exit_v4',
+        'fee_provenance': 'General taker 0.07; selected series quadratic multiplier 1 is checked. '
+                          'Cent-aligned account scenario; actual account tier not queried. '
+                          'https://docs.kalshi.com/getting_started/fee_rounding',
+        'capital_micro_usd': 1000000000, 'operating_cost_micro_usd': 0,
+        'quantity_cap_centicontracts': 10000, 'quantity_step_centicontracts': 100,
+        'min_margin_micro_usd': 0, 'max_book_age_ns': 10000000000,
+        'leg_latency_ns': [100000000, 100000000], 'reject_legs': [False, False],
+        'available_liquidity_bps': 10000, 'max_sizing_evaluations': 100000,
+        'fees': [{'market_id': market['id'], 'coefficient_ppm': 70000,
+                  'balance_quantum_micro': 10000} for market in metadata['markets']],
+        'lifecycle': {'execution_policy': 'parallel_hold', 'first_leg': 0,
+                      'response_latency_ns': [100000000, 100000000],
+                      'completion_timeout_ns': 5000000000, 'completion_loss_limit_micro_usd': 0,
+                      'maximum_completion_orders': 2, 'settlements': []},
+        'residual_exit': {'mode': 'reduce_once', 'arrival_latency_ns': 100000000,
+                          'response_latency_ns': 100000000, 'timeout_ns': 5000000000,
+                          'minimum_price_1e4': 1, 'reject': False, 'available_liquidity_bps': 10000}}
+
+
 def credentials(path):
     allowed = {'EME_KALSHI_KEY_ID', 'EME_KALSHI_PRIVATE_KEY_PATH'}
     values = {}
@@ -131,6 +154,7 @@ def main():
     parser.add_argument('--binary', type=Path, default=REPO / 'out/bin/eme-capture')
     parser.add_argument('--settings', type=Path, default=SETTINGS)
     parser.add_argument('--output', type=Path, default=REPO / 'captures')
+    parser.add_argument('--paper', action='store_true', help='Live local IOC simulation plus recording; never submits orders')
     parser.add_argument('--prepare-only', action='store_true', help='Public metadata only; no credential access or WS connection')
     args = parser.parse_args()
     if not 1 <= args.seconds <= 10800:
@@ -155,10 +179,13 @@ def main():
     metadata, selected = select_metadata(public, series, now, args.seconds)
     write_json(root / 'metadata.json', metadata)
     write_json(root / 'selection.json', selected)
+    if args.paper:
+        write_json(root / 'paper-policy.json', paper_policy(metadata))
     write_json(root / 'provenance.json', {
         'started_at': now.isoformat(), 'duration_seconds': args.seconds, 'sources': sources,
         'selection': 'Eight thresholds nearest public midpoint 0.5 in the earliest event closing after duration + 10 minutes; frozen before capture.',
-        'execution': 'market_data_only', 'runner_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        'execution': 'live_paper_no_orders_sent' if args.paper else 'market_data_only',
+        'policy_sha256': hashlib.sha256((root / 'paper-policy.json').read_bytes()).hexdigest() if args.paper else None, 'runner_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'binary_sha256': hashlib.sha256(args.binary.read_bytes()).hexdigest() if args.binary.is_file() else None})
     print('Seleccion: 8 mercados, 28 relaciones; cierre ' + selected[0]['close_time'], flush=True)
     if args.prepare_only:
@@ -169,21 +196,26 @@ def main():
     environment = os.environ.copy()
     environment.update(credentials(args.settings))
     command = [str(args.binary.resolve()), str(root / 'metadata.json'), str(root / 'session'), str(args.seconds), 'production']
-    print('Grabando solo datos durante ' + str(args.seconds) + ' segundos. Ctrl+C detiene y finaliza.', flush=True)
+    if args.paper:
+        command.append(str(root / 'paper-policy.json'))
+    print(('Grabando y simulando en vivo' if args.paper else 'Grabando solo datos') + ' durante ' + str(args.seconds) + ' segundos. Ctrl+C detiene y finaliza.', flush=True)
+    if args.paper:
+        print('Capital ficticio: 1000 USD; maximo 100 contratos por intento; retrasos supuestos de 100 ms. Ninguna orden se envia.', flush=True)
     child = subprocess.Popen(command, env=environment, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     started, stopped, last_progress = time.monotonic(), None, 0
+    stop_time = None
     try:
         while child.poll() is None:
             try:
                 child.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 elapsed = int(time.monotonic() - started)
-                journal = root / 'session/market.journal'
-                size = journal.stat().st_size if journal.exists() else 0
+                size = sum(path.stat().st_size for path in (root / 'session').glob('*') if path.is_file()) if (root / 'session').exists() else 0
                 if stopped is None and (size > 2 * 1024**3 or shutil.disk_usage(root).free < 1024**3):
                     stopped = 'storage_limit'
+                    stop_time = time.monotonic()
                     child.terminate()
-                if elapsed > args.seconds + 120:
+                if elapsed > args.seconds + 120 or (stop_time is not None and time.monotonic() - stop_time > 120):
                     stopped = 'capture_timeout'
                     child.kill()
                 if elapsed - last_progress >= 60:
@@ -203,9 +235,19 @@ def main():
         result = {key: raw[key] for key in ('finalized', 'market_updates', 'connections', 'reason')}
     except (ValueError, KeyError):
         result = {'finalized': False, 'reason': 'collector_failed'}
+    if args.paper:
+        summary = root / 'session/paper-summary.json'
+        result['paper_verified'] = False
+        if summary.is_file():
+            paper = json.loads(summary.read_text())
+            result['paper_verified'] = paper.get('live_replay_equal') is True
+            result['simulated_attempts'] = paper['attempts']
+            result['simulated_orders'] = paper['lifecycle']['orders']
+            result['simulated_net_pnl_micro_usd'] = paper['lifecycle']['simulated_net_pnl_micro_usd']
+            result['summary'] = str(summary)
     result.update({'exit_code': child.returncode, 'operator_stop': stopped, 'directory': str(root)})
     write_json(root / 'result.json', result)
-    usable = result['finalized'] and result.get('market_updates', 0) > 0
+    usable = result['finalized'] and result.get('market_updates', 0) > 0 and (not args.paper or result.get('paper_verified') is True)
     print(('Datos guardados para analizar: ' if usable else 'Captura incompleta; conservar para diagnostico: ') + str(root))
     print(json.dumps(result, indent=2))
     return 0 if usable and not child.returncode and stopped is None else 1

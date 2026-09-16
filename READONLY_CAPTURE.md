@@ -267,3 +267,13 @@ schema-2 captures also produced byte-identical old/new replay transcripts.
 The longer campaign is deliberately left for the operator to launch. P2 still
 requires broader event/date coverage; no fills, profits or account precision have
 been calibrated. Raw public data and research artifacts stay outside Git.
+
+## Optional live paper mode
+
+Add `--paper` to `scripts/capture_readonly.py` to simulate the existing strategy
+as data arrives while retaining the recording. The optional sixth `eme-capture`
+argument is the frozen policy JSON. This does not enable any order endpoint.
+See [LIVE_PAPER.md](LIVE_PAPER.md) for exact assumptions and output files. Live
+and replay economic traces are compared after collection, without writing a
+second verbose per-tick transcript. Credentials and capture-only defaults are
+unchanged.

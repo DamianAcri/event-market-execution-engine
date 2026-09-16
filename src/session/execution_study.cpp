@@ -68,17 +68,17 @@ struct LifecycleEvent final {
         return std::tie(time, order, response) > std::tie(other.time, other.order, other.response);
     }
 };
-class Simulation final : public ReplayObserver {
+class Simulation final : public ExecutionSimulation {
 public:
-    Simulation(const ReplayInput& input, Policy policy, std::ostream& output)
-        : input_{input}, policy_{std::move(policy)}, output_{output}, available_{policy_.capital} {
+    Simulation(const gateway::kalshi::MetadataSnapshot& metadata, Policy policy, std::ostream& output)
+        : metadata_{metadata}, policy_{std::move(policy)}, output_{output}, available_{policy_.capital} {
         if (policy_.lifecycle) {
             const auto per_attempt = policy_.lifecycle->sequential ? 1U + policy_.lifecycle->maximum_completion_orders : 2U;
-            const auto bound = input.session.metadata.constraints().size() * static_cast<std::size_t>(per_attempt + (policy_.residual_exit ? 1U : 0U));
+            const auto bound = metadata.constraints().size() * static_cast<std::size_t>(per_attempt + (policy_.residual_exit ? 1U : 0U));
             // At most one attempt per constraint, with a fixed retry budget.
             // Allocate event/order/position capacity before processing the feed.
-            attempts_.reserve(input.session.metadata.constraints().size());
-            orders_.reserve(bound); positions_.reserve(input.session.metadata.constraints().size(), bound);
+            attempts_.reserve(metadata.constraints().size());
+            orders_.reserve(bound); positions_.reserve(metadata.constraints().size(), bound);
             std::vector<LifecycleEvent> storage; storage.reserve(bound);
             events_ = decltype(events_){std::less<LifecycleEvent>{}, std::move(storage)};
         }
@@ -92,7 +92,7 @@ public:
                const market::MarketState& state) override {
         if (frame.market_id && frame.applied) { last_update_[*frame.market_id] = frame.time_ns; }
         if (!frame.market_id || !frame.applied) { return; }
-        auto dependencies = input_.session.metadata.constraints().dependencies(*frame.market_id);
+        auto dependencies = metadata_.constraints().dependencies(*frame.market_id);
         std::vector<constraint::ConstraintId> ordered(dependencies.begin(), dependencies.end());
         std::sort(ordered.begin(), ordered.end());
         for (const auto id : ordered) {
@@ -123,7 +123,7 @@ public:
         }
         pending_.clear();
     }
-    void report() {
+    void report(const ReplayPlan& plan) override {
         std::int64_t floor = 0;
         std::uint64_t complete = 0U;
         std::uint64_t legged = 0U;
@@ -137,9 +137,9 @@ public:
             if (a != b) { ++legged; }
         }
         Json result{{"type", "study_complete"}, {"schema_version", 1U}, {"policy_sha256", policy_.hash},
-            {"manifest_sha256", input_.plan.manifest_sha256}, {"plan_sha256", input_.plan.plan_sha256},
-            {"source_kind", input_.plan.source_kind}, {"strategy", policy_.json["strategy"]},
-            {"evidence_status", input_.plan.source_kind == "synthetic" ? "synthetic_validation_only" : "observational_simulation_not_profitability_proof"},
+            {"manifest_sha256", plan.manifest_sha256}, {"plan_sha256", plan.plan_sha256},
+            {"source_kind", plan.source_kind}, {"strategy", policy_.json["strategy"]},
+            {"evidence_status", plan.source_kind == "synthetic" ? "synthetic_validation_only" : "observational_simulation_not_profitability_proof"},
             {"attempts", attempts_.size()}, {"completed_pairs", complete}, {"unbalanced_pairs", legged},
             {"unobserved_orders", unobserved_}, {"decisions_evaluated", evaluated_},
             {"declined", declines_}, {"initial_capital_micro_usd", policy_.capital},
@@ -180,11 +180,39 @@ public:
         }
         emit(result);
     }
-    void start() {
+    void start(const bool live = false) override {
         emit({{"type", "study_start"}, {"schema_version", 1U}, {"policy_sha256", policy_.hash},
-              {"policy", policy_.json}, {"currency", "USD"}, {"execution", "offline_simulated_ioc"}});
+              {"policy", policy_.json}, {"currency", "USD"}, {"execution", live ? "live_simulated_ioc" : "offline_simulated_ioc"}});
     }
 
+    std::optional<std::int64_t> next_event_time() const override {
+        std::optional<std::int64_t> next;
+        if (policy_.lifecycle) {
+            if (!events_.empty()) { next = events_.top().time; }
+            if (settlement_index_ < policy_.lifecycle->settlements.size()) {
+                const auto time = policy_.lifecycle->settlements[settlement_index_].time;
+                next = next ? std::min(*next, time) : time;
+            }
+        } else if (!pending_.empty()) { next = pending_.front().arrival; }
+        return next;
+    }
+    void checkpoint(const std::int64_t time) override {
+        Json holdings = Json::array();
+        for (std::size_t index = 0; index < attempts_.size(); ++index) {
+            const auto& attempt = attempts_[index];
+            for (std::size_t leg = 0; leg < 2U; ++leg) {
+                const auto quantity = positions_.quantity(index, leg);
+                if (quantity != 0) { holdings.push_back({{"constraint_id", attempt.id},
+                    {"market_id", attempt.legs[leg].market_id},
+                    {"outcome", attempt.legs[leg].outcome == Outcome::yes ? "yes" : "no"},
+                    {"quantity_centicontracts", quantity}}); }
+            }
+        }
+        emit({{"type", "paper_status"}, {"time_ns", time}, {"attempts", attempts_.size()},
+            {"decisions_evaluated", evaluated_}, {"declined", declines_}, {"orders", orders_.size()},
+            {"available_cash_micro_usd", available_}, {"reserved_micro_usd", reserved_total_},
+            {"spent_micro_usd", spent_}, {"holdings", holdings}, {"realized_pnl_micro_usd", nullptr}});
+    }
 private:
     void emit(const Json& value) { output_ << value.dump() << '\n'; }
     bool fresh(const constraint::PayoffLegTemplate leg, const std::int64_t time,
@@ -344,7 +372,7 @@ private:
     }
     void decide(const constraint::ConstraintId id, const ReplayFrame& frame, const market::MarketState& state) {
         ++evaluated_;
-        const auto& compiled = *input_.session.metadata.constraints().find(id);
+        const auto& compiled = *metadata_.constraints().find(id);
         auto templates = compiled.guaranteed_leg_templates;
         if (templates.size() != 2U) { detail::invalid("unsupported portfolio"); }
         std::sort(templates.begin(), templates.end(), [](const auto& a, const auto& b) { return a.market_id < b.market_id; });
@@ -586,7 +614,7 @@ private:
         }
     }
 
-    const ReplayInput& input_;
+    const gateway::kalshi::MetadataSnapshot& metadata_;
     Policy policy_;
     std::ostream& output_;
     std::int64_t available_{};
@@ -614,14 +642,25 @@ private:
 };
 }  // namespace
 
+std::unique_ptr<ExecutionSimulation> make_execution_simulation(
+    const gateway::kalshi::MetadataSnapshot& metadata, const std::filesystem::path& path,
+    std::ostream& output, const bool live) {
+    auto policy = load_policy(path, metadata);
+    // Future settlement labels must never enter a prospective simulation.
+    if (live && (!policy.lifecycle || !policy.lifecycle->settlements.empty())) {
+        detail::invalid("live paper requires lifecycle policy without settlement labels");
+    }
+    return std::make_unique<Simulation>(metadata, std::move(policy), output);
+}
+
 std::optional<ReplayError> run_execution_study(const ReplayInput& input,
     const std::filesystem::path& policy_path, std::ostream& output) {
     try {
-        Simulation simulation{input, load_policy(policy_path, input), output};
+        Simulation simulation{input.session.metadata, load_policy(policy_path, input.session.metadata), output};
         simulation.start();
         const auto result = replay(input, simulation, &output);
         if (const auto* failure = std::get_if<ReplayError>(&result)) { return *failure; }
-        simulation.report();
+        simulation.report(input.plan);
         if (!output) { return ReplayError{"output write failed", 0U}; }
         return std::nullopt;
     } catch (const ReplayError& failure) { return failure; }

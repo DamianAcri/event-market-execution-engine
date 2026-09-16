@@ -65,6 +65,15 @@ class RunnerTests(unittest.TestCase):
                 runner.credentials(env)
             self.assertFalse((root / 'should-not-exist').exists())
 
+    def test_paper_policy_is_frozen_without_future_labels(self):
+        metadata, _ = runner.select_metadata(self.public, self.series, self.now, 7200)
+        policy = runner.paper_policy(metadata)
+        self.assertEqual(policy['lifecycle']['settlements'], [])
+        self.assertEqual({fee['market_id'] for fee in policy['fees']}, set(range(1, 9)))
+        self.assertEqual(policy['leg_latency_ns'], [100000000, 100000000])
+        self.assertEqual(policy['capital_micro_usd'], 1000000000)
+        self.assertEqual(policy, runner.paper_policy(metadata))
+
 
 if __name__ == '__main__':
     unittest.main()

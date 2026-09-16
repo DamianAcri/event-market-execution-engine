@@ -12,15 +12,18 @@ correct -> usable -> observable -> measured -> optimized
 It is not a profitability claim and it does not send live orders in its current
 state.
 
-## Current state: offline replay and execution studies
+## Current state: live paper simulation, capture and replay
 
 **Start with [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)** for the current
 work order and acceptance criteria. [Exact net-profit sizing](NET_SIZING.md) is
 implemented; [read-only capture](READONLY_CAPTURE.md) includes an optional TLS/WS
 collector, bounded persistence and controller replay. Short authenticated multi-market captures now pass; representative observations
 and economic calibration remain pending. An operator can run
-`python3 scripts/capture_readonly.py --seconds 7200` after installing the optional
-collector as described in [READONLY_CAPTURE.md](READONLY_CAPTURE.md). Research documents contain
+`python3 scripts/capture_readonly.py --paper --seconds 7200` to record and simulate
+with the same decision logic after installing the optional
+collector as described in [READONLY_CAPTURE.md](READONLY_CAPTURE.md).
+[LIVE_PAPER.md](LIVE_PAPER.md) defines the frozen scenario, artifacts and limitations.
+Omit `--paper` for recording only. Research documents contain
 evidence and conditional proposals; they do not create additional work queues.
 The package version remains 0.2.0, and capability status is described below.
 
