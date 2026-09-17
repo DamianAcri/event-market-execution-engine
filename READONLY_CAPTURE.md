@@ -157,6 +157,18 @@ preflight does not silently select different baskets or prevent observation.
 credentials or opening WebSocket. Default budgets remain 20 baskets, 64 markets,
 100 whole contracts and USD 1,000 fictional funding per independent quote.
 
+Keep the computer awake, connected and the laptop lid open. On macOS,
+`caffeinate -i` prevents idle sleep; it did not prevent the clamshell sleep
+observed in the [first basket run](research/results/20260917-basket-live/README.md).
+Software cannot collect data or finalize a session while the machine is asleep.
+The runner checks both monotonic and wall elapsed time, rejects a gap above
+15 seconds between its five-second supervision checks, and requests graceful
+termination on resuming. This is a conservative operational guard, not an
+economic parameter or a timeout for individual quiet markets. A normal duration
+overrun has 120 seconds of finalization allowance; after a stop request the child
+has another 120 seconds before forced termination. The original stop reason is
+retained if storage pressure triggered it first.
+
 The operator's local settings supply market-data authentication only. Public
 preparation and fee/closing-window checks precede credential loading. No key,
 settings contents or authentication headers enter research artifacts. Engine,
@@ -172,6 +184,14 @@ reinterpreted as missing WebSocket data. Disconnects, gaps and invalid books
 remove quote eligibility. A journalled local clock expires the policy even if no
 new price arrives. Local wall times bound policy validity; monotonic timestamps
 measure elapsed durations. Neither proves exchange-atomic multi-market prices.
+
+Coverage limitation: the native duration counters integrate the last state up
+to the next recorded event. If the process or computer pauses before it can
+record a disconnect, those counters can include an unobserved interval. A
+runner interruption therefore makes the window incomplete even if the native
+live and replay traces match. Do not use `eligible_ns` from that partial run as
+continuous observed coverage. The original capture and summary are preserved;
+the timing audit records this limitation separately rather than rewriting them.
 
 Each basket tracks time in valid, unpriceable and invalid states, and positive
 episodes with start/end times and quantity/cost information. A positive quote at

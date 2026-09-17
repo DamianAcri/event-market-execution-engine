@@ -22,6 +22,10 @@ MODULES = ('basket_observe.py', 'basket_research.py', 'basket_families.py',
            'public_pool.py', 'market_catalog.py', 'market_families.py',
            'economic_selection.py', 'capture_readonly.py', 'research_selection.py')
 MAX_EPISODE_EVENTS = 100000
+CAPTURE_TIMEOUT_GRACE_SECONDS = 120
+# Five-second polling plus ten seconds of scheduling allowance. This is a
+# conservative continuity guard for the runner, not a market-data age limit.
+MAX_MONITOR_GAP_SECONDS = 15
 
 
 class ObservationError(ValueError):
@@ -71,27 +75,46 @@ def observation_policy(qualification, qualification_path, metadata, until, cap):
             'screen': native_input(qualification, [], 0, cap=cap)}
 
 
-def monitor(child, root, seconds, max_mib, *, monotonic=time.monotonic,
+def monitor(child, root, seconds, max_mib, *, monotonic=time.monotonic, wall_time=time.time,
             size_reader=directory_size, free_reader=lambda p: shutil.disk_usage(p).free,
-            progress=print):
+            progress=print, started_at=None):
     """Bounded process/storage guard; collector handles signal finalization."""
-    started, stop_at, stopped, last_progress = monotonic(), None, None, 0
+    started = (monotonic(), wall_time()) if started_at is None else started_at
+    stop_at, stopped, last_progress = None, None, 0
+    previous = started
     try:
-        while child.poll() is None:
-            try:
-                child.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                elapsed = monotonic() - started
-                size = size_reader(root)
-                if stopped is None and (size > max_mib * 1024**2 or free_reader(root) < 1024**3):
-                    stopped, stop_at = 'storage_limit', monotonic()
-                    child.terminate()
-                if elapsed > seconds + 120 or (stop_at is not None and monotonic() - stop_at > 120):
+        while True:
+            if child.poll() is None:
+                try:
+                    child.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    pass
+            now = (monotonic(), wall_time())
+            # Wall time detects suspension on systems whose monotonic clock
+            # pauses during sleep; monotonic time survives backward wall jumps.
+            elapsed = max(0, now[0] - started[0], now[1] - started[1])
+            scheduling_gap = max(now[0] - previous[0], now[1] - previous[1])
+            previous = now
+            size = size_reader(root)
+            if stopped is None:
+                if size > max_mib * 1024**2 or free_reader(root) < 1024**3:
+                    stopped = 'storage_limit'
+                elif scheduling_gap > MAX_MONITOR_GAP_SECONDS:
+                    stopped = 'capture_scheduling_gap'
+                elif elapsed > seconds + CAPTURE_TIMEOUT_GRACE_SECONDS:
                     stopped = 'capture_timeout'
-                    child.kill()
-                if elapsed - last_progress >= 60:
-                    progress(str(int(elapsed)) + ' s; ' + str(size // (1024**2)) + ' MiB registrados.')
-                    last_progress = elapsed
+                if stopped is not None:
+                    stop_at = now
+                    if child.poll() is None:
+                        child.terminate()
+            if (stop_at is not None and child.poll() is None and
+                    max(now[0] - stop_at[0], now[1] - stop_at[1]) > CAPTURE_TIMEOUT_GRACE_SECONDS):
+                child.kill()
+            if elapsed - last_progress >= 60:
+                progress(str(int(elapsed)) + ' s; ' + str(size // (1024**2)) + ' MiB registrados.')
+                last_progress = elapsed
+            if child.poll() is not None:
+                break
     except KeyboardInterrupt:
         stopped = 'user_stop'
         child.terminate()
@@ -109,6 +132,7 @@ def observe(root, engine, binary, settings, transport, *, seconds=1800, max_mib=
             prepare_runner=prepare, credential_loader=credentials,
             process_factory=subprocess.Popen, monitor_runner=monitor,
             hash_reader=source_hashes, free_reader=lambda p: shutil.disk_usage(p).free,
+            monotonic=time.monotonic, wall_time=time.time,
             progress=lambda message: None):
     """Prepare, preregister and optionally run one fresh observation window.
 
@@ -175,6 +199,10 @@ def observe(root, engine, binary, settings, transport, *, seconds=1800, max_mib=
             'cohort_frozen_before_rest_books': True, 'policy_frozen_before_stream': True,
             'no_adaptive_parameter_changes': True, 'max_episode_events': MAX_EPISODE_EVENTS,
             'soft_storage_limit_mib': max_mib, 'storage_check_seconds': 5,
+            'capture_duration_limit_seconds': seconds + CAPTURE_TIMEOUT_GRACE_SECONDS,
+            'termination_grace_seconds': CAPTURE_TIMEOUT_GRACE_SECONDS,
+            'duration_guard': 'maximum_of_monotonic_and_wall_elapsed',
+            'maximum_monitor_scheduling_gap_seconds': MAX_MONITOR_GAP_SECONDS,
             'storage_limit_can_overshoot': True, 'own_fills_or_profit_measured': False,
             'book_freshness': 'contiguous shared stream; quiet books retained; ages reported',
             'qualification_sha256': digest(qualification_path), 'policy_sha256': digest(policy_path),
@@ -215,13 +243,18 @@ def observe(root, engine, binary, settings, transport, *, seconds=1800, max_mib=
                      ' segundos. Ninguna orden ni fill simulado; se miden episodios de margen.')
             progress('Limite de almacenamiento: ' + str(max_mib) +
                      ' MiB, con parada suave. Ctrl+C solicita guardar y finalizar.')
+            progress('Manten el ordenador despierto y la tapa abierta; caffeinate -i no impide '
+                     'la suspension al cerrar la tapa. Una suspension invalida la continuidad de la ventana.')
             capture_started_at = clock()
+            capture_started = (monotonic(), wall_time())
             child = process_factory(command, env=environment, stdout=stdout, stderr=subprocess.DEVNULL)
             try:
                 result['execution'] = 'live_basket_observation_no_orders_sent'
                 result['capture_started_at'] = capture_started_at.isoformat()
                 write_json(root / 'result.json', result)
-                stopped = monitor_runner(child, root, seconds, max_mib)
+                stopped = monitor_runner(child, root, seconds, max_mib,
+                                         monotonic=monotonic, wall_time=wall_time,
+                                         started_at=capture_started)
             except BaseException:
                 child.terminate()
                 try:
@@ -229,8 +262,18 @@ def observe(root, engine, binary, settings, transport, *, seconds=1800, max_mib=
                 except subprocess.TimeoutExpired:
                     child.kill(); child.wait()
                 raise
+        capture_completed = (monotonic(), wall_time())
+        monotonic_elapsed = capture_completed[0] - capture_started[0]
+        wall_elapsed = capture_completed[1] - capture_started[1]
+        elapsed = max(0, monotonic_elapsed, wall_elapsed)
+        duration_exceeded = elapsed > seconds + CAPTURE_TIMEOUT_GRACE_SECONDS
         result.update(exit_code=child.returncode, operator_stop=stopped,
-                      capture_completed_at=clock().isoformat())
+                      capture_completed_at=clock().isoformat(),
+                      capture_elapsed_seconds=elapsed,
+                      capture_monotonic_elapsed_seconds=monotonic_elapsed,
+                      capture_wall_elapsed_seconds=wall_elapsed,
+                      capture_duration_limit_seconds=seconds + CAPTURE_TIMEOUT_GRACE_SECONDS,
+                      capture_duration_exceeded=duration_exceeded)
         collector = read_json(root / 'collector-output.json', maximum=1024 * 1024)
         summary = read_json(root / 'session/basket-summary.json')
         unchanged = stable() and artifacts_stable()
@@ -254,12 +297,23 @@ def observe(root, engine, binary, settings, transport, *, seconds=1800, max_mib=
                       summary='session/basket-summary.json')
         result['usable'] = (result['finalized'] and type(result['market_updates']) is int and
                             result['market_updates'] > 0 and verified and unchanged and
-                            not policy_expired and child.returncode == 0 and stopped is None)
+                            not policy_expired and not duration_exceeded and
+                            child.returncode == 0 and stopped is None)
         result['planned_window_complete'] = result['usable']
-        result['reason'] = ('policy_window_expired_before_observation_finished' if policy_expired else
+        result['reason'] = ('storage_limit' if stopped == 'storage_limit' else
+                            'capture_scheduling_gap' if stopped == 'capture_scheduling_gap' else
+                            'capture_timeout' if duration_exceeded or stopped == 'capture_timeout' else
+                            'policy_window_expired_before_observation_finished' if policy_expired else
                             'observation_complete' if result['usable'] else 'observation_incomplete')
-        if policy_expired:
-            result['explanation'] = ('La vigencia de reglas y comisiones termino antes de finalizar la ventana; '
+        if result['reason'] == 'capture_scheduling_gap':
+            result['explanation'] = ('La supervision detecto una pausa superior a 15 segundos; '
+                'la ventana no tiene continuidad verificada. Los datos se conservan para analisis parcial, '
+                'pero sus contadores de duracion no acreditan cobertura continua.')
+        elif result['reason'] == 'capture_timeout':
+            result['explanation'] = ('La captura supero la duracion prevista y su margen de cierre; '
+                'la ventana no se considera completa. Los datos registrados se conservan para analisis parcial.')
+        elif policy_expired:
+            result['explanation'] = ('El plazo local de validez de reglas y comisiones termino antes de finalizar la ventana; '
                 'el motor dejo de evaluar oportunidades. Los datos registrados se conservan para analisis parcial.')
         result['artifact_hashes'] = {name: digest(root / name) for name in
             ('observation-plan.json', 'observation-policy.json', 'collector-output.json', 'session/basket-summary.json')}

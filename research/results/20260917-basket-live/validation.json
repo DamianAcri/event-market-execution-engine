@@ -1,0 +1,22 @@
+{
+  "audit_source_sha256": "d8dd81a560a97be42a75dc704a05bef264b42118c1d64f5d2bc2cbf08fbe2553",
+  "runner_fix_validation": {
+    "basket_observe_tests": 27,
+    "ctest_suites_passed": ["eme_basket_families_tests", "eme_public_pool_tests", "eme_basket_research_tests", "eme_basket_observe_tests"],
+    "ctest_elapsed_seconds": 1.35,
+    "authenticated_capture_started": false,
+    "native_binaries_changed": false
+  },
+  "checks": {
+    "corrupted_journal_crc_rejected": true,
+    "deterministic_recomputation_equal": true,
+    "incorrect_manifest_sha256_rejected": true,
+    "known_record_and_witness_counts": true,
+    "receive_envelopes_exact": true,
+    "sanitized_paths": true
+  },
+  "receive_envelopes_seconds": 475.328484543,
+  "record_gaps_over30s": 6,
+  "records_verified": 140286,
+  "witnesses_verified": 18
+}
