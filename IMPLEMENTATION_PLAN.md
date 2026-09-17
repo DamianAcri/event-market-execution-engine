@@ -37,7 +37,92 @@ Fixed decisions for the initial strategy:
 - Low latency is part of each measured decision. New hardware, concurrency or
   model complexity requires evidence that it improves the relevant result.
 
-## Verified starting point
+## Current research decision — 2026-09-17, after the economic capture
+
+**Local delivery update:** `feat/structural-basket-screen` implements the bounded
+public preflight and native cost screen described in steps 1–2 below. Exact BTC
+source/terms/boundaries and ordinary/all-NO payoff arithmetic are checked;
+operative general-review outcomes remain unresolved, so every basket is explicitly
+conditional and observation-only. The cohort freezes before books are fetched.
+Fractional depth is retained; exact whole quantities 1–100 reuse the existing fee
+ledger with incremental cumulative costs. A Python rational oracle checks the
+native arithmetic. Persistent connections and bounded independent preparation
+requests are implemented with isolated response/archive ownership. No basket
+executor, continuous opportunity counter or new paper fill model is delivered.
+See [READONLY_CAPTURE.md](READONLY_CAPTURE.md#btc-basket-public-preflight).
+
+**Observed acceptance result:** the 14:09 UTC public snapshot qualified 312
+nearest-enclosure baskets from 636 BTC markets. The frozen budget selected 20
+baskets / 50 markets: eight lacked required depth; twelve had no positive margin
+over whole quantities 1–100 after fees. All 20 matched an independent exhaustive
+rational oracle and native offline replay. This single snapshot does not measure
+episode duration or reject the remaining 292 candidates. The initial preparation
+took 8.437 seconds; its HTTP reuse defect was subsequently fixed. Detailed data,
+provenance and limits are retained in the
+[acceptance record](research/results/20260917-basket-screen/README.md).
+All 44 local CTest entries pass, including the new screen and preparation checks;
+the native basket checks also pass AddressSanitizer/UndefinedBehaviorSanitizer.
+
+Source/code baseline: local `ef63210` (`feat/economic-market-selection`). This is
+not a new remote merge claim. The completed two-hour economic session observed
+18 BTC/ETH markets, 108 implications, 455,436 book updates and 448 public trades.
+It generated no paper orders. Independent reconstruction found no positive gross
+guaranteed-floor margin even after relaxing freshness and whole-contract depth.
+The configured selection budgets did not bind. These are two underlying events,
+not millions of independent observations; both were hours from resolution.
+
+**Current workstream: certify and observe a small BTC range/threshold three-leg
+family, before implementing another execution policy.** Public preflight and
+conditional arithmetic are delivered; step 3 is next. This is a new payoff
+relationship, not merely more of the existing nested pairs. Research rationale,
+primary sources and the failed fresh-price example are in
+[ECONOMIC_STRATEGY_RESEARCH.md](ECONOMIC_STRATEGY_RESEARCH.md).
+Do not run another equivalent two-hour baseline solely because preparation or
+replay is faster. No real/demo order submission is authorized.
+
+| Order | Deliverable | Acceptance / stop condition |
+|---|---|---|
+| 1 | Scoped BTC range/threshold rule certificate. For lower threshold A, upper B and contained interval C, prove `YES(A)+NO(B)+NO(C) >= $2`. | Exact common scalar/source/window, boundaries, terms hashes and exception table. Normal settlement and stated all-NO fallback have a mathematical proof; operative Rulebook/review exceptions and production metadata certification remain pending. Unresolved exceptions block guaranteed-floor classification. |
+| 2 | Bounded read-only economic screen, locally delivered on `feat/structural-basket-screen`. | Freeze an eligible cohort of up to 10–20 baskets before observing its outcome. Walk actual depth and enumerate whole sizes 1–100 within the existing fictional funding limit, using exact fee/rounding logic and an independent arithmetic oracle. Real-data acceptance matches the oracle; no positive quote in this snapshot. These are declared experiment budgets, not economically optimal settings. No general MILP platform or order adapter is required. |
+| 3 | Prospective observation with a baseline cohort and declared quiet/active/near-resolution windows over several expiries. | Use existing recording/controller tools; record all constituent books, skew, ages and exact costs. Count distinct positive-margin episodes, shared liquidity and censoring, not repeated updates. Keep later whole expiries/days unused for confirmation. No fixed two-hour duration establishes economic sufficiency. |
+| 4 | Economic decision before a basket executor. | If even optimistic executable-depth/fee margins never exceed zero, stop this family for the sampled scope and report exclusions. If independent positive episodes exist, test their duration, separate leg delays and incomplete acquisition using a bounded offline oracle; only then extend the shared production decision/execution path. |
+
+The retained catalog's illustrative basket cost $1.97 against a conditional $2
+floor. Cent-rounded fees remove all q=1 margin; larger quantities can amortize
+rounding but had no synchronized depth evidence. Fresh public books cost $2.03
+before fees. Thus there is **a concrete untested family, not a discovered
+executable profit**. Full gross funding remains required; no cross-event collateral
+offset is assumed.
+
+**Passive comparator:** the offline static best-bid-join diagnostic is research,
+not a delivered fill simulator. Both possible passive legs were checked on the
+existing sample at q=1, zero maker fee and a contemporaneous hedge price level
+holding at least one whole contract. The diagnostic does not aggregate fractional
+depth across levels and does not exhaust all q=1 depth walks. Positive gross room
+occurred only for one BTC relationship, at one cent; the taker fee removed it
+under that convention. Larger quantities are not ruled out. The next
+passive gate is a bounded size frontier plus trade/queue support and conditional
+delayed hedge cost. Do not build a complex maker controller from this result.
+Anonymous cancellation placement means fewer hypothetical fills are not a
+mathematical lower P&L bound. No exact own-fill calibration has been obtained.
+
+**Engineering within this block:** separate known-family readiness from the global
+census; reuse HTTP connections and bound independent requests behind one limiter
+and archive owner. Cursor chains remain sequential; bulk books already exist.
+Fix task-owned response provenance before adding concurrency (`requests[-1]` is
+not safe response identification). Compare identical archived inputs and report
+fresh-subscription time, memory and selection age. Keep the incremental C++ path;
+profile burst-driven tail delay before adding low-level machinery. Attribute an
+economic improvement only when observed candidate value survives the reduced
+delay, not from CPU speed alone.
+
+This decision selects a bounded entry investigation for the existing basket
+extension. It does not schedule general market making, a directional LLM trader,
+cross-venue execution or joint allocation. Each would require its own edge
+hypothesis. Earlier implementation/status entries below remain historical;
+this section controls the immediate priority.
+
+## Verified starting point (historical baseline)
 
 Code reviewed at `7cf248f8fe96fd01091998a1fe642073d9c6bb9a`, the offline-study work
 associated with [PR #7](https://github.com/DamianAcri/event-market-execution-engine/pull/7).
@@ -191,12 +276,13 @@ those markets in the preceding 15 minutes. No positive indicative margin was
 found. Of the initially depth-qualified pairs, 389 failed two-leg recent activity.
 All 39 local Release CTests pass, including the local TLS transport fixtures;
 the new native screen passes ASan/UBSan, and the gateway-disabled build passes
-11 CTests. This validates discovery and selection plumbing; the new prospective
-simulation has not been run and profitability remains unproven. Evidence is in
+11 CTests. This validated discovery and selection plumbing before the prospective
+session described at the top of this plan; profitability remains unproven. Evidence is in
 [public-preparation.json](benchmarks/results/20260917-market-selection/public-preparation.json).
 
-**Next gate:** after capture/replay acceptance and sufficient usable trade/book
-observations, define one bounded passive-versus-aggressive experiment in P3.
+**Earlier proposed gate, now secondary to the basket screen above:** after
+capture/replay acceptance and sufficient usable trade/book observations, define
+one bounded passive-versus-aggressive experiment in P3.
 Specify arrival latency, queue ahead, uncertain cancellations, block exclusion,
 fees, adverse selection and residual exposure; avoid counting trade/delta volume
 twice. Aggregate depth and public trades cannot identify our exact hypothetical
@@ -380,7 +466,7 @@ another implementation sequence. Research stays in
 |---|---|
 | Depth/fees/replay/simulator sometimes described as wholly future work. | They are implemented reference capabilities; P1 and P3 extend them. |
 | Live history required by v0.2, but transport and all credentials deferred to v0.4. | Read-only capture belongs to P2; order integration belongs to P4. |
-| Research sequence appeared to require baskets and advanced models next. | P1 is committed next work; extensions require the entry conditions above. |
+| Research sequence appeared to require baskets and advanced models automatically. | P1 is complete. Extensions require the entry conditions above; the dated current decision selects only a bounded basket investigation. |
 | Largest funded size versus the intended best net size. | The former is a baseline; P1 implements the latter for full acquisition. |
 | Generic pending generated tests despite existing generated/differential checks. | Preserve existing checks and add cases for changed behavior or identified gaps. |
 | Infrastructure/research completion presented as the goal. | Net economic performance is the objective; correctness and measurements support it. |

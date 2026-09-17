@@ -1,0 +1,637 @@
+{
+  "scope": "Research evidence; displayed prices and hypothetical arithmetic, not fills or expected/realized profit.",
+  "date": "2026-09-17",
+  "code_baseline": "ef63210",
+  "capture_id": "economic-20260917T094958.810476Z",
+  "window_utc": [
+    "2026-09-17T09:54:49.523352+00:00",
+    "2026-09-17T11:54:49.846654+00:00"
+  ],
+  "input_provenance": {
+    "market.journal": {
+      "bytes": 155289309,
+      "sha256": "cdc50a3d4213bedab990f359f99b4cfe222352fd4e64472e8723d1aa3d98b426"
+    },
+    "metadata.json": {
+      "bytes": 41307,
+      "sha256": "6c66e346c1cfa556cd1d1f1a02d1ad935532830de06021104674195e1bc5ec3e"
+    },
+    "paper-policy.json": {
+      "bytes": 3162,
+      "sha256": "2e2e7f674b8e01def13838570d72c1c850bab00e74934ca6fcce7d0e59845e8a"
+    },
+    "manifest.json": {
+      "bytes": 344,
+      "sha256": "4a93c83e2e02e52d5dfddc9956d8ac90fd2c59cdbd9453560263369027a33f65"
+    },
+    "paper-summary.json": {
+      "bytes": 2376,
+      "sha256": "9d6d28293e40c95563c8bdcc22b86f6a2ef6074345f62c9e2be836e17d0c9f4e"
+    },
+    "economic_reconstruct.py": {
+      "bytes": 9069,
+      "sha256": "35157bf4973588c2c8d23a89d390937e877359af6d8cf33a15ea858a1d3599b1"
+    },
+    "journal_reader.py": {
+      "bytes": 2008,
+      "sha256": "e619e802b54d8d10c13e1314b09264c1d7d525d603d9478317267f81dc7759d8"
+    },
+    "economic-reconstruction.json": {
+      "bytes": 261273,
+      "sha256": "739d374ad9e804f164bffd9eed3594559113cc9b6e471069a2749cc4afeb0643"
+    }
+  },
+  "aggressive_reconstruction": {
+    "checks": {
+      "decision_count_matches_native": true,
+      "stale_missing_count_matches_native": true,
+      "nonpositive_gross_fresh_count_matches_native": true,
+      "journal_sha256_matches_manifest": true
+    },
+    "decision_counts": {
+      "evaluated": 5946744,
+      "missing_book": 108,
+      "fresh_book": 5548965,
+      "raw_fresh_zero_gross": 3869,
+      "stale_book": 397671,
+      "raw_stale_zero_gross": 671,
+      "whole_fresh_zero_gross": 27
+    },
+    "best": {
+      "raw_fresh": {
+        "record_index": 7,
+        "time_utc": "2026-09-17T09:54:50.151899+00:00",
+        "received_ns": 6742402160819000,
+        "gross_margin_1e4_per_pair": 0,
+        "acquisition_cost_1e4": 10000,
+        "prices_1e4": [
+          9800,
+          200
+        ],
+        "quantities_centicontracts": [
+          94,
+          30000
+        ],
+        "ages_ns": [
+          188834,
+          0
+        ],
+        "constraint_id": 1,
+        "key": "kxbtcd-26sep1717.2-implies-1",
+        "yes_ticker": "KXBTCD-26SEP1717-T73999.99",
+        "no_ticker": "KXBTCD-26SEP1717-T74249.99"
+      },
+      "whole_fresh": {
+        "record_index": 405040,
+        "time_utc": "2026-09-17T11:42:02.216750+00:00",
+        "received_ns": 6748833899398875,
+        "gross_margin_1e4_per_pair": 0,
+        "acquisition_cost_1e4": 10000,
+        "prices_1e4": [
+          9800,
+          200
+        ],
+        "quantities_centicontracts": [
+          494,
+          29800
+        ],
+        "ages_ns": [
+          0,
+          2054432792
+        ],
+        "constraint_id": 1,
+        "key": "kxbtcd-26sep1717.2-implies-1",
+        "yes_ticker": "KXBTCD-26SEP1717-T73999.99",
+        "no_ticker": "KXBTCD-26SEP1717-T74249.99"
+      },
+      "raw_stale": {
+        "record_index": 1180,
+        "time_utc": "2026-09-17T09:55:15.595957+00:00",
+        "received_ns": 6742427605451625,
+        "gross_margin_1e4_per_pair": 0,
+        "acquisition_cost_1e4": 10000,
+        "prices_1e4": [
+          9800,
+          200
+        ],
+        "quantities_centicontracts": [
+          94,
+          30000
+        ],
+        "ages_ns": [
+          14241463042,
+          0
+        ],
+        "constraint_id": 1,
+        "key": "kxbtcd-26sep1717.2-implies-1",
+        "yes_ticker": "KXBTCD-26SEP1717-T73999.99",
+        "no_ticker": "KXBTCD-26SEP1717-T74249.99"
+      },
+      "whole_stale": {
+        "record_index": 1180,
+        "time_utc": "2026-09-17T09:55:15.595957+00:00",
+        "received_ns": 6742427605451625,
+        "gross_margin_1e4_per_pair": -100,
+        "acquisition_cost_1e4": 10100,
+        "prices_1e4": [
+          9900,
+          200
+        ],
+        "quantities_centicontracts": [
+          221500,
+          30000
+        ],
+        "ages_ns": [
+          14241463042,
+          0
+        ],
+        "constraint_id": 1,
+        "key": "kxbtcd-26sep1717.2-implies-1",
+        "yes_ticker": "KXBTCD-26SEP1717-T73999.99",
+        "no_ticker": "KXBTCD-26SEP1717-T74249.99"
+      }
+    }
+  },
+  "passive_diagnostic": {
+    "assumptions": {
+      "use_yes_price": true,
+      "snapshot_no_side_and_no_deltas_are_yes_ask_prices": true,
+      "hypothetical_order_quantity_centicontracts": 100,
+      "passive_price": "Join best visible bid for purchased outcome, visible quantity >0; no queue or fill assumption.",
+      "hedge_price": "Best aggressive level holding at least100 centicontracts; no aggregation of fractional quantity across levels, matching prior whole-contract audit.",
+      "freshness": "Both books received within saved max_book_age; receive-time freshness is not exchange freshness.",
+      "max_book_age_ns": 10000000000,
+      "reject_crossed_yes_book": true,
+      "maker_fee_coefficient": 0,
+      "taker_fee_coefficient_ppm": 70000,
+      "taker_rounding": "q=1; ceil(7*p_1e4*(10000-p_1e4)/100000000) cents.",
+      "passive_low_yes_gross": "high YES whole-size bid minus low YES raw bid",
+      "passive_high_no_gross": "high YES raw ask minus low YES whole-size ask",
+      "timing": "Same received book state; no execution delay, slippage, queue, rejections, adverse selection, own impact or partial execution costs.",
+      "counting": "Update-weighted relation/mode evaluations after each dependent book update; repeats are not independent opportunities, episodes or trades.",
+      "bound": "Room after one hedge fee, conditional on hypothetical passive execution at posted price and contemporaneous hedge availability; not an expected profit or guaranteed achievable return."
+    },
+    "checks": {
+      "journal_crc_all_records": true,
+      "websocket_sequences_contiguous": true,
+      "book_quantities_nonnegative": true,
+      "record_count_matches_manifest": true,
+      "journal_hash_matches_manifest": true,
+      "metadata_hash_matches_manifest": true,
+      "policy_hash_matches_native": true,
+      "relation_count_matches_native": true,
+      "missing_stale_matches_native": true,
+      "fresh_count_matches_prior_reconstruction": true
+    },
+    "counts": {
+      "journal_records": 455891,
+      "book_updates": 455436,
+      "relation_evaluations": 5946744,
+      "missing_book": 108,
+      "fresh_relation_evaluations": 5548965,
+      "fresh_valid_relation_evaluations": 5548965,
+      "stale_book": 397671
+    },
+    "event_counts": {
+      "subscribed": 2,
+      "orderbook_snapshot": 18,
+      "orderbook_delta": 455418,
+      "trade": 448
+    },
+    "unique_relations_positive_either_mode": 0,
+    "aggregate": {
+      "passive_low_yes": {
+        "counts": {
+          "fresh_valid_evaluations": 5548965,
+          "priced_evaluations": 5548965,
+          "gross_positive": 3988,
+          "room_zero": 3988,
+          "gross_zero": 8041,
+          "room_negative": 5544977,
+          "gross_negative": 5536936
+        },
+        "best_gross": {
+          "record_index": 7,
+          "time_utc": "2026-09-17T09:54:50.151899+00:00",
+          "received_ns": 6742402160819000,
+          "constraint_id": 1,
+          "key": "kxbtcd-26sep1717.2-implies-1",
+          "low_ticker": "KXBTCD-26SEP1717-T73999.99",
+          "high_ticker": "KXBTCD-26SEP1717-T74249.99",
+          "mode": "passive_low_yes",
+          "passive_price_1e4": 9700,
+          "passive_visible_queue_centicontracts": 755500,
+          "hedge_price_1e4": 200,
+          "hedge_visible_depth_centicontracts": 30000,
+          "gross_1e4": 100,
+          "maker_fee_1e4": 0,
+          "hedge_fee_1e4": 100,
+          "room_after_hedge_fee_1e4": 0,
+          "book_ages_ns_low_high": [
+            188834,
+            0
+          ],
+          "cross_leg_observation_skew_ns": 188834
+        },
+        "best_room_after_hedge_fee": {
+          "record_index": 7,
+          "time_utc": "2026-09-17T09:54:50.151899+00:00",
+          "received_ns": 6742402160819000,
+          "constraint_id": 1,
+          "key": "kxbtcd-26sep1717.2-implies-1",
+          "low_ticker": "KXBTCD-26SEP1717-T73999.99",
+          "high_ticker": "KXBTCD-26SEP1717-T74249.99",
+          "mode": "passive_low_yes",
+          "passive_price_1e4": 9700,
+          "passive_visible_queue_centicontracts": 755500,
+          "hedge_price_1e4": 200,
+          "hedge_visible_depth_centicontracts": 30000,
+          "gross_1e4": 100,
+          "maker_fee_1e4": 0,
+          "hedge_fee_1e4": 100,
+          "room_after_hedge_fee_1e4": 0,
+          "book_ages_ns_low_high": [
+            188834,
+            0
+          ],
+          "cross_leg_observation_skew_ns": 188834
+        },
+        "unique_relations_gross_positive": 1,
+        "unique_relations_room_positive": 0,
+        "unique_relations_gross_zero": 3
+      },
+      "passive_high_no": {
+        "counts": {
+          "fresh_valid_evaluations": 5548965,
+          "priced_evaluations": 5548965,
+          "gross_zero": 5321,
+          "room_negative": 5548938,
+          "gross_negative": 5543617,
+          "gross_positive": 27,
+          "room_zero": 27
+        },
+        "best_gross": {
+          "record_index": 405040,
+          "time_utc": "2026-09-17T11:42:02.216750+00:00",
+          "received_ns": 6748833899398875,
+          "constraint_id": 1,
+          "key": "kxbtcd-26sep1717.2-implies-1",
+          "low_ticker": "KXBTCD-26SEP1717-T73999.99",
+          "high_ticker": "KXBTCD-26SEP1717-T74249.99",
+          "mode": "passive_high_no",
+          "passive_price_1e4": 100,
+          "passive_visible_queue_centicontracts": 301200,
+          "hedge_price_1e4": 9800,
+          "hedge_visible_depth_centicontracts": 494,
+          "gross_1e4": 100,
+          "maker_fee_1e4": 0,
+          "hedge_fee_1e4": 100,
+          "room_after_hedge_fee_1e4": 0,
+          "book_ages_ns_low_high": [
+            0,
+            2054432792
+          ],
+          "cross_leg_observation_skew_ns": 2054432792
+        },
+        "best_room_after_hedge_fee": {
+          "record_index": 405040,
+          "time_utc": "2026-09-17T11:42:02.216750+00:00",
+          "received_ns": 6748833899398875,
+          "constraint_id": 1,
+          "key": "kxbtcd-26sep1717.2-implies-1",
+          "low_ticker": "KXBTCD-26SEP1717-T73999.99",
+          "high_ticker": "KXBTCD-26SEP1717-T74249.99",
+          "mode": "passive_high_no",
+          "passive_price_1e4": 100,
+          "passive_visible_queue_centicontracts": 301200,
+          "hedge_price_1e4": 9800,
+          "hedge_visible_depth_centicontracts": 494,
+          "gross_1e4": 100,
+          "maker_fee_1e4": 0,
+          "hedge_fee_1e4": 100,
+          "room_after_hedge_fee_1e4": 0,
+          "book_ages_ns_low_high": [
+            0,
+            2054432792
+          ],
+          "cross_leg_observation_skew_ns": 2054432792
+        },
+        "unique_relations_gross_positive": 1,
+        "unique_relations_room_positive": 0,
+        "unique_relations_gross_zero": 3
+      }
+    }
+  },
+  "passive_larger_size_witnesses": {
+    "description": "Arithmetic sensitivity at two already-identified witnesses only; not a rerun of the journal at q=2 or q=4.",
+    "source_diagnostic": {
+      "path": "/private/tmp/eme-next-research-20260917/passive-feasibility.json",
+      "sha256": "588395adcc482b22244b606cc41dfa227eb681a76dd2c7b36f0408a8271fcd20"
+    },
+    "assumptions": [
+      "Zero maker fee; exact quadratic 0.07 taker fee rounded upward to whole cents for each hypothetical q-size hedge order.",
+      "Visible hedge size is checked at the witness only, not at any hypothetical execution time.",
+      "Existing quantity at passive price is displayed resting interest, not a model of exact queue position or future fills.",
+      "Passive fills, hedge timing, queue changes, adverse selection, partial fills and PnL are not estimated.",
+      "Do not extend q=1 full-journal zero-positive findings to other sizes or policies."
+    ],
+    "checks": {
+      "fee_arithmetic_matches_decimal": true,
+      "all_examples_have_sufficient_visible_hedge_quantity": true
+    },
+    "examples": [
+      {
+        "mode": "passive_low_yes",
+        "constraint_id": 1,
+        "record_index": 7,
+        "time_utc": "2026-09-17T09:54:50.151899+00:00",
+        "quantity_contracts": 1,
+        "passive_price_1e4": 9700,
+        "visible_existing_quantity_at_passive_price_contracts": "7555",
+        "hedge_price_1e4": 200,
+        "hedge_visible_quantity_contracts": "300",
+        "hedge_has_requested_quantity": true,
+        "gross_package_room_cents": "1",
+        "unrounded_hedge_fee_dollars": "0.001372",
+        "rounded_hedge_fee_cents": 1,
+        "maker_fee_cents": 0,
+        "room_after_hedge_fee_cents": "0",
+        "book_ages_ns_low_high": [
+          188834,
+          0
+        ]
+      },
+      {
+        "mode": "passive_low_yes",
+        "constraint_id": 1,
+        "record_index": 7,
+        "time_utc": "2026-09-17T09:54:50.151899+00:00",
+        "quantity_contracts": 2,
+        "passive_price_1e4": 9700,
+        "visible_existing_quantity_at_passive_price_contracts": "7555",
+        "hedge_price_1e4": 200,
+        "hedge_visible_quantity_contracts": "300",
+        "hedge_has_requested_quantity": true,
+        "gross_package_room_cents": "2",
+        "unrounded_hedge_fee_dollars": "0.002744",
+        "rounded_hedge_fee_cents": 1,
+        "maker_fee_cents": 0,
+        "room_after_hedge_fee_cents": "1",
+        "book_ages_ns_low_high": [
+          188834,
+          0
+        ]
+      },
+      {
+        "mode": "passive_low_yes",
+        "constraint_id": 1,
+        "record_index": 7,
+        "time_utc": "2026-09-17T09:54:50.151899+00:00",
+        "quantity_contracts": 4,
+        "passive_price_1e4": 9700,
+        "visible_existing_quantity_at_passive_price_contracts": "7555",
+        "hedge_price_1e4": 200,
+        "hedge_visible_quantity_contracts": "300",
+        "hedge_has_requested_quantity": true,
+        "gross_package_room_cents": "4",
+        "unrounded_hedge_fee_dollars": "0.005488",
+        "rounded_hedge_fee_cents": 1,
+        "maker_fee_cents": 0,
+        "room_after_hedge_fee_cents": "3",
+        "book_ages_ns_low_high": [
+          188834,
+          0
+        ]
+      },
+      {
+        "mode": "passive_high_no",
+        "constraint_id": 1,
+        "record_index": 405040,
+        "time_utc": "2026-09-17T11:42:02.216750+00:00",
+        "quantity_contracts": 1,
+        "passive_price_1e4": 100,
+        "visible_existing_quantity_at_passive_price_contracts": "3012",
+        "hedge_price_1e4": 9800,
+        "hedge_visible_quantity_contracts": "4.94",
+        "hedge_has_requested_quantity": true,
+        "gross_package_room_cents": "1",
+        "unrounded_hedge_fee_dollars": "0.001372",
+        "rounded_hedge_fee_cents": 1,
+        "maker_fee_cents": 0,
+        "room_after_hedge_fee_cents": "0",
+        "book_ages_ns_low_high": [
+          0,
+          2054432792
+        ]
+      },
+      {
+        "mode": "passive_high_no",
+        "constraint_id": 1,
+        "record_index": 405040,
+        "time_utc": "2026-09-17T11:42:02.216750+00:00",
+        "quantity_contracts": 2,
+        "passive_price_1e4": 100,
+        "visible_existing_quantity_at_passive_price_contracts": "3012",
+        "hedge_price_1e4": 9800,
+        "hedge_visible_quantity_contracts": "4.94",
+        "hedge_has_requested_quantity": true,
+        "gross_package_room_cents": "2",
+        "unrounded_hedge_fee_dollars": "0.002744",
+        "rounded_hedge_fee_cents": 1,
+        "maker_fee_cents": 0,
+        "room_after_hedge_fee_cents": "1",
+        "book_ages_ns_low_high": [
+          0,
+          2054432792
+        ]
+      },
+      {
+        "mode": "passive_high_no",
+        "constraint_id": 1,
+        "record_index": 405040,
+        "time_utc": "2026-09-17T11:42:02.216750+00:00",
+        "quantity_contracts": 4,
+        "passive_price_1e4": 100,
+        "visible_existing_quantity_at_passive_price_contracts": "3012",
+        "hedge_price_1e4": 9800,
+        "hedge_visible_quantity_contracts": "4.94",
+        "hedge_has_requested_quantity": true,
+        "gross_package_room_cents": "4",
+        "unrounded_hedge_fee_dollars": "0.005488",
+        "rounded_hedge_fee_cents": 1,
+        "maker_fee_cents": 0,
+        "room_after_hedge_fee_cents": "3",
+        "book_ages_ns_low_high": [
+          0,
+          2054432792
+        ]
+      }
+    ]
+  },
+  "threeleg_public_book_checks": [
+    {
+      "ticker": "KXBTCD-26SEP1817-T74499.99",
+      "url": "https://external-api.kalshi.com/trade-api/v2/markets/KXBTCD-26SEP1817-T74499.99/orderbook?depth=5",
+      "requested_at": "2026-09-17T13:18:10.291284+00:00",
+      "received_at": "2026-09-17T13:18:10.817052+00:00",
+      "book": {
+        "orderbook_fp": {
+          "no_dollars": [
+            [
+              "0.0100",
+              "98213.00"
+            ],
+            [
+              "0.0200",
+              "250.01"
+            ],
+            [
+              "0.0300",
+              "2647.01"
+            ],
+            [
+              "0.0400",
+              "7758.01"
+            ],
+            [
+              "0.0500",
+              "29041.99"
+            ]
+          ],
+          "yes_dollars": [
+            [
+              "0.9000",
+              "22160.00"
+            ],
+            [
+              "0.9100",
+              "7919.00"
+            ],
+            [
+              "0.9200",
+              "4134.00"
+            ],
+            [
+              "0.9300",
+              "129.00"
+            ],
+            [
+              "0.9400",
+              "309.99"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KXBTCD-26SEP1817-T74999.99",
+      "url": "https://external-api.kalshi.com/trade-api/v2/markets/KXBTCD-26SEP1817-T74999.99/orderbook?depth=5",
+      "requested_at": "2026-09-17T13:18:11.069628+00:00",
+      "received_at": "2026-09-17T13:18:11.568357+00:00",
+      "book": {
+        "orderbook_fp": {
+          "no_dollars": [
+            [
+              "0.0800",
+              "5000.01"
+            ],
+            [
+              "0.0900",
+              "3201.01"
+            ],
+            [
+              "0.1000",
+              "23868.00"
+            ],
+            [
+              "0.1100",
+              "2624.00"
+            ],
+            [
+              "0.1200",
+              "2204.00"
+            ]
+          ],
+          "yes_dollars": [
+            [
+              "0.8100",
+              "1.00"
+            ],
+            [
+              "0.8300",
+              "1.00"
+            ],
+            [
+              "0.8500",
+              "22834.00"
+            ],
+            [
+              "0.8600",
+              "8762.00"
+            ],
+            [
+              "0.8700",
+              "5116.82"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "ticker": "KXBTC-26SEP1817-B74750",
+      "url": "https://external-api.kalshi.com/trade-api/v2/markets/KXBTC-26SEP1817-B74750/orderbook?depth=5",
+      "requested_at": "2026-09-17T13:18:11.819174+00:00",
+      "received_at": "2026-09-17T13:18:12.303482+00:00",
+      "book": {
+        "orderbook_fp": {
+          "no_dollars": [
+            [
+              "0.2000",
+              "1.00"
+            ],
+            [
+              "0.5600",
+              "72.00"
+            ],
+            [
+              "0.9200",
+              "3000.00"
+            ],
+            [
+              "0.9300",
+              "5000.00"
+            ],
+            [
+              "0.9400",
+              "200.00"
+            ]
+          ],
+          "yes_dollars": [
+            [
+              "0.0100",
+              "200.00"
+            ],
+            [
+              "0.0300",
+              "7361.00"
+            ],
+            [
+              "0.0400",
+              "212.00"
+            ],
+            [
+              "0.0500",
+              "1000.00"
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "research_file_hashes": {
+    "passive_feasibility.py": "c1a2f59047af729e19a2d1feee21137055a1501127e9c91e0d40ac3bb72a47f8",
+    "passive-feasibility.json": "588395adcc482b22244b606cc41dfa227eb681a76dd2c7b36f0408a8271fcd20",
+    "passive-feasibility-witness-sizing.json": "776fb184c602ce84ef398ec5b9abb47782c792c1f9b636a451fa044e1f6336b2",
+    "threeleg-depth-check.json": "af65e4f57f4e35a5884b6d632740385461d84f80665396e1b05fc6a92536f95c"
+  }
+}

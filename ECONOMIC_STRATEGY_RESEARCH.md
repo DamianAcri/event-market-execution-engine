@@ -4,7 +4,174 @@ Revisión base: 15 de septiembre de 2026. Actualización: 17 de septiembre de 20
 
 **Plan vigente:** [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) mantiene el orden, estado y criterios de ejecución. Este documento conserva la investigación y sus propuestas; las extensiones solo se incorporan bajo las condiciones del plan.
 
-## Selección económica aplicada — 17 de septiembre de 2026
+## Revisión tras la segunda captura — 17 de septiembre de 2026
+
+**Esta sección actualiza las prioridades; las secciones anteriores en el tiempo
+conservan sus resultados y supuestos.** La búsqueda se ha dividido entre
+oportunidades estructurales, ejecución pasiva y rendimiento orientado al beneficio.
+Se han consultado fuentes primarias, sus métodos y limitaciones. Una fuente
+accesible solo como resumen se identifica así; una propuesta no pasa a ser una
+funcionalidad implementada por aparecer aquí.
+
+**Entrega posterior de esta revisión:** el preflight público y el cálculo nativo
+de la plantilla BTC de tres patas ya están implementados en local. La
+[comprobación reproducible](research/results/20260917-basket-screen/README.md)
+examinó 20 combinaciones seleccionadas antes de consultar los libros: ocho sin
+profundidad suficiente y doce sin margen positivo en la rejilla estudiada.
+El modelo sigue siendo condicional; observar episodios en el tiempo y estudiar
+su ejecución son pasos pendientes. Los apartados siguientes conservan el
+razonamiento y las observaciones que motivaron esta entrega.
+
+### Qué cambia con nuestros datos
+
+La sesión `economic-20260917T094958.810476Z` terminó sus 7.200 segundos: 18 mercados
+BTC/ETH, 108 implicaciones, 455.436 actualizaciones y 448 operaciones públicas.
+Hubo cero intentos simulados. Una reconstrucción independiente reprodujo los
+5.946.744 estados de evaluación y no encontró margen bruto positivo, incluso
+admitiendo liquidez fraccionaria y libros excluidos por antigüedad. No son millones
+de oportunidades independientes. Los presupuestos de libros, actividad y
+suscripciones no limitaron esta selección. La captura terminó unas nueve horas
+antes de la resolución; no representa todos los regímenes ni familias.
+
+El mejor paquete entero observado costaba $1 antes de comisiones y garantizaba
+un pago mínimo de $1. Más capital o menos CPU no cambia ese resultado aritmético
+en esos estados. Esto no excluye valor esperado direccional, un mejor precio
+pasivo ni otros paquetes. **Repetir el mismo experimento por una mejora de
+velocidad no es el siguiente trabajo seleccionado.**
+
+### Ampliación concreta: intervalos y umbrales del mismo vencimiento
+
+La literatura combinatoria motiva buscar relaciones adicionales, pero no permite
+importar las conversiones de Polymarket a Kalshi ni convertir resultados
+agregados ajenos en nuestro beneficio.[^saguillo][^executable] Nuestra siguiente
+hipótesis estructural propuesta usa reglas BTC ya cercanas a las existentes:
+
+- `A`: el valor final supera el límite inferior.
+- `B`: supera el límite superior.
+- `C`: cae dentro de un intervalo contenido entre ambos límites.
+
+Si `B` y `C` son excluyentes y ambos implican `A`, entonces
+`YES(A) + NO(B) + NO(C) = 2 + A − B − C ≥ 2`.
+La comprobación debe incluir las fronteras exactas, la misma fuente y ventana de
+promedio, y las excepciones del contrato. El caso común de todos NO conserva
+ese suelo. En cambio, comprar todos los YES de una partición puede perderlo en
+ese caso; tampoco se debe asumir que promedios reales están redondeados a céntimos.
+Es una plantilla candidata a certificar, no una nueva familia activada.
+La revisión general del Rulebook y sus modificaciones sigue pendiente; la prueba
+anterior no cubre por sí sola cualquier liquidación discrecional del exchange.
+
+Ejemplo exploratorio del catálogo: `KXBTCD-26SEP1817-T74499.99` YES a $0,87,
+`KXBTCD-26SEP1817-T74999.99` NO a $0,15 y
+`KXBTC-26SEP1817-B74750` NO a $0,95: coste indicado $1,97 y suelo candidato $2.
+Con coeficiente taker 0,07 y redondeo por orden a céntimos, una unidad pagaría
+$0,03 en comisiones: **cero margen neto**, incluso antes de ejecución. Diez
+unidades al mismo precio tendrían $0,21 en comisiones y $0,09 de margen total,
+pero el catálogo no acredita profundidad ni simultaneidad. La consulta posterior
+de los tres libros públicos dio $0,95 + $0,13 + $0,95 = $2,03 antes de comisiones.
+Fueron tres respuestas REST sucesivas, no un snapshot atómico. **No se ha
+encontrado aquí un arbitraje ejecutable.** Sí se ha concretado una relación que
+el detector actual de parejas no evalúa. Términos de referencia:
+[BTC](https://assets.kalshi.com/contract_terms/BTC.pdf).
+
+Antes de extender el simulador, un oráculo pequeño debe comprobar esta plantilla
+y un lector de libros frescos debe medir margen exacto, profundidad y duración.
+Los subconjuntos NO de intervalos excluyentes son otra plantilla con suelo
+`n−1`; no necesitan exhaustividad, pero sí exclusión verificada. Quedan como
+comparador limitado, no como un proyecto de optimización combinatoria general.
+Las familias meteorológicas con discrepancias entre fuente del PDF y metadata
+no se certifican por similitud de títulos.
+
+### Qué modelo justifica investigar órdenes pasivas
+
+Moallemi y Yuan relacionan valor de cola, probabilidad de ejecución y selección
+adversa; contrastan su modelo usando datos por orden de NASDAQ. Cont y Kukanov
+ofrecen una referencia de decisiones de colocación con estimaciones sencillas y
+separación temporal, pero sus restricciones de simulación no validan una
+estrategia de Kalshi.[^queuevalue][^cont] Lehalle y Mounjid incorporan el coste de
+cancelar tarde y advierten que predecir movimientos mediante desequilibrio no
+implica cubrir spread y comisiones.[^lehalle]
+
+Nuestra adaptación, todavía sin implementar, es **una entrada pasiva y una
+cobertura agresiva**, con puntuación:
+
+`E[1{fill} × (suelo − precio de entrada − coste ejecutable de cobertura tras el retraso − comisiones)] − pérdidas residuales − coste de capital`.
+
+El precio de cobertura debe condicionarse al momento y circunstancias del fill.
+Multiplicar una probabilidad de fill por el margen actual no basta. Se contabilizan
+coberturas parciales/fallidas, fills durante cancelación y exposición sin salida.
+Primero se comprueba si existe espacio económico al precio pasivo; solo después
+se justifica modelar colas o entrenar un predictor.
+
+**Comprobación realizada en esta revisión:** sobre los libros de la segunda
+captura, se evaluaron ambas entradas al mejor bid visible de su lado, con cobertura
+inmediata en un nivel que contuviese al menos un contrato, comisión maker cero como supuesto
+optimista y la comisión taker guardada. Hubo 3.988 reevaluaciones con margen bruto
+positivo para la entrada YES y 27 para la entrada NO; todas en una sola pareja
+BTC y todas de un céntimo. Después de la comisión de cobertura, ninguna dejó
+margen positivo para una unidad bajo ese criterio. El diagnóstico no agrega
+fracciones de varios niveles y no descarta todas las coberturas posibles de una
+unidad. Son estados repetidos, no fills ni episodios.
+
+Esto **no descarta tamaños superiores**: en los dos ejemplos guardados, dos y
+cuatro contratos dejarían uno y tres céntimos por paquete tras esa comisión,
+todavía suponiendo maker gratuito y precio de cobertura inmediato. Había
+profundidad visible para cubrirlos; en el nivel de la entrada pasiva ya se mostraban
+7.555 contratos en un caso y 3.012 en el otro. No se ha demostrado que nuestra
+orden pudiera ejecutarse ni conservar ese margen. Un caso tiene además 2,05
+segundos de separación entre las últimas actualizaciones de sus libros.
+Los contadores, supuestos, ejemplos, respuestas REST y hashes están en
+[evidence.json](research/results/20260917-economic-review/evidence.json).
+
+Nuestros libros agregados y operaciones públicas no identifican la posición FIFO
+contrafactual ni dónde se canceló cada orden. Que haya una operación al precio
+no prueba nuestro fill. Escenarios con menos fills tampoco son automáticamente
+cotas inferiores de beneficio: pueden omitir precisamente los fills perdedores.
+Los resultados dependientes de esa ambigüedad se declaran no identificados. No
+se ajustará un modelo rico con 448 operaciones correlacionadas.[^queue]
+
+### Nuevos trabajos que ayudan, sin trasplantar sus retornos
+
+| Fuente primaria y lectura | Aportación y límite para este proyecto |
+|---|---|
+| Capponi, Gliozzo y Zhu, *Agentic AI for Clustering, Relationship Discovery, and Semantic Trading*, v2 agosto 2026; texto, método, resultados y limitaciones.[^semantic] | Descubrimiento semántico de relaciones estadísticas. Su backtest admite arrastrar cotizaciones hasta 12 horas y no representa nuestro modelo de ejecución. No convierte una relación inferida por LLM en garantía contractual ni justifica usar cotizaciones antiguas. |
+| Xi, Moallemi, Pai y Wang, *Volatility in Prediction Markets*, julio 2026; modelo y evaluación temporal.[^volatility] | Une incertidumbre binaria/tiempo a resolución con spread y actividad. Evaluación de intervalos de variación a una hora, no rentabilidad ni coste de cobertura a 100 ms. Candidato posterior para riesgo por horizonte, sin copiar parámetros al motor. |
+| Gu, Kagan, Sun, Wu y Xu, *When do prophets profit?*, julio 2026; teoría y apéndice de despliegue.[^prophets] | Estudia cómo convertir una ventaja predictiva en apuestas bajo supuestos de liquidez y costes. Incluye un pequeño despliegue direccional con LLM; no demuestra nuestra ventaja ni sustituye un predictor inexistente. Participa Kalshi Research. Fuera del siguiente bloque estructural. |
+| Bürgi, Deng y Whelan, *Makers and Takers*; relectura de muestra, costes y discusión.[^makers] | El periodo principal acaba antes de introducirse comisiones maker en abril de 2025. Rentabilidad histórica por papel maker/taker y liquidación no equivale a capturar hoy un spread con cobertura inmediata. |
+| Bartlett y O'Hara, *Adverse Selection in Prediction Markets*; solo resumen/metadatos.[^bartlett] | Evidencia anunciada sobre toxicidad y diferencias entre clases de mercado. El texto completo no fue accesible; no se usa para fijar parámetros ni sostener una rentabilidad. |
+
+Ng y colaboradores, y Yang, siguen marcados como lectura incompleta:
+se localizaron registros y páginas de autores, pero no se verificó el método
+completo.[^ng][^yang] No se los presenta como evidencia ya aplicada.
+
+### Optimización técnica que sí tiene una finalidad concreta
+
+Las fuentes públicas de firmas muestran métodos de ingeniería y evaluación,
+no sus estrategias propietarias. Jane Street analiza ráfagas y tiempo acumulado
+en cola; Optiver trata la latencia de todo el recorrido; HRT pide evaluar lo que
+afecta al resultado y perfilar el uso real de memoria.[^safe][^speedscale][^hrtmodel][^hrtpages]
+La adaptación elegida conserva el bucle incremental C++ y propone:
+
+1. Reutilizar conexiones y limitar concurrencia en consultas independientes de
+   series, eventos, tarifas y actividad. Las páginas con cursor siguen dependiendo
+   de la anterior. Los lotes de 100 libros **ya existen**. Separar preparación de
+   familias conocidas del censo global de investigación.
+2. Dar a cada petición su propia respuesta y procedencia. En el código actual,
+   usar `client.requests[-1]` desde varios trabajadores asociaría respuestas al
+   registro equivocado. Un límite común debe controlar ritmo, bytes y reintentos.
+3. Medir tiempo hasta suscripción con libros frescos, antigüedad por mercado y
+   colas durante ráfagas. Investigar la cola extrema de 19,9 ms observada; el p99
+   local inferior a 263 microsegundos no mide llegada de órdenes al exchange.
+4. Medir `V(retraso)` y supervivencia conjunta de margen/profundidad sobre
+   episodios distintos antes de atribuir euros a una optimización. El feed no
+   muestra carreras perdidas ni todos los intentos de otros participantes.[^race]
+
+La política local de cinco peticiones por segundo no es una cuota pública
+acreditada. Los [límites oficiales](https://docs.kalshi.com/getting_started/rate_limits)
+consultados describen peticiones autenticadas. No se añaden credenciales para
+esta investigación. Tampoco se justifican por ahora FPGA, DPDK, huge pages o
+paralelizar todo el motor sin perfil y beneficio medible.
+
+## Selección económica aplicada — 17 de septiembre de 2026, antes de la captura
 
 El perfil `economic` sustituye el muestreo fijo como siguiente experimento.
 La trazabilidad es concreta:
@@ -323,3 +490,14 @@ Fuentes de la revisión base consultadas el 14–15 de septiembre de 2026; las a
 [^dsr]: David H. Bailey y Marcos López de Prado. [The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting and Non-Normality](https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf). Versión de autores, 31 de julio de 2014, The Journal of Portfolio Management. Selección entre ensayos; ya incluida en QUANT_RESEARCH.md.
 [^ng]: Hunter Ng, Lin Peng, Yubo Tao y Dexin Zhou. [Price Discovery and Trading in Modern Prediction Markets](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5331995). Working paper, revisión indicada por SSRN en septiembre de 2026. **Solo resumen y metadatos accesibles**; páginas de [Yubo Tao](https://sites.google.com/site/ybtao1990/research) y [Hunter Ng](https://hunterng.com/research/). Pendiente fijar y leer texto completo.
 [^yang]: Hsiang-Chieh (Alex) Yang. [Skilled Liquidity Provision in Prediction Markets: Evidence from 150 Million Trades](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6556613). Working paper, registro de abril de 2026. **Solo resumen accesible**; pendiente texto y método.
+
+[^queuevalue]: Ciamac C. Moallemi y Kai Yuan. [A Model for Queue Position Valuation in a Limit Order Book](https://moallemi.com/ciamac/papers/queue-value-2016.pdf). Revisión de junio de 2017; secciones 3–5, supuestos y validación con datos por orden. No calibrado para Kalshi.
+[^semantic]: Agostino Capponi, Alfio Gliozzo y Brian Zhu. [Agentic AI for Clustering, Relationship Discovery, and Semantic Trading in Prediction Markets](https://arxiv.org/html/2512.02436v2). Preprint v2, 8 de agosto de 2026; secciones 2.2, 3–7 leídas. Relaciones estadísticas y backtest exploratorio, no certificados de pago mínimo.
+[^volatility]: Weiye Xi, Ciamac C. Moallemi, Mallesh Pai y Shouqiao Wang. [Volatility in Prediction Markets: A Structural Approach](https://arxiv.org/html/2607.08199v1). Preprint v1, 9 de julio de 2026; modelo, panel horario y evaluación temporal. Predicción de volatilidad, no P&L.
+[^prophets]: Anri Gu, Nicole Kagan, Alec Sun, Jibang Wu y Haifeng Xu. [When do prophets profit in prediction markets?](https://arxiv.org/html/2607.06166v1). Preprint v1, 7 de julio de 2026; introducción, sección 4.3 y apéndice D.7 leídos. No se han reproducido el despliegue ni todas las demostraciones.
+[^bartlett]: Robert Bartlett y Maureen O'Hara. [Adverse Selection in Prediction Markets: Evidence from Kalshi](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6615739). Working paper 2026. **Solo resumen y metadatos accesibles**; no se afirma haber revisado el método completo.
+[^safe]: Sebastian Funk, Jane Street. [Safe at Any Speed](https://www.janestreet.com/tech-talks/safe-at-any-speed/). Transcripción oficial leída; ráfagas, colas y diseño de la ruta crítica.
+[^speedscale]: Optiver. [When Speed and Scale Collide](https://www.optiver.com/insights/technology-blog/when-speed-and-scale-collide/). Artículo técnico oficial, febrero de 2026; recorrido completo y filtrado de datos.
+[^hrtmodel]: Iain Dunning, Hudson River Trading. [In Trading, Machine Learning Benchmarks Don't Track What You Care About](https://www.hudsonrivertrading.com/hrtbeat/trading-machine-learning/). Artículo oficial, 2022; evaluación y baja relación señal/ruido.
+[^hrtpages]: Guillaume Morin, Hudson River Trading. [Low Latency Optimization: Understanding Huge Pages](https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-1/). Artículo oficial, 2022; ejemplo de memoria específico, no recomendación universal.
+[^race]: Matteo Aquilina, Eric Budish y Peter O'Neill. [Quantifying the High-Frequency Trading Arms Race](https://academic.oup.com/qje/article/137/1/493/6368348). QJE 137(1), 2022; mensajes de intentos fallidos frente a feed de libro. Resultados de renta variable, no velocidades ni beneficios de Kalshi.

@@ -65,9 +65,80 @@ serves controller validation and the existing normalization/sequence checks. The
 maximum reassembled text message is 1 MiB. Binary/oversized messages terminate the
 generation; they are recorded as transport failures, not accepted book data.
 
-## Economic discovery before capture (2026-09-17)
+## BTC basket public preflight
 
-Prefer the economic profile for a new experiment. It first scans the public open
+The next selected research step is a **public, finite preflight**, implemented in
+`scripts/basket_research.py` and `event-engine basket screen`. It compares three
+legs: YES lower BTC threshold, NO upper threshold and NO contained interval,
+with matching reference source, minute, expiry and terms. It does not run a timed
+WebSocket capture or simulate fills. No settings file, API key or private key is
+read. The current two-leg paper collector is unchanged.
+
+From a built repository:
+
+```sh
+python3 scripts/basket_research.py --engine build/event-engine --output basket-preflight
+event-engine basket screen basket-preflight/screen-input.json
+```
+
+The output directory must be new or empty. The second command reproduces the
+saved arithmetic offline, without downloading data. If qualification selected no
+baskets, there is no `screen-input.json`; inspect `qualification.json` instead.
+`--horizon-seconds 600` checks closing times and announced fee changes for the next
+ten minutes; it does **not** tell the process to run for ten minutes.
+
+Preparation refreshes only complete KXBTC/KXBTCD catalogs, their current terms,
+series/event identities and historical-inclusive fee schedules. Independent
+requests use persistent HTTPS connections, up to four workers, one shared start
+limiter of five requests per second, bounded retries and response/archive sizes.
+Each worker task owns its archive and each cursor chain remains sequential.
+The five-request policy is a client limit, not a claim about an unauthenticated
+venue quota. Python 3.9+ standard library is sufficient; nothing is installed.
+
+The cohort freezes **before any book screen**. It uses nearest enclosing strikes,
+rotation across expiries and bottleneck past-day volume, with deterministic ties.
+Default limits are 20 baskets, 64 unique markets and 100 whole contracts per leg;
+they are observation/computation budgets, not inferred economic optima. Tail
+contracts, unknown rules, changed terms and incompatible semantics are excluded.
+Only the nearest enclosure is considered for each interval, not all combinations.
+
+The native screen normalizes each book once and walks cumulative depth while
+enumerating the bounded quantity grid. It aggregates fractional displayed depth
+across levels. Accounting reuses the engine's fee accumulator and conservative
+reservation primitive; the cost model assumes one fill per consumed price level.
+Funding separately allows centicontract fragmentation. Different actual fill
+fragmentation may change charged fees. USD 1,000 funding and cent-rounded balances
+are explicit scenarios, not an inspected account balance or private fee tier.
+Quantities are optimized independently per basket, without shared capital/depth
+allocation between baskets, collateral release, slippage or incomplete-leg losses.
+
+`conditional_common_scalar_observation_only` is intentional: the model's $2 floor
+covers ordinary common-scalar settlement and common all-NO missing data. The
+operative Rulebook's exceptional review/modification outcomes have not been
+jointly certified. This output never becomes an unconditional payoff certificate
+or execution permission. See the
+[contract review](research/results/20260917-basket-screen/contract-review.md).
+
+Artifacts:
+
+- `qualification.json`: exact rules, exclusions, selected cohort and source hashes.
+- `public/*/catalog-manifest.json`: task-owned raw gzip responses, request times
+  and original/compressed hashes; `BTC.pdf` retains the exact checked terms.
+- `screen-input.json` / `screen-output.json`: normalized depth/fees/limits and
+  reproducible native calculations. Incomplete searches are explicit.
+- `observation-metadata.json`: market IDs only, **no trading constraints**.
+- `provenance.json` / `status.json`: executable/module fingerprints, transport
+  timings, completion/failure and counts. Code changes during preparation fail.
+
+REST request/response intervals bound retrieval age and skew; neither a bulk
+response nor equal local timestamps proves exchange-atomic books or own fills.
+This preflight does not measure opportunity duration, market-hours or P&L. A
+prospective streaming cohort and separate completion-risk analysis remain the
+next evidence steps when justified by the selected family.
+
+## Two-leg economic discovery before capture (2026-09-17)
+
+For the existing two-leg strategy, the economic profile first scans the public open
 non-MVE catalog, refreshes the supported series, verifies settlement rules and
 fees, screens depth with the native C++ optimizer and checks recent non-block
 trades. It refreshes books before freezing up to 64 selected tickers. No fixed

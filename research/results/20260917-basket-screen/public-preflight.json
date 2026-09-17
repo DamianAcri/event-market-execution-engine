@@ -1,0 +1,244 @@
+{
+  "artifact_sha256": {
+    "provenance.json": "7e5f193651f0556c142f00d5dbc14d3b1a6f4af5cfabfe98352031ff399c985a",
+    "qualification.json": "97b11c5182f389aec02fbd99d3aa5bb5fe8d7b0bde2173472c095336810a8988",
+    "screen-input.json": "144ecc20facf903e7538156ae1851b515af20aa14ca9209ccc6ac031c4162bec",
+    "screen-output.json": "aacfba750a3b98100061ab22bfb1482a328083aff3563ba75d8fcbd8443a74c5",
+    "status.json": "3a39a64d8b921feb79797710cc5c2d51c8568bae807978b92d092b1978012769"
+  },
+  "cohort_frozen_before_books": true,
+  "completed_at": "2026-09-17T14:09:08.410737+00:00",
+  "funding_scenario_usd": 1000,
+  "independent_fraction_oracle": {
+    "baskets_matched": 20,
+    "native_saved_output_replay_identical": true,
+    "quantity_grid_exhausted": true
+  },
+  "limits": [
+    "One public REST snapshot, not continuous opportunity duration or fills.",
+    "20 of 312 compatible candidates; budget excludes 292, not an economic rejection.",
+    "Eight baskets have insufficient displayed depth; twelve have no positive margin in the funded grid.",
+    "One assumed fill per price level; fragmentation and asynchronous books can change economics.",
+    "Ordinary/common-all-NO conditional payoff only; exceptional settlement is not certified.",
+    "No comparison with the previous full-market catalogue elapsed time; discovery scope differs."
+  ],
+  "module_sha256": {
+    "basket_families.py": "006b929ebbc1193f367292886a7290dc386b0f59b9a6cdb5c6e9fe5ab38cb3b7",
+    "basket_research.py": "51f71916ba257510cc86096f45fa8c12f0acf2c760c5348aa51f40b29446e8a0",
+    "economic_selection.py": "5eda47c978b1b3020212e7a594180593e8015ef4b093b6974ea537cdfbef3672",
+    "market_catalog.py": "9718bc07a69af9c460b96e361f6a138b13baf6a8915202b54e24d6d287d41160",
+    "market_families.py": "31d975c7b5b4e9618a1a7eed16e579888930a6abf7c770780c887263f8f7e849",
+    "public_pool.py": "b5fb3c50597bad055116a239595dcd55bb28e5dc30b8e45e4bb3ab5340979410"
+  },
+  "native_engine_sha256": "cbafb29ae8aa9101b16c4a8d502a7fae7186858199432f0d80f42aa7dac9560e",
+  "one_contract_best_net_margin_micro": -30000,
+  "public_gzip_bytes": 74437,
+  "public_json_bytes": 2460707,
+  "public_json_requests": 19,
+  "run_id": "20260917T140859.973300Z",
+  "schema_version": 1,
+  "selected_cohort": [
+    {
+      "id": 1,
+      "lower_ticker": "KXBTCD-26SEP1711-T75399.99",
+      "range_ticker": "KXBTC-26SEP1711-B75450",
+      "rule_fingerprint": "01eb133d67aac3cf8ed802a8e2e5edf397660c3ccbec5009c976252a56d8f242",
+      "stablekey": "btc-range-01eb133d67aac3cf8ed802a8",
+      "upper_ticker": "KXBTCD-26SEP1711-T75499.99"
+    },
+    {
+      "id": 2,
+      "lower_ticker": "KXBTCD-26SEP1717-T76499.99",
+      "range_ticker": "KXBTC-26SEP1717-B76625",
+      "rule_fingerprint": "dcdf28c2080ab20814e5803b676c1eb430df76c28b72badb2d29d2938253b36b",
+      "stablekey": "btc-range-dcdf28c2080ab20814e5803b",
+      "upper_ticker": "KXBTCD-26SEP1717-T76749.99"
+    },
+    {
+      "id": 3,
+      "lower_ticker": "KXBTCD-26SEP1817-T76499.99",
+      "range_ticker": "KXBTC-26SEP1817-B76750",
+      "rule_fingerprint": "3327679ab37c48ac4e2f7c2ffe2b92d0871e052292134845937622ca001bf523",
+      "stablekey": "btc-range-3327679ab37c48ac4e2f7c2f",
+      "upper_ticker": "KXBTCD-26SEP1817-T76999.99"
+    },
+    {
+      "id": 4,
+      "lower_ticker": "KXBTCD-26SEP1711-T82699.99",
+      "range_ticker": "KXBTC-26SEP1711-B82750",
+      "rule_fingerprint": "02a637f21cc85be149c0f603b98b9047f987a67df35dd86c4cf2b22674101259",
+      "stablekey": "btc-range-02a637f21cc85be149c0f603",
+      "upper_ticker": "KXBTCD-26SEP1711-T82799.99"
+    },
+    {
+      "id": 5,
+      "lower_ticker": "KXBTCD-26SEP1717-T76249.99",
+      "range_ticker": "KXBTC-26SEP1717-B76375",
+      "rule_fingerprint": "3db085ae3c49176e9ccb007529bef97c9682e44d2ec250ccec6eef71e693fe11",
+      "stablekey": "btc-range-3db085ae3c49176e9ccb0075",
+      "upper_ticker": "KXBTCD-26SEP1717-T76499.99"
+    },
+    {
+      "id": 6,
+      "lower_ticker": "KXBTCD-26SEP1817-T76999.99",
+      "range_ticker": "KXBTC-26SEP1817-B77250",
+      "rule_fingerprint": "5d51059bf3efc95dfe6ceccbf23a0c68a48309c295f8679b40dd01acca6314a1",
+      "stablekey": "btc-range-5d51059bf3efc95dfe6ceccb",
+      "upper_ticker": "KXBTCD-26SEP1817-T77499.99"
+    },
+    {
+      "id": 7,
+      "lower_ticker": "KXBTCD-26SEP1711-T69699.99",
+      "range_ticker": "KXBTC-26SEP1711-B69750",
+      "rule_fingerprint": "03bad75aec7a300c4c15b40f4e27663379b7abb8e5b0b538c21dc29e345ffa0f",
+      "stablekey": "btc-range-03bad75aec7a300c4c15b40f",
+      "upper_ticker": "KXBTCD-26SEP1711-T69799.99"
+    },
+    {
+      "id": 8,
+      "lower_ticker": "KXBTCD-26SEP1717-T75999.99",
+      "range_ticker": "KXBTC-26SEP1717-B76125",
+      "rule_fingerprint": "de4ce04c5aa30278a2e7dcd07bced2526b3b3664b139368d6b5220db3f946fda",
+      "stablekey": "btc-range-de4ce04c5aa30278a2e7dcd0",
+      "upper_ticker": "KXBTCD-26SEP1717-T76249.99"
+    },
+    {
+      "id": 9,
+      "lower_ticker": "KXBTCD-26SEP1817-T74999.99",
+      "range_ticker": "KXBTC-26SEP1817-B75250",
+      "rule_fingerprint": "b304a1d3a1174c794658f17073d0f4ec8532cf24f80134a740fc2ebda19b459c",
+      "stablekey": "btc-range-b304a1d3a1174c794658f170",
+      "upper_ticker": "KXBTCD-26SEP1817-T75499.99"
+    },
+    {
+      "id": 10,
+      "lower_ticker": "KXBTCD-26SEP1711-T83399.99",
+      "range_ticker": "KXBTC-26SEP1711-B83450",
+      "rule_fingerprint": "03c3e2039b0d35a072d89595f74ac4fa06055ecd97d0fb29b619aa260ab8dec0",
+      "stablekey": "btc-range-03c3e2039b0d35a072d89595",
+      "upper_ticker": "KXBTCD-26SEP1711-T83499.99"
+    },
+    {
+      "id": 11,
+      "lower_ticker": "KXBTCD-26SEP1717-T75749.99",
+      "range_ticker": "KXBTC-26SEP1717-B75875",
+      "rule_fingerprint": "a8aa078872962adf177f73c349677d7da36c55c06ea67cdc6a4838c3d5e393c2",
+      "stablekey": "btc-range-a8aa078872962adf177f73c3",
+      "upper_ticker": "KXBTCD-26SEP1717-T75999.99"
+    },
+    {
+      "id": 12,
+      "lower_ticker": "KXBTCD-26SEP1817-T75999.99",
+      "range_ticker": "KXBTC-26SEP1817-B76250",
+      "rule_fingerprint": "759c6341f1e4f6e42bcd6afb965ed77642b0c4d8a8e8c791822ae0da0bcbe6b9",
+      "stablekey": "btc-range-759c6341f1e4f6e42bcd6afb",
+      "upper_ticker": "KXBTCD-26SEP1817-T76499.99"
+    },
+    {
+      "id": 13,
+      "lower_ticker": "KXBTCD-26SEP1711-T71999.99",
+      "range_ticker": "KXBTC-26SEP1711-B72050",
+      "rule_fingerprint": "04afd414c1fc5feb87d16810637979f8b64af9fde51d5636f44029a1303e915b",
+      "stablekey": "btc-range-04afd414c1fc5feb87d16810",
+      "upper_ticker": "KXBTCD-26SEP1711-T72099.99"
+    },
+    {
+      "id": 14,
+      "lower_ticker": "KXBTCD-26SEP1717-T75499.99",
+      "range_ticker": "KXBTC-26SEP1717-B75625",
+      "rule_fingerprint": "52ba01f572f411b4ca149de69e7cf59a76b8b1e1767fe3a7555a91c25d74999c",
+      "stablekey": "btc-range-52ba01f572f411b4ca149de6",
+      "upper_ticker": "KXBTCD-26SEP1717-T75749.99"
+    },
+    {
+      "id": 15,
+      "lower_ticker": "KXBTCD-26SEP1817-T75499.99",
+      "range_ticker": "KXBTC-26SEP1817-B75750",
+      "rule_fingerprint": "f6a9a8142c8b365379b16c42891eff203de69974dd3fec812768df40d2eeffd5",
+      "stablekey": "btc-range-f6a9a8142c8b365379b16c42",
+      "upper_ticker": "KXBTCD-26SEP1817-T75999.99"
+    },
+    {
+      "id": 16,
+      "lower_ticker": "KXBTCD-26SEP1711-T72399.99",
+      "range_ticker": "KXBTC-26SEP1711-B72450",
+      "rule_fingerprint": "058c62e2ffd1cdb6debfb5352adf44839782076b257d0d1b7ca039daefa7f8ec",
+      "stablekey": "btc-range-058c62e2ffd1cdb6debfb535",
+      "upper_ticker": "KXBTCD-26SEP1711-T72499.99"
+    },
+    {
+      "id": 17,
+      "lower_ticker": "KXBTCD-26SEP1717-T76749.99",
+      "range_ticker": "KXBTC-26SEP1717-B76875",
+      "rule_fingerprint": "41176ce676c15e5deaed0d9481351cb6fdbf93868e51a7a714211341e8436a0f",
+      "stablekey": "btc-range-41176ce676c15e5deaed0d94",
+      "upper_ticker": "KXBTCD-26SEP1717-T76999.99"
+    },
+    {
+      "id": 18,
+      "lower_ticker": "KXBTCD-26SEP1817-T72499.99",
+      "range_ticker": "KXBTC-26SEP1817-B72750",
+      "rule_fingerprint": "6664b10c7021fe6976b4f5acf307ec2129dd33b64040a52f100d1942a264f081",
+      "stablekey": "btc-range-6664b10c7021fe6976b4f5ac",
+      "upper_ticker": "KXBTCD-26SEP1817-T72999.99"
+    },
+    {
+      "id": 19,
+      "lower_ticker": "KXBTCD-26SEP1711-T72499.99",
+      "range_ticker": "KXBTC-26SEP1711-B72550",
+      "rule_fingerprint": "05ab73571a55608fc9b6e62acbd475187d33e9f2c3fda85ace33d68f94787971",
+      "stablekey": "btc-range-05ab73571a55608fc9b6e62a",
+      "upper_ticker": "KXBTCD-26SEP1711-T72599.99"
+    },
+    {
+      "id": 20,
+      "lower_ticker": "KXBTCD-26SEP1717-T77249.99",
+      "range_ticker": "KXBTC-26SEP1717-B77375",
+      "rule_fingerprint": "86da6708987e3ce96a5443065990430bbf5d7dbabea524f0f7eb5971309b8530",
+      "stablekey": "btc-range-86da6708987e3ce96a544306",
+      "upper_ticker": "KXBTCD-26SEP1717-T77499.99"
+    }
+  ],
+  "started_at": "2026-09-17T14:08:59.973300+00:00",
+  "status": {
+    "continuous_observation": false,
+    "counts": {
+      "budget_exclusions_by_reason": {
+        "basket_budget": 292
+      },
+      "catalog_markets": 636,
+      "conditional_candidates": 312,
+      "exclusions_by_reason": {
+        "unsupported_range_payoff": 6
+      },
+      "selected_baskets": 20,
+      "selected_markets": 50
+    },
+    "elapsed_seconds": 8.436967709000001,
+    "execution": "public_data_only",
+    "model": "conditional_common_scalar_observation_only",
+    "screen": {
+      "evaluated_quantities": 1200,
+      "positive_quotes": 0,
+      "solver_complete": true,
+      "status_counts": {
+        "no_depth": 8,
+        "no_positive_margin": 12
+      }
+    },
+    "simulated_orders": 0,
+    "state": "complete"
+  },
+  "terms": {
+    "requested_at": "2026-09-17T14:09:07.334860+00:00",
+    "sha256": "e7d857369971e75e9db14c5e2d91c29b94eb9a06e83e2acd9777991c4f2a0e2f",
+    "url": "https://assets.kalshi.com/contract_terms/BTC.pdf"
+  },
+  "transport_before_response_close_fix": true,
+  "transport_note": "Initial preflight used a subsequently fixed HTTPResponse lifecycle. All requests completed with bounded reconnects; this duration is not the final transport benchmark.",
+  "whole_contract_grid": [
+    1,
+    100
+  ],
+  "wire_transport_attempts": 26
+}

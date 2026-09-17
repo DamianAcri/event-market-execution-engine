@@ -1,0 +1,605 @@
+{
+  "completed_at": "2026-09-17T14:13:07.898503+00:00",
+  "curl": "curl 8.7.1 (x86_64-apple-darwin25.0) libcurl/8.7.1 (SecureTransport) LibreSSL/3.3.6 zlib/1.2.12 nghttp2/1.68.1",
+  "execution": "public_get_only",
+  "implementation_stage": "before_content_length_response_close_fix",
+  "known_defect": "Small Content-Length responses leave HTTPResponse open; later reuse raises ResponseNotReady and incurs a bounded fresh-connection retry. These measurements must not be reported as the final pool implementation.",
+  "limitations": [
+    "Two repetitions only; changing internet/server load and DNS/TLS/cache state are uncontrolled.",
+    "Only six metadata endpoints; not a complete catalog or order-book workload.",
+    "Responses are live snapshots, not guaranteed identical or atomic.",
+    "Semantic parity checks series/event identity, fees, sources and timing; raw hash differences remain reported.",
+    "No trading, order latency, strategy performance or revenue is measured."
+  ],
+  "logical_requests": 36,
+  "machine": "arm64",
+  "matching_source_snapshots": {
+    "benchmarks/public_read_benchmark.py": "/private/tmp/eme-public-read-benchmark-20260917-a/source-snapshot/public_read_benchmark.py",
+    "scripts/market_catalog.py": "/private/tmp/eme-public-read-benchmark-20260917-a/source-snapshot/market_catalog.py",
+    "scripts/public_pool.py": "/private/tmp/eme-public-read-benchmark-20260917-a/source-snapshot/public_pool.py"
+  },
+  "minimum_start_interval_seconds": 0.2,
+  "python": "3.9.6",
+  "request_plan": [
+    {
+      "name": "series-KXBTC",
+      "relative": "series/KXBTC",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/series-KXBTC/catalog-manifest.json",
+      "source_manifest_sha256": "89b2465369201effdc894b097b384ae1ca34bc2c4bff3dfc58bc5cf8f13466ba",
+      "url": "https://external-api.kalshi.com/trade-api/v2/series/KXBTC"
+    },
+    {
+      "name": "series-KXBTCD",
+      "relative": "series/KXBTCD",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/series-KXBTCD/catalog-manifest.json",
+      "source_manifest_sha256": "c6981f25a6b582c08d22af34c222d7a660163d693812e5ad9ea43414988a9130",
+      "url": "https://external-api.kalshi.com/trade-api/v2/series/KXBTCD"
+    },
+    {
+      "name": "fees-KXBTC",
+      "relative": "series/fee_changes?series_ticker=KXBTC&show_historical=true",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/series-KXBTC/catalog-manifest.json",
+      "source_manifest_sha256": "89b2465369201effdc894b097b384ae1ca34bc2c4bff3dfc58bc5cf8f13466ba",
+      "url": "https://external-api.kalshi.com/trade-api/v2/series/fee_changes?series_ticker=KXBTC&show_historical=true"
+    },
+    {
+      "name": "fees-KXBTCD",
+      "relative": "series/fee_changes?series_ticker=KXBTCD&show_historical=true",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/series-KXBTCD/catalog-manifest.json",
+      "source_manifest_sha256": "c6981f25a6b582c08d22af34c222d7a660163d693812e5ad9ea43414988a9130",
+      "url": "https://external-api.kalshi.com/trade-api/v2/series/fee_changes?series_ticker=KXBTCD&show_historical=true"
+    },
+    {
+      "name": "event-KXBTC",
+      "relative": "events/KXBTC-26SEP1711?with_nested_markets=false",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/event-0/catalog-manifest.json",
+      "source_manifest_sha256": "473ade30c9825dd62a0db759c2da98fe54596ed67e5b96fa437b27e205e24ee5",
+      "url": "https://external-api.kalshi.com/trade-api/v2/events/KXBTC-26SEP1711?with_nested_markets=false"
+    },
+    {
+      "name": "event-KXBTCD",
+      "relative": "events/KXBTCD-26SEP1711?with_nested_markets=false",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/event-3/catalog-manifest.json",
+      "source_manifest_sha256": "9370670e27fbe3b2fc2389a1c9551b6494ec09ae6f77ff3b3be7bc3ec116b21e",
+      "url": "https://external-api.kalshi.com/trade-api/v2/events/KXBTCD-26SEP1711?with_nested_markets=false"
+    }
+  ],
+  "request_plan_sha256": "4c11a6a5efc843980c4f1c836a979b062a319a02df9d65e6a94343f7ca1c5f42",
+  "response_parity": {
+    "event-KXBTC": {
+      "distinct_response_hashes": 2,
+      "distinct_semantic_hashes": 1
+    },
+    "event-KXBTCD": {
+      "distinct_response_hashes": 3,
+      "distinct_semantic_hashes": 1
+    },
+    "fees-KXBTC": {
+      "distinct_response_hashes": 1,
+      "distinct_semantic_hashes": 1
+    },
+    "fees-KXBTCD": {
+      "distinct_response_hashes": 1,
+      "distinct_semantic_hashes": 1
+    },
+    "series-KXBTC": {
+      "distinct_response_hashes": 1,
+      "distinct_semantic_hashes": 1
+    },
+    "series-KXBTCD": {
+      "distinct_response_hashes": 1,
+      "distinct_semantic_hashes": 1
+    }
+  },
+  "runs": [
+    {
+      "decoded_bytes": 714247,
+      "elapsed_seconds": 3.925931625,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 0,
+      "logical_requests": 6,
+      "mode": "curl_serial",
+      "repetition": 1,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-curl_serial/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "d194c28a0e6f97416baa1ce4c86629a4ddd3d3d6ef4366dd80cde7935194591a",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.48035558300000003,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-curl_serial/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "3ddeebe4a2d123529165faaccf09efcbd16647f079b433513b4ca93348b67dd4",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.384523167,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-curl_serial/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "8d60dd5be931d602a8aa99217431e94b38a0ab8ebb7ce1ea65ade6f19ce914a5",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.4037682909999999,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-curl_serial/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "3fff3e38773c8fd4febc4db19ab4ff91a3b7bbf5cc1a4f6035f041d5f564911b",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.391099584,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-curl_serial/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "7a7d4928e96ef377c3226f283afbb873e7731c56c21c532eff77f872accc1460",
+          "decoded_bytes": 359528,
+          "logical_elapsed_seconds": 1.1926981669999999,
+          "name": "event-KXBTC",
+          "response_sha256": "43f77d2a274ad2cacf8de0dc94cd10241dce0cc63fda3deea9385f841af12fe6",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9107
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-curl_serial/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "1b7fe37a7a933f7508f6255be8e8db0e9ac014ca6fc07a38c0942eca5f007ab0",
+          "decoded_bytes": 352360,
+          "logical_elapsed_seconds": 1.052215458,
+          "name": "event-KXBTCD",
+          "response_sha256": "84949462975e1624597d938a8c7823a0cb683ad65fce1f08f64129aa9ea375ba",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 7888
+        }
+      ],
+      "reused_connection_attempts": 0,
+      "stored_bytes": 18402,
+      "transport_attempts": 6,
+      "transport_completed_response_bytes": 714247,
+      "transport_decoded_bytes": 714247,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-curl_serial/transport-metrics.json",
+      "transport_metrics_sha256": "dcf04519b812a515fedfd223b1cdc3c9fd80dc11b236c1f7e9fb688cc9b40f88",
+      "workers": 1
+    },
+    {
+      "decoded_bytes": 714247,
+      "elapsed_seconds": 4.532895208,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 4,
+      "logical_requests": 6,
+      "mode": "pooled_1",
+      "repetition": 1,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_1/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "784a1f5f60ee5962742514e30c59b43f5cc10697b19f06b14b08842694a9d782",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.49108537499999994,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_1/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "f826b3182f8ecedab4c0cee764204209c5aee7dd5d22223a4bc53044877db382",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.6848004169999999,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_1/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "aea05c0e226e34c4e57bdab6c8487f2dc5f8615e6a0cf4c5b36137cfbfb409fc",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.6859321250000008,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_1/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "27b87028d321297861788e46a8dd50d964e610e43a2ef04edb39cce4d5bdc5b0",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.691658833,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_1/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "dbc32e97759ce4d52ec25683db70414b5c269f2eb9b42e8880f6d5ce80393f44",
+          "decoded_bytes": 359528,
+          "logical_elapsed_seconds": 1.498696999999999,
+          "name": "event-KXBTC",
+          "response_sha256": "43f77d2a274ad2cacf8de0dc94cd10241dce0cc63fda3deea9385f841af12fe6",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9107
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_1/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "8b2694498d500d8b5efc187bdebdf366ad4db4efc5cd94e4b2c33a5862f0cd13",
+          "decoded_bytes": 352360,
+          "logical_elapsed_seconds": 0.4514056249999996,
+          "name": "event-KXBTCD",
+          "response_sha256": "970478162149c578271cced5754786ae369a4e88dde123674cbced14ab1f362b",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 7952
+        }
+      ],
+      "reused_connection_attempts": 5,
+      "stored_bytes": 18466,
+      "transport_attempts": 10,
+      "transport_completed_response_bytes": 714247,
+      "transport_decoded_bytes": 714247,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_1/transport-metrics.json",
+      "transport_metrics_sha256": "53409637b8873c100e7a273b3a6de573ad8ed661f3ceec96bdc0d8d8b29d73f4",
+      "workers": 1
+    },
+    {
+      "decoded_bytes": 714247,
+      "elapsed_seconds": 2.560338583,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 2,
+      "logical_requests": 6,
+      "mode": "pooled_4",
+      "repetition": 1,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_4/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "72da25515c16ad4b6eddbf9918a1dea3d4817cb4b01a72a8b9621296ce1fdbb6",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.47458295800000094,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_4/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "414c627a56343d95765a83c4fd802072d22f0d404be272ee2b637b87ad73e4ea",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.6785742910000003,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_4/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "ada923fede34f4f9de515c38683748c8d87b72adaecc8b8bc12a1277c9234470",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.8929855409999998,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_4/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "deb146777b6c76cb943a399ca3a4247dc28cc232de23061789d4f96f41f45c37",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 1.4915188330000007,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_4/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "b4167ec6e0f639cc5d36e8d9643b63f9e2d3e32ac01cf690288377b81394f5da",
+          "decoded_bytes": 359528,
+          "logical_elapsed_seconds": 1.835681666000001,
+          "name": "event-KXBTC",
+          "response_sha256": "43f77d2a274ad2cacf8de0dc94cd10241dce0cc63fda3deea9385f841af12fe6",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9107
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_4/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "7b01510936b1b396e689bad7d5047503dd361da6db99687c09caf411aa44f966",
+          "decoded_bytes": 352360,
+          "logical_elapsed_seconds": 1.870315625,
+          "name": "event-KXBTCD",
+          "response_sha256": "970478162149c578271cced5754786ae369a4e88dde123674cbced14ab1f362b",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 7952
+        }
+      ],
+      "reused_connection_attempts": 2,
+      "stored_bytes": 18466,
+      "transport_attempts": 8,
+      "transport_completed_response_bytes": 714247,
+      "transport_decoded_bytes": 714247,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-1-pooled_4/transport-metrics.json",
+      "transport_metrics_sha256": "0ad68fca85704676a339a1219c8a6193aba68b0eb345af03510c0eb2737f673d",
+      "workers": 4
+    },
+    {
+      "decoded_bytes": 714244,
+      "elapsed_seconds": 2.5348534170000008,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 2,
+      "logical_requests": 6,
+      "mode": "pooled_4",
+      "repetition": 2,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_4/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "4ada9a60711139cb2aa14a0f077d1ed382a68003f3a8bab6e97a6bf97af95482",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.4878086669999995,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_4/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "10855a99416556f4a6f6bd6efc53b97578f16b2e2e5ba7dc2e55b0c4d755c2ec",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.6774489579999994,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_4/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "55e93837c2e1da27f85d5beadb4e7cb8b082b18f6a614350a746c4a2dabbfe7d",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.896110084,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_4/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "5ce07926da3644859f757a1f43f7d3140f9e563f7be819b4179faff0c638796e",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 1.0903764999999996,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_4/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "eee522c168c866e59c9e157e6ada0957eff2dba11512f774c8118b4fbedbccf2",
+          "decoded_bytes": 359525,
+          "logical_elapsed_seconds": 2.035012042,
+          "name": "event-KXBTC",
+          "response_sha256": "a5641c8a98553a368969e63a1a30b8b68e7223c001dfb29063fe560edd779a72",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9120
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_4/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "41da4606fa0f51e579607259fe866848d4b4f474e7ec52d2b720ec56b0b81539",
+          "decoded_bytes": 352360,
+          "logical_elapsed_seconds": 1.604633291999999,
+          "name": "event-KXBTCD",
+          "response_sha256": "970478162149c578271cced5754786ae369a4e88dde123674cbced14ab1f362b",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 7952
+        }
+      ],
+      "reused_connection_attempts": 2,
+      "stored_bytes": 18479,
+      "transport_attempts": 8,
+      "transport_completed_response_bytes": 714244,
+      "transport_decoded_bytes": 714244,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_4/transport-metrics.json",
+      "transport_metrics_sha256": "03e20a2105f10466d58169cf73ff59fc2dfd19150158c1ee311f70f0970d1c27",
+      "workers": 4
+    },
+    {
+      "decoded_bytes": 714244,
+      "elapsed_seconds": 4.1668720839999995,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 4,
+      "logical_requests": 6,
+      "mode": "pooled_1",
+      "repetition": 2,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_1/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "062ebfebfaae05019fc5f3cdb09a51aff7c5d9c21169b22615cfe9b553604330",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.47824845899999957,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_1/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "d7114d7df66c5a74f639b56b63f666a613a8da7c23df3c6deaaa03e2fb5447a2",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.6977247920000007,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_1/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "8f74e8af0a8c83036a1847de6dc2b498a71964fa674c450185f8f11987ba0ca9",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.6801454170000003,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_1/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "a8d64bbc2bf86da59d9a4e0ca1bb1468c33458b19400e0e69665cddc4fd8e4ab",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.6803121250000004,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_1/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "392b6799396f386fad76339cfea0b3db13cb8a3e7bc186384cb854fda5273a00",
+          "decoded_bytes": 359525,
+          "logical_elapsed_seconds": 1.2536230830000008,
+          "name": "event-KXBTC",
+          "response_sha256": "a5641c8a98553a368969e63a1a30b8b68e7223c001dfb29063fe560edd779a72",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9120
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_1/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "419d10920cfced9a870ef5a0722915b8526d3ccc98290868a1243ea3868a8d1f",
+          "decoded_bytes": 352360,
+          "logical_elapsed_seconds": 0.336149374999998,
+          "name": "event-KXBTCD",
+          "response_sha256": "970478162149c578271cced5754786ae369a4e88dde123674cbced14ab1f362b",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 7952
+        }
+      ],
+      "reused_connection_attempts": 5,
+      "stored_bytes": 18479,
+      "transport_attempts": 10,
+      "transport_completed_response_bytes": 714244,
+      "transport_decoded_bytes": 714244,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-pooled_1/transport-metrics.json",
+      "transport_metrics_sha256": "46b3f66ad69d30afeb87f18ccd4d90ffbb1f4f66a7c265472e5cc0226a79d9a8",
+      "workers": 1
+    },
+    {
+      "decoded_bytes": 714244,
+      "elapsed_seconds": 3.5466673749999984,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 0,
+      "logical_requests": 6,
+      "mode": "curl_serial",
+      "repetition": 2,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-curl_serial/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "82bcd6cc8f7e8ff696c5e80bbb4651e608837c3ec54b8e5a077e3c54e40cae27",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.39195995800000105,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-curl_serial/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "56be180f1c54475066ada8b1d1c594b954f1c2b584ab4dfdbbdbf7bda43d153b",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.39014645800000025,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-curl_serial/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "97f2ff9ff586bea85cefb34e5c0aa88753448086c9a1ad9cf4e1554e25b4ba00",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.3912640829999994,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-curl_serial/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "81b1f3cdc49d29dcb2ac77335ca72f510cd1e6a6a5c0499677a5a17f7205f0d2",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.4015443750000003,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-curl_serial/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "9be3d975d978aa8bbcb5e5910e883b10338e58ea915dc2ce9039ee151e079882",
+          "decoded_bytes": 359525,
+          "logical_elapsed_seconds": 0.9779160410000003,
+          "name": "event-KXBTC",
+          "response_sha256": "a5641c8a98553a368969e63a1a30b8b68e7223c001dfb29063fe560edd779a72",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9120
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-curl_serial/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "924bb2962224f721c1cdf31ec36f44b4e329446978b4572a660ca9363bfbf98c",
+          "decoded_bytes": 352360,
+          "logical_elapsed_seconds": 0.9685686249999996,
+          "name": "event-KXBTCD",
+          "response_sha256": "50cf1d015dee55e799b042f55bdf5c5fde722827a2d4fd6677a411a4776895d0",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 8006
+        }
+      ],
+      "reused_connection_attempts": 0,
+      "stored_bytes": 18533,
+      "transport_attempts": 6,
+      "transport_completed_response_bytes": 714244,
+      "transport_decoded_bytes": 714244,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-a/repetition-2-curl_serial/transport-metrics.json",
+      "transport_metrics_sha256": "c47caba0c4560a95e7bb6436c152be9e0c9e11700c4bab33f817a12ee9071c6a",
+      "workers": 1
+    }
+  ],
+  "same_request_plan": true,
+  "schema": "public-read-benchmark-v1",
+  "semantic_fields_unchanged": true,
+  "source_hashes": {
+    "benchmarks/public_read_benchmark.py": "6081a4073aeaf3b7a8832ce7554d87f89e35e36b852a6a317dde336a9eeac48b",
+    "scripts/market_catalog.py": "9718bc07a69af9c460b96e361f6a138b13baf6a8915202b54e24d6d287d41160",
+    "scripts/public_pool.py": "b5fb3c50597bad055116a239595dcd55bb28e5dc30b8e45e4bb3ab5340979410"
+  },
+  "started_at": "2026-09-17T14:12:46.623671+00:00",
+  "state": "complete",
+  "summary": {
+    "curl_serial": {
+      "elapsed_seconds": [
+        3.925931625,
+        3.5466673749999984
+      ],
+      "mean_seconds": 3.7362994999999994
+    },
+    "pooled_1": {
+      "elapsed_seconds": [
+        4.532895208,
+        4.1668720839999995
+      ],
+      "mean_seconds": 4.349883646
+    },
+    "pooled_4": {
+      "elapsed_seconds": [
+        2.560338583,
+        2.5348534170000008
+      ],
+      "mean_seconds": 2.5475960000000004
+    }
+  },
+  "timing_scope": "transport creation, GETs, parsing, gzip archives, manifests, and transport shutdown",
+  "transport_attempts": 48
+}

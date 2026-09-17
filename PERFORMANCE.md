@@ -7,6 +7,61 @@ about exchange latency, execution success or profitability.
 
 ## Public research translated into experiments
 
+### Bounded three-leg screen baseline — 2026-09-17
+
+The new native conditional BTC basket screen normalizes shared books once and
+uses a cumulative cost/fee cursor per leg. Across increasing whole quantities it
+charges completed levels once and recomputes only the partial final level from
+that prefix. This avoids rescanning prior depth and preserves fractional fills
+without changing the existing two-leg engine.
+
+[Native CLI baseline](benchmarks/results/20260917-basket-screen/native-cli.json)
+contains eight deterministic workloads: 20/100 baskets, 1/16 price levels and
+quantity caps 1/100. Adjacent baskets share thresholds; half are positive and
+half negative under the conditional model. Every output matches an independent
+Python rational fee/depth/reservation oracle. Nine measured runs per workload
+give medians of 12.41–13.50 ms for 20 baskets and 15.30–17.68 ms for 100 on the
+recorded Apple M2 Pro Release build. These include process startup, input reading,
+JSON and output capture; they are **not hot-path latency or a speedup claim**.
+The benchmark establishes a baseline for a new capability; no old basket solver
+existed. RSS collection was unavailable under the local sandbox and is marked
+unknown, not zero. Reproduce with `benchmarks/basket_screen_benchmark.py`.
+
+### Public preparation transport — 2026-09-17
+
+[Paired public-read measurements](benchmarks/results/20260917-basket-screen/public-read.json)
+use the same frozen six-URL plan: two series records, two historical-inclusive
+fee schedules and two event records. Each mode has two repetitions, reversing
+mode order in the second repetition, with the same five-starts-per-second limit.
+
+| Transport | Samples (seconds) | Mean / median (seconds) |
+|---|---|---|
+| Separate serial curl processes | 3.83519, 3.41436 | 3.62478 |
+| Persistent HTTPS, one worker | 2.09301, 1.94018 | 2.01660 |
+| Persistent HTTPS, four workers | 1.55198, 1.70525 | 1.62861 |
+
+Timing includes transport construction, request pacing, downloads, JSON parsing,
+gzip archival, manifest writes and shutdown. All 36 logical requests completed
+in exactly 36 network attempts, with zero retries. Source hashes and all samples
+are retained. Relevant rule/source/date/fee fields matched; live price, size and
+volume fields changed between responses, so the payloads were not byte-identical.
+Each run decoded about 714 kB and archived about 19 kB of gzip responses.
+
+The four-worker mean was 55.1% lower **on this six-URL workload**. Two repetitions
+and uncontrolled external network/CPU variation do not establish a general
+speedup, tail latency or order-execution advantage. This also does not compare
+a selected-family preflight with the differently scoped full-market census.
+
+The first measurement exposed Python 3.9 `HTTPResponse.read1()` leaving a fully
+consumed response open, causing unnecessary reconnects. Explicitly closing the
+response preserves the persistent socket; a real-stdlib in-memory regression
+covers consecutive length-delimited and chunked responses. The
+[earlier defective-pool measurements](benchmarks/results/20260917-basket-screen/public-read-before-response-close.json)
+are retained as such, not silently replaced. `benchmarks/public_read_benchmark.py`
+requires an explicit `--network` option; without it, it only emits the frozen plan.
+
+### Research-to-experiment mapping
+
 | Source | Applicable idea | Experiment and constraint |
 |---|---|---|
 | [Jane Street: magic-trace](https://blog.janestreet.com/magic-trace/) (2022, first-party engineering report) | Sampling can miss very short work and rare latency events; inspect a timeline around a slow event. | Add targeted traces after locating a costly stage. Their Intel Processor Trace/Linux tooling is not portable to this Apple Silicon host; use an appropriate profiler on the actual deployment machine. Do not attribute every hosted talk to Jane Street's own implementation. |

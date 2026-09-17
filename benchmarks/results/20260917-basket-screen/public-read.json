@@ -1,0 +1,609 @@
+{
+  "comparison_request_plan_matches_before_fix": true,
+  "completed_at": "2026-09-17T14:15:31.886306+00:00",
+  "curl": "curl 8.7.1 (x86_64-apple-darwin25.0) libcurl/8.7.1 (SecureTransport) LibreSSL/3.3.6 zlib/1.2.12 nghttp2/1.68.1",
+  "execution": "public_get_only",
+  "implementation_stage": "after_content_length_response_close_fix",
+  "limitations": [
+    "Two repetitions only; changing internet/server load and DNS/TLS/cache state are uncontrolled.",
+    "Only six metadata endpoints; not a complete catalog or order-book workload.",
+    "Responses are live snapshots, not guaranteed identical or atomic.",
+    "Semantic parity checks series/event identity, fees, sources and timing; raw hash differences remain reported.",
+    "No trading, order latency, strategy performance or revenue is measured.",
+    "Host CPU load was not isolated; timings include local archiving and parsing."
+  ],
+  "logical_requests": 36,
+  "machine": "arm64",
+  "matching_source_snapshots": {
+    "benchmarks/public_read_benchmark.py": "/private/tmp/eme-public-read-benchmark-20260917-b/source-snapshot/public_read_benchmark.py",
+    "scripts/market_catalog.py": "/private/tmp/eme-public-read-benchmark-20260917-b/source-snapshot/market_catalog.py",
+    "scripts/public_pool.py": "/private/tmp/eme-public-read-benchmark-20260917-b/source-snapshot/public_pool.py"
+  },
+  "minimum_start_interval_seconds": 0.2,
+  "python": "3.9.6",
+  "request_plan": [
+    {
+      "name": "series-KXBTC",
+      "relative": "series/KXBTC",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/series-KXBTC/catalog-manifest.json",
+      "source_manifest_sha256": "89b2465369201effdc894b097b384ae1ca34bc2c4bff3dfc58bc5cf8f13466ba",
+      "url": "https://external-api.kalshi.com/trade-api/v2/series/KXBTC"
+    },
+    {
+      "name": "series-KXBTCD",
+      "relative": "series/KXBTCD",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/series-KXBTCD/catalog-manifest.json",
+      "source_manifest_sha256": "c6981f25a6b582c08d22af34c222d7a660163d693812e5ad9ea43414988a9130",
+      "url": "https://external-api.kalshi.com/trade-api/v2/series/KXBTCD"
+    },
+    {
+      "name": "fees-KXBTC",
+      "relative": "series/fee_changes?series_ticker=KXBTC&show_historical=true",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/series-KXBTC/catalog-manifest.json",
+      "source_manifest_sha256": "89b2465369201effdc894b097b384ae1ca34bc2c4bff3dfc58bc5cf8f13466ba",
+      "url": "https://external-api.kalshi.com/trade-api/v2/series/fee_changes?series_ticker=KXBTC&show_historical=true"
+    },
+    {
+      "name": "fees-KXBTCD",
+      "relative": "series/fee_changes?series_ticker=KXBTCD&show_historical=true",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/series-KXBTCD/catalog-manifest.json",
+      "source_manifest_sha256": "c6981f25a6b582c08d22af34c222d7a660163d693812e5ad9ea43414988a9130",
+      "url": "https://external-api.kalshi.com/trade-api/v2/series/fee_changes?series_ticker=KXBTCD&show_historical=true"
+    },
+    {
+      "name": "event-KXBTC",
+      "relative": "events/KXBTC-26SEP1711?with_nested_markets=false",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/event-0/catalog-manifest.json",
+      "source_manifest_sha256": "473ade30c9825dd62a0db759c2da98fe54596ed67e5b96fa437b27e205e24ee5",
+      "url": "https://external-api.kalshi.com/trade-api/v2/events/KXBTC-26SEP1711?with_nested_markets=false"
+    },
+    {
+      "name": "event-KXBTCD",
+      "relative": "events/KXBTCD-26SEP1711?with_nested_markets=false",
+      "source_manifest": "/private/tmp/eme-basket-public-20260917-a/public/event-3/catalog-manifest.json",
+      "source_manifest_sha256": "9370670e27fbe3b2fc2389a1c9551b6494ec09ae6f77ff3b3be7bc3ec116b21e",
+      "url": "https://external-api.kalshi.com/trade-api/v2/events/KXBTCD-26SEP1711?with_nested_markets=false"
+    }
+  ],
+  "request_plan_sha256": "4c11a6a5efc843980c4f1c836a979b062a319a02df9d65e6a94343f7ca1c5f42",
+  "response_parity": {
+    "event-KXBTC": {
+      "distinct_response_hashes": 2,
+      "distinct_semantic_hashes": 1
+    },
+    "event-KXBTCD": {
+      "distinct_response_hashes": 2,
+      "distinct_semantic_hashes": 1
+    },
+    "fees-KXBTC": {
+      "distinct_response_hashes": 1,
+      "distinct_semantic_hashes": 1
+    },
+    "fees-KXBTCD": {
+      "distinct_response_hashes": 1,
+      "distinct_semantic_hashes": 1
+    },
+    "series-KXBTC": {
+      "distinct_response_hashes": 1,
+      "distinct_semantic_hashes": 1
+    },
+    "series-KXBTCD": {
+      "distinct_response_hashes": 1,
+      "distinct_semantic_hashes": 1
+    }
+  },
+  "runs": [
+    {
+      "decoded_bytes": 714294,
+      "elapsed_seconds": 3.835192084,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 0,
+      "logical_requests": 6,
+      "mode": "curl_serial",
+      "repetition": 1,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-curl_serial/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "38140f39d62b1b9364a7a1bef97b0ea58f21b91da0f084be09ef926a8da27c5f",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.450973125,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-curl_serial/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "08f250678bf83b891f96c936d0fa9dcf1bd835ad7eb09191fb9e2a88f587f8e2",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.37742645900000005,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-curl_serial/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "7c4cd3eeb3a04ee172a9a75a6a5e3fb562f96f41b3f693f76ff2aadea2df81fb",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.39008991700000006,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-curl_serial/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "e0ae2c99a43ee3b1e021dee3571d3cb56a1cb14ceba8113784eb7f67e1083ccb",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.3996780419999999,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-curl_serial/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "10b753654bfa9381fd31bdee01433707dac7862caa3b8256a22f863f0c6d1632",
+          "decoded_bytes": 359548,
+          "logical_elapsed_seconds": 0.9378340420000002,
+          "name": "event-KXBTC",
+          "response_sha256": "e73555ef8628455a5e865196a761b154fcea8ae46f329e4bb04339281595f2f4",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9201
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-curl_serial/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "45b0f5c585d31244701216e269f6fd748eda072d32b48642e07a7b58c94a787d",
+          "decoded_bytes": 352387,
+          "logical_elapsed_seconds": 1.2607883749999997,
+          "name": "event-KXBTCD",
+          "response_sha256": "51de60ad2d028975a4514d24df50e8d47593ab29a0bbd931fafa9aec344bbc31",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 7999
+        }
+      ],
+      "reused_connection_attempts": 0,
+      "stored_bytes": 18607,
+      "transport_attempts": 6,
+      "transport_completed_response_bytes": 714294,
+      "transport_decoded_bytes": 714294,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-curl_serial/transport-metrics.json",
+      "transport_metrics_sha256": "6c85e9ef737ce235d0575196b1718e5898bdc09f754c45f601ed542087f2f73a",
+      "workers": 1
+    },
+    {
+      "decoded_bytes": 714296,
+      "elapsed_seconds": 2.0930059590000005,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 0,
+      "logical_requests": 6,
+      "mode": "pooled_1",
+      "repetition": 1,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_1/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "2c2390fc18d8d7824f7a0eb9ad7c718c9f1da982691939cc1e2a50f2d94d07e0",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.4900526249999997,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_1/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "9988a184ebb80405d19cea69688601d394ea6b38e37c6b58c8a7dac7313a3feb",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.12387795799999957,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_1/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "24d81fa4c9452b0a215d98117b412a125d6ddb16bf0e8e0367e15ff7bacc437a",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.1999922079999994,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_1/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "376da7d0e14dd4efd1bd256f965d1d71a4b46e9993af64eb2de8f123651a5859",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.1974255419999995,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_1/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "aa615e601df2cee2276bec25f5a051574ab7a6b5e16172d1f18e4c4950b70cca",
+          "decoded_bytes": 359550,
+          "logical_elapsed_seconds": 0.750055208,
+          "name": "event-KXBTC",
+          "response_sha256": "4b32c4fab10273afc54e80e99bff4257119ae2a337678cd153cdd02069b3441b",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9238
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_1/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "4fb0c6abd6ca1b76b263519ea29bea26d21c6484f7958904eb7d0e0d5704f51c",
+          "decoded_bytes": 352387,
+          "logical_elapsed_seconds": 0.2919797080000004,
+          "name": "event-KXBTCD",
+          "response_sha256": "51de60ad2d028975a4514d24df50e8d47593ab29a0bbd931fafa9aec344bbc31",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 7999
+        }
+      ],
+      "reused_connection_attempts": 5,
+      "stored_bytes": 18644,
+      "transport_attempts": 6,
+      "transport_completed_response_bytes": 714296,
+      "transport_decoded_bytes": 714296,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_1/transport-metrics.json",
+      "transport_metrics_sha256": "fea157285204b8d2f9db64e6c62c317da02e539c69f4fcc60a9d1c8b1f1068e0",
+      "workers": 1
+    },
+    {
+      "decoded_bytes": 714296,
+      "elapsed_seconds": 1.5519758750000001,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 0,
+      "logical_requests": 6,
+      "mode": "pooled_4",
+      "repetition": 1,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_4/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "337f1cf4a174d48e60ae000587741d520060a67f6bf7ef6826ebe4b9c735cb7b",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.48342424999999967,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_4/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "bd863ab0cc0b0a2321df1441e9dd1bd970519301b90e707429065d3db1622c9c",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.9129917079999998,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_4/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "186967eb2318983c18f2a1fa54b951701325522265c817e8be7f4410ea760727",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.6916102500000001,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_4/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "cbcd6571f075458589114ae82d71428865f6ebabf031749b937641777ba122f9",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 1.542183542,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_4/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "3808ddf3b9f25325b030a028dc9ee1f0cb1be1dac035064a7e59aec7f382d42e",
+          "decoded_bytes": 359550,
+          "logical_elapsed_seconds": 0.7951949999999997,
+          "name": "event-KXBTC",
+          "response_sha256": "4b32c4fab10273afc54e80e99bff4257119ae2a337678cd153cdd02069b3441b",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9238
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_4/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "9c8ba3b1d61212ca11a82e4eabefd97e99d738c76143a6162d5478e3bf2b2ec8",
+          "decoded_bytes": 352387,
+          "logical_elapsed_seconds": 0.7853573749999994,
+          "name": "event-KXBTCD",
+          "response_sha256": "51de60ad2d028975a4514d24df50e8d47593ab29a0bbd931fafa9aec344bbc31",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 7999
+        }
+      ],
+      "reused_connection_attempts": 2,
+      "stored_bytes": 18644,
+      "transport_attempts": 6,
+      "transport_completed_response_bytes": 714296,
+      "transport_decoded_bytes": 714296,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-1-pooled_4/transport-metrics.json",
+      "transport_metrics_sha256": "1f1567b2de4fe976614c10dad6c89ac267e54707d5f6f1caf825f430e194ae10",
+      "workers": 4
+    },
+    {
+      "decoded_bytes": 714296,
+      "elapsed_seconds": 1.7052457499999996,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 0,
+      "logical_requests": 6,
+      "mode": "pooled_4",
+      "repetition": 2,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_4/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "eb197c94fdfcb957aa9c3a61092ec546d42a7cd1d0bfeaf33cc3a57306273aca",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 1.1697279999999992,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_4/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "9f01da3a34732ac846ebdfe3e03509f35e015a0bf9e759d2cac263c3b1c6fb96",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.9251695829999997,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_4/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "2b4ed48326cac13ff5822d96d9a1ef90dc12c2a844c74ab932f6b35a3f37f6ac",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.5113600410000005,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_4/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "5682771bb1f26ed0f558a0915580d765d0e1d31fc074b5cbda043ec81af052fd",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 1.0462624170000003,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_4/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "4dfb44c7811e260f32b37e8952652f1d42b6c3e9bbcfd8086bfa326713ff8b1f",
+          "decoded_bytes": 359550,
+          "logical_elapsed_seconds": 0.9553350409999997,
+          "name": "event-KXBTC",
+          "response_sha256": "4b32c4fab10273afc54e80e99bff4257119ae2a337678cd153cdd02069b3441b",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9238
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_4/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "da869c3408fe49a0df74e37117582f2e82625d693c1ebd93a1a7de2d35574bd7",
+          "decoded_bytes": 352387,
+          "logical_elapsed_seconds": 0.7612987090000001,
+          "name": "event-KXBTCD",
+          "response_sha256": "51de60ad2d028975a4514d24df50e8d47593ab29a0bbd931fafa9aec344bbc31",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 7999
+        }
+      ],
+      "reused_connection_attempts": 2,
+      "stored_bytes": 18644,
+      "transport_attempts": 6,
+      "transport_completed_response_bytes": 714296,
+      "transport_decoded_bytes": 714296,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_4/transport-metrics.json",
+      "transport_metrics_sha256": "582e2c7036f8a034dccdc1083fc1d88410348dc441febe3f7f4457302f12d79f",
+      "workers": 4
+    },
+    {
+      "decoded_bytes": 714291,
+      "elapsed_seconds": 1.9401844169999993,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 0,
+      "logical_requests": 6,
+      "mode": "pooled_1",
+      "repetition": 2,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_1/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "0520a8c4d201f989640cda6e621bd04a020f6d8963869bd8f1b749161dd035e8",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.49156383399999903,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_1/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "a661dd8d62cf3b20986211e3562058c28065a3af4c45429c91fa549e21ed7129",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.12571120900000032,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_1/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "1a554468da7ca7a2e319c728df37221cfcd012a9012af0cfc3083d244799c1aa",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.19560854100000036,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_1/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "238d52180daba14f84530266b11dab735e2a7a0360290856b1c0917112ef0a4b",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.2023814159999997,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_1/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "14aadca57ff1a8521a58ffb066def03f99282d9d0ea7ae457aaa7fd57671dc25",
+          "decoded_bytes": 359550,
+          "logical_elapsed_seconds": 0.6921000829999997,
+          "name": "event-KXBTC",
+          "response_sha256": "4b32c4fab10273afc54e80e99bff4257119ae2a337678cd153cdd02069b3441b",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9238
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_1/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "8f8429398bcdfa009775f93223eb862e0940d21aacb684bf5d32345e65734335",
+          "decoded_bytes": 352382,
+          "logical_elapsed_seconds": 0.18731583299999954,
+          "name": "event-KXBTCD",
+          "response_sha256": "9d13ae744b9ffd58c6eaae53fcf8a8879a47bec553aaf153465464f9c790de79",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 8013
+        }
+      ],
+      "reused_connection_attempts": 5,
+      "stored_bytes": 18658,
+      "transport_attempts": 6,
+      "transport_completed_response_bytes": 714291,
+      "transport_decoded_bytes": 714291,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-pooled_1/transport-metrics.json",
+      "transport_metrics_sha256": "4aa033d3af9d73f5a147b47f7fc2e478bc08d38e4b4090f105bbac1f6842f21a",
+      "workers": 1
+    },
+    {
+      "decoded_bytes": 714291,
+      "elapsed_seconds": 3.4143625419999992,
+      "extra_completed_response_bytes": 0,
+      "extra_transport_attempts": 0,
+      "logical_requests": 6,
+      "mode": "curl_serial",
+      "repetition": 2,
+      "responses": [
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-curl_serial/request-00/catalog-manifest.json",
+          "archive_manifest_sha256": "38ccf4beff1885fbc7608aaa7a6c1191d65812e9def8a9e3d65fa03c029cd50b",
+          "decoded_bytes": 1144,
+          "logical_elapsed_seconds": 0.40762466700000033,
+          "name": "series-KXBTC",
+          "response_sha256": "b103e3850ae39761d5315e31ccbcdccaa4cb9f38aba44880d33f7dc6c79782c6",
+          "semantic_sha256": "cc6c20ad9e54149e1c470867c9dffbe10968ea802c8ff32d8c5f9d0352b13bbf",
+          "stored_bytes": 651
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-curl_serial/request-01/catalog-manifest.json",
+          "archive_manifest_sha256": "bb5fa58ec6583fa621bd14f6bc80067a9e24b7b5991082d46c807177f7ee9a3c",
+          "decoded_bytes": 1159,
+          "logical_elapsed_seconds": 0.3967979580000005,
+          "name": "series-KXBTCD",
+          "response_sha256": "c3d31734c2b40fc114fc0576a182819c93eeb41bb0fd1d104b31960ee3dc8017",
+          "semantic_sha256": "f11003c233f24f60ea6ab8be8e2bf00a7dab945940988523f8efe006d6b21b4a",
+          "stored_bytes": 660
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-curl_serial/request-02/catalog-manifest.json",
+          "archive_manifest_sha256": "7793e0ef32cfe0a9e8836a94113a8edee7911968baf49b94b2306475a85ae55b",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.38383212499999964,
+          "name": "fees-KXBTC",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-curl_serial/request-03/catalog-manifest.json",
+          "archive_manifest_sha256": "88317afa44858b3e6ee13e975ed5ca8dae2526fdb824c194e04eec83249e6e36",
+          "decoded_bytes": 28,
+          "logical_elapsed_seconds": 0.39072641699999977,
+          "name": "fees-KXBTCD",
+          "response_sha256": "6780c8eb7edbb5e1ca3b15166f17cef054befacb2cc8f4bc479c54074a9a2c18",
+          "semantic_sha256": "8e7208b98d45ba0ae05fc2a32e42c7536eb1725cfdb51c5fda2bf4dee188ace2",
+          "stored_bytes": 48
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-curl_serial/request-04/catalog-manifest.json",
+          "archive_manifest_sha256": "7e0855dca8fcb2f8040e899dfc8ccff1df32eb26f81550c0be4121fb415cbf70",
+          "decoded_bytes": 359550,
+          "logical_elapsed_seconds": 0.9167709999999989,
+          "name": "event-KXBTC",
+          "response_sha256": "4b32c4fab10273afc54e80e99bff4257119ae2a337678cd153cdd02069b3441b",
+          "semantic_sha256": "7cf3618f5bee9854323baa2ce058ae44380e957bd57604f15a263f61ca1ec84c",
+          "stored_bytes": 9238
+        },
+        {
+          "archive_manifest": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-curl_serial/request-05/catalog-manifest.json",
+          "archive_manifest_sha256": "c486cf48e7393231542b27b00af542787912094c4f46aebdab119525c0ac2698",
+          "decoded_bytes": 352382,
+          "logical_elapsed_seconds": 0.8972449170000001,
+          "name": "event-KXBTCD",
+          "response_sha256": "9d13ae744b9ffd58c6eaae53fcf8a8879a47bec553aaf153465464f9c790de79",
+          "semantic_sha256": "d39f4058c1efa2ffe75abb75bc189b2ebb5290bafe5574590edd475ab9bc1316",
+          "stored_bytes": 8013
+        }
+      ],
+      "reused_connection_attempts": 0,
+      "stored_bytes": 18658,
+      "transport_attempts": 6,
+      "transport_completed_response_bytes": 714291,
+      "transport_decoded_bytes": 714291,
+      "transport_metrics": "/private/tmp/eme-public-read-benchmark-20260917-b/repetition-2-curl_serial/transport-metrics.json",
+      "transport_metrics_sha256": "4e00e52b3d282ce1e1c2537e30f9bf3172a547c40262a1dc9d622c6a397cf58a",
+      "workers": 1
+    }
+  ],
+  "same_request_plan": true,
+  "schema": "public-read-benchmark-v1",
+  "semantic_fields_unchanged": true,
+  "source_hashes": {
+    "benchmarks/public_read_benchmark.py": "6081a4073aeaf3b7a8832ce7554d87f89e35e36b852a6a317dde336a9eeac48b",
+    "scripts/market_catalog.py": "9718bc07a69af9c460b96e361f6a138b13baf6a8915202b54e24d6d287d41160",
+    "scripts/public_pool.py": "8b357576a9bcbe00b694bc3d39441c625c103f5d9206e26ccd42b0eab6a32518"
+  },
+  "started_at": "2026-09-17T14:15:17.336980+00:00",
+  "state": "complete",
+  "summary": {
+    "curl_serial": {
+      "elapsed_seconds": [
+        3.835192084,
+        3.4143625419999992
+      ],
+      "mean_seconds": 3.6247773129999996,
+      "median_seconds": 3.6247773129999996
+    },
+    "pooled_1": {
+      "elapsed_seconds": [
+        2.0930059590000005,
+        1.9401844169999993
+      ],
+      "mean_seconds": 2.016595188,
+      "median_seconds": 2.016595188
+    },
+    "pooled_4": {
+      "elapsed_seconds": [
+        1.5519758750000001,
+        1.7052457499999996
+      ],
+      "mean_seconds": 1.6286108124999998,
+      "median_seconds": 1.6286108124999998
+    }
+  },
+  "timing_scope": "transport creation, GETs, parsing, gzip archives, manifests, and transport shutdown",
+  "transport_attempts": 36
+}

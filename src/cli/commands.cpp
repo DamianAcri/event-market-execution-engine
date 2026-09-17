@@ -6,6 +6,7 @@
 #ifdef EME_CLI_KALSHI
 #include "cli/session_commands.hpp"
 #include "cli/market_screen.hpp"
+#include "cli/basket_screen.hpp"
 #include "eme/gateway/kalshi/metadata_snapshot.hpp"
 #include <fstream>
 #include <string>
@@ -29,6 +30,7 @@ void print_help() {
               << "  event-engine journal verify <path>\n"
 #ifdef EME_CLI_KALSHI
               << "  event-engine market screen <metadata.json> <screen.json>\n"
+              << "  event-engine basket screen <screen.json>\n"
               << "  event-engine metadata verify <path>\n"
               << "  event-engine metadata canonical <path>\n"
               << "  event-engine session pack <metadata> <journal> <new-directory>\n"
@@ -158,6 +160,7 @@ int run(const int argc, const char* const argv[]) {
 #ifdef EME_CLI_KALSHI
     if (command == "session") { return run_session_command(argc, argv); }
     if (command == "market") { return run_market_screen_command(argc, argv); }
+    if (command == "basket") { return run_basket_screen_command(argc, argv); }
     if (command == "metadata" && argc == 4) {
         const std::string_view action{argv[2]};
         if (action == "verify" || action == "canonical") {

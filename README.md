@@ -27,6 +27,12 @@ Omit `--paper` for recording only. Research documents contain
 evidence and conditional proposals; they do not create additional work queues.
 The package version remains 0.2.0, and capability status is described below.
 
+The new [BTC basket preflight](READONLY_CAPTURE.md#btc-basket-public-preflight)
+checks a frozen cohort of threshold/range combinations with three legs. It uses
+public REST only, exact native depth/fee sizing and explicit conditional settlement
+assumptions. It neither places orders nor adds basket fills to the existing paper
+simulation. See the implementation plan before starting another long capture.
+
 The completed v0.1 foundation establishes the venue-neutral core used by live,
 recorded, and synthetic event sources:
 

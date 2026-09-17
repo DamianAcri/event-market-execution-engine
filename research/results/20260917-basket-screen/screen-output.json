@@ -1,0 +1,787 @@
+{
+  "as_of_ms": 1789654148386,
+  "baskets": [
+    {
+      "basket_id": 1,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 0,
+      "key": "btc-range-01eb133d67aac3cf8ed802a8",
+      "market_ids": [
+        28,
+        29,
+        5
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": null,
+      "quote": null,
+      "status": "no_depth"
+    },
+    {
+      "basket_id": 2,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-dcdf28c2080ab20814e5803b",
+      "market_ids": [
+        38,
+        39,
+        12
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2070000,
+        "funded": true,
+        "gross_margin_micro": -20000,
+        "legs": [
+          {
+            "debit_micro": 530000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 5100,
+            "market_id": 38,
+            "notional_micro": 510000,
+            "outcome": "yes",
+            "reservation_micro": 1527600
+          },
+          {
+            "debit_micro": 650000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 6300,
+            "market_id": 39,
+            "notional_micro": 630000,
+            "outcome": "no",
+            "reservation_micro": 1647600
+          },
+          {
+            "debit_micro": 890000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8800,
+            "market_id": 12,
+            "notional_micro": 880000,
+            "outcome": "no",
+            "reservation_micro": 1897600
+          }
+        ],
+        "net_margin_micro": -70000,
+        "notional_micro": 2020000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5072800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 3,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-3327679ab37c48ac4e2f7c2f",
+      "market_ids": [
+        48,
+        49,
+        19
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2070000,
+        "funded": true,
+        "gross_margin_micro": -20000,
+        "legs": [
+          {
+            "debit_micro": 530000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 5100,
+            "market_id": 48,
+            "notional_micro": 510000,
+            "outcome": "yes",
+            "reservation_micro": 1527600
+          },
+          {
+            "debit_micro": 660000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 6400,
+            "market_id": 49,
+            "notional_micro": 640000,
+            "outcome": "no",
+            "reservation_micro": 1657600
+          },
+          {
+            "debit_micro": 880000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8700,
+            "market_id": 19,
+            "notional_micro": 870000,
+            "outcome": "no",
+            "reservation_micro": 1887600
+          }
+        ],
+        "net_margin_micro": -70000,
+        "notional_micro": 2020000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5072800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 4,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 0,
+      "key": "btc-range-02a637f21cc85be149c0f603",
+      "market_ids": [
+        30,
+        31,
+        6
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": null,
+      "quote": null,
+      "status": "no_depth"
+    },
+    {
+      "basket_id": 5,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-3db085ae3c49176e9ccb0075",
+      "market_ids": [
+        37,
+        38,
+        11
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2050000,
+        "funded": true,
+        "gross_margin_micro": 0,
+        "legs": [
+          {
+            "debit_micro": 650000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 6300,
+            "market_id": 37,
+            "notional_micro": 630000,
+            "outcome": "yes",
+            "reservation_micro": 1647600
+          },
+          {
+            "debit_micro": 520000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 5000,
+            "market_id": 38,
+            "notional_micro": 500000,
+            "outcome": "no",
+            "reservation_micro": 1517600
+          },
+          {
+            "debit_micro": 880000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8700,
+            "market_id": 11,
+            "notional_micro": 870000,
+            "outcome": "no",
+            "reservation_micro": 1887600
+          }
+        ],
+        "net_margin_micro": -50000,
+        "notional_micro": 2000000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5052800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 6,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-5d51059bf3efc95dfe6ceccb",
+      "market_ids": [
+        49,
+        50,
+        20
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2070000,
+        "funded": true,
+        "gross_margin_micro": -20000,
+        "legs": [
+          {
+            "debit_micro": 390000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 3700,
+            "market_id": 49,
+            "notional_micro": 370000,
+            "outcome": "yes",
+            "reservation_micro": 1387600
+          },
+          {
+            "debit_micro": 780000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 7600,
+            "market_id": 50,
+            "notional_micro": 760000,
+            "outcome": "no",
+            "reservation_micro": 1777600
+          },
+          {
+            "debit_micro": 900000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8900,
+            "market_id": 20,
+            "notional_micro": 890000,
+            "outcome": "no",
+            "reservation_micro": 1907600
+          }
+        ],
+        "net_margin_micro": -70000,
+        "notional_micro": 2020000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5072800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 7,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 0,
+      "key": "btc-range-03bad75aec7a300c4c15b40f",
+      "market_ids": [
+        21,
+        22,
+        1
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": null,
+      "quote": null,
+      "status": "no_depth"
+    },
+    {
+      "basket_id": 8,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-de4ce04c5aa30278a2e7dcd0",
+      "market_ids": [
+        36,
+        37,
+        10
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2060000,
+        "funded": true,
+        "gross_margin_micro": -10000,
+        "legs": [
+          {
+            "debit_micro": 750000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 7300,
+            "market_id": 36,
+            "notional_micro": 730000,
+            "outcome": "yes",
+            "reservation_micro": 1747600
+          },
+          {
+            "debit_micro": 400000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 3800,
+            "market_id": 37,
+            "notional_micro": 380000,
+            "outcome": "no",
+            "reservation_micro": 1397600
+          },
+          {
+            "debit_micro": 910000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 9000,
+            "market_id": 10,
+            "notional_micro": 900000,
+            "outcome": "no",
+            "reservation_micro": 1917600
+          }
+        ],
+        "net_margin_micro": -60000,
+        "notional_micro": 2010000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5062800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 9,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-b304a1d3a1174c794658f170",
+      "market_ids": [
+        45,
+        46,
+        16
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2070000,
+        "funded": true,
+        "gross_margin_micro": -30000,
+        "legs": [
+          {
+            "debit_micro": 870000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8600,
+            "market_id": 45,
+            "notional_micro": 860000,
+            "outcome": "yes",
+            "reservation_micro": 1877600
+          },
+          {
+            "debit_micro": 270000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 2500,
+            "market_id": 46,
+            "notional_micro": 250000,
+            "outcome": "no",
+            "reservation_micro": 1267600
+          },
+          {
+            "debit_micro": 930000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 9200,
+            "market_id": 16,
+            "notional_micro": 920000,
+            "outcome": "no",
+            "reservation_micro": 1937600
+          }
+        ],
+        "net_margin_micro": -70000,
+        "notional_micro": 2030000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5082800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 10,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 0,
+      "key": "btc-range-03c3e2039b0d35a072d89595",
+      "market_ids": [
+        32,
+        33,
+        7
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": null,
+      "quote": null,
+      "status": "no_depth"
+    },
+    {
+      "basket_id": 11,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-a8aa078872962adf177f73c3",
+      "market_ids": [
+        35,
+        36,
+        9
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2070000,
+        "funded": true,
+        "gross_margin_micro": -20000,
+        "legs": [
+          {
+            "debit_micro": 840000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 8200,
+            "market_id": 35,
+            "notional_micro": 820000,
+            "outcome": "yes",
+            "reservation_micro": 1837600
+          },
+          {
+            "debit_micro": 300000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 2800,
+            "market_id": 36,
+            "notional_micro": 280000,
+            "outcome": "no",
+            "reservation_micro": 1297600
+          },
+          {
+            "debit_micro": 930000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 9200,
+            "market_id": 9,
+            "notional_micro": 920000,
+            "outcome": "no",
+            "reservation_micro": 1937600
+          }
+        ],
+        "net_margin_micro": -70000,
+        "notional_micro": 2020000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5072800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 12,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-759c6341f1e4f6e42bcd6afb",
+      "market_ids": [
+        47,
+        48,
+        18
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2080000,
+        "funded": true,
+        "gross_margin_micro": -30000,
+        "legs": [
+          {
+            "debit_micro": 670000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 6500,
+            "market_id": 47,
+            "notional_micro": 650000,
+            "outcome": "yes",
+            "reservation_micro": 1667600
+          },
+          {
+            "debit_micro": 520000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 5000,
+            "market_id": 48,
+            "notional_micro": 500000,
+            "outcome": "no",
+            "reservation_micro": 1517600
+          },
+          {
+            "debit_micro": 890000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8800,
+            "market_id": 18,
+            "notional_micro": 880000,
+            "outcome": "no",
+            "reservation_micro": 1897600
+          }
+        ],
+        "net_margin_micro": -80000,
+        "notional_micro": 2030000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5082800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 13,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 0,
+      "key": "btc-range-04afd414c1fc5feb87d16810",
+      "market_ids": [
+        23,
+        24,
+        2
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": null,
+      "quote": null,
+      "status": "no_depth"
+    },
+    {
+      "basket_id": 14,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-52ba01f572f411b4ca149de6",
+      "market_ids": [
+        34,
+        35,
+        8
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2060000,
+        "funded": true,
+        "gross_margin_micro": -20000,
+        "legs": [
+          {
+            "debit_micro": 890000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8800,
+            "market_id": 34,
+            "notional_micro": 880000,
+            "outcome": "yes",
+            "reservation_micro": 1897600
+          },
+          {
+            "debit_micro": 210000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 1900,
+            "market_id": 35,
+            "notional_micro": 190000,
+            "outcome": "no",
+            "reservation_micro": 1207600
+          },
+          {
+            "debit_micro": 960000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 9500,
+            "market_id": 8,
+            "notional_micro": 950000,
+            "outcome": "no",
+            "reservation_micro": 1967600
+          }
+        ],
+        "net_margin_micro": -60000,
+        "notional_micro": 2020000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5072800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 15,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-f6a9a8142c8b365379b16c42",
+      "market_ids": [
+        46,
+        47,
+        17
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2070000,
+        "funded": true,
+        "gross_margin_micro": -20000,
+        "legs": [
+          {
+            "debit_micro": 790000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 7700,
+            "market_id": 46,
+            "notional_micro": 770000,
+            "outcome": "yes",
+            "reservation_micro": 1787600
+          },
+          {
+            "debit_micro": 380000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 3600,
+            "market_id": 47,
+            "notional_micro": 360000,
+            "outcome": "no",
+            "reservation_micro": 1377600
+          },
+          {
+            "debit_micro": 900000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8900,
+            "market_id": 17,
+            "notional_micro": 890000,
+            "outcome": "no",
+            "reservation_micro": 1907600
+          }
+        ],
+        "net_margin_micro": -70000,
+        "notional_micro": 2020000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5072800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 16,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 0,
+      "key": "btc-range-058c62e2ffd1cdb6debfb535",
+      "market_ids": [
+        25,
+        26,
+        3
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": null,
+      "quote": null,
+      "status": "no_depth"
+    },
+    {
+      "basket_id": 17,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-41176ce676c15e5deaed0d94",
+      "market_ids": [
+        39,
+        40,
+        13
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2060000,
+        "funded": true,
+        "gross_margin_micro": -10000,
+        "legs": [
+          {
+            "debit_micro": 400000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 3800,
+            "market_id": 39,
+            "notional_micro": 380000,
+            "outcome": "yes",
+            "reservation_micro": 1397600
+          },
+          {
+            "debit_micro": 760000,
+            "fees_and_rounding_micro": 20000,
+            "limit_price_1e4": 7400,
+            "market_id": 40,
+            "notional_micro": 740000,
+            "outcome": "no",
+            "reservation_micro": 1757600
+          },
+          {
+            "debit_micro": 900000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8900,
+            "market_id": 13,
+            "notional_micro": 890000,
+            "outcome": "no",
+            "reservation_micro": 1907600
+          }
+        ],
+        "net_margin_micro": -60000,
+        "notional_micro": 2010000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5062800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    },
+    {
+      "basket_id": 18,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 0,
+      "key": "btc-range-6664b10c7021fe6976b4f5ac",
+      "market_ids": [
+        43,
+        44,
+        15
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": null,
+      "quote": null,
+      "status": "no_depth"
+    },
+    {
+      "basket_id": 19,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 0,
+      "key": "btc-range-05ab73571a55608fc9b6e62a",
+      "market_ids": [
+        26,
+        27,
+        4
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": null,
+      "quote": null,
+      "status": "no_depth"
+    },
+    {
+      "basket_id": 20,
+      "capture_span_ms": 794,
+      "evaluated_quantities": 100,
+      "key": "btc-range-86da6708987e3ce96a544306",
+      "market_ids": [
+        41,
+        42,
+        14
+      ],
+      "maximum_age_ms": 800,
+      "one_contract_diagnostic": {
+        "debit_micro": 2030000,
+        "funded": true,
+        "gross_margin_micro": 0,
+        "legs": [
+          {
+            "debit_micro": 170000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 1600,
+            "market_id": 41,
+            "notional_micro": 160000,
+            "outcome": "yes",
+            "reservation_micro": 1177600
+          },
+          {
+            "debit_micro": 900000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 8900,
+            "market_id": 42,
+            "notional_micro": 890000,
+            "outcome": "no",
+            "reservation_micro": 1907600
+          },
+          {
+            "debit_micro": 960000,
+            "fees_and_rounding_micro": 10000,
+            "limit_price_1e4": 9500,
+            "market_id": 14,
+            "notional_micro": 950000,
+            "outcome": "no",
+            "reservation_micro": 1967600
+          }
+        ],
+        "net_margin_micro": -30000,
+        "notional_micro": 2000000,
+        "payout_floor_micro": 2000000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 5052800
+      },
+      "quote": null,
+      "status": "no_positive_margin"
+    }
+  ],
+  "book_count": 50,
+  "conditional_payout_floor_micro_per_contract": 2000000,
+  "evaluated_quantities": 1200,
+  "exchange_timestamp_verified": false,
+  "fill_model": "one_assumed_fill_per_consumed_price_level",
+  "funding_fill_step_centicontracts": 1,
+  "joint_capital_allocation": false,
+  "kind": "conditional_payoff_screen",
+  "market_count": 50,
+  "payoff_model": "yes_lower_threshold_no_upper_threshold_no_inclusive_range",
+  "positive_quotes": 0,
+  "production_certificate": false,
+  "schema_version": 1,
+  "settlement_hypotheses": [
+    "common_observation_strict_thresholds_inclusive_interval",
+    "all_three_markets_settle_no"
+  ],
+  "settlement_rules_verified_by_native_screen": false,
+  "simulated_fills": false,
+  "solver_complete": true,
+  "status_counts": {
+    "no_depth": 8,
+    "no_positive_margin": 12
+  },
+  "synchronous_books": false,
+  "time_basis": "client_request_response_intervals"
+}
