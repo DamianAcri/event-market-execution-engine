@@ -51,6 +51,9 @@ struct ReplayFrame final {
     std::optional<market::MarketId> market_id;
     bool applied{}; // true only for successfully applied market data
     std::optional<market::PublicTrade> trade{};
+    // Recorded local wall clock, for explicit policy-validity windows only.
+    // Never treated as an exchange timestamp or network-latency measurement.
+    std::optional<std::int64_t> observed_wall_ns{};
 };
 class ReplayObserver {
 public:

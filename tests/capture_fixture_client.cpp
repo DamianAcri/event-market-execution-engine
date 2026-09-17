@@ -15,16 +15,23 @@ int main(int argc, char** argv) {
     config.private_key = argv[4];
     config.key_id = "fixture";
     config.directory = argv[5];
-    config.markets = {1U, 2U};
+    const std::string_view scenario{argv[8]};
+    const auto metadata_json = session::detail::Json::parse(metadata.canonical_json());
+    for (const auto& market : metadata_json["markets"]) {
+        const auto id = market.at("id").get<market::MarketId>();
+        if (scenario.starts_with("basket") || id <= 2U) { config.markets.push_back(id); }
+    }
     config.duration = std::chrono::milliseconds{std::stoi(argv[6])};
     config.maximum_connections = static_cast<std::size_t>(std::stoul(argv[7]));
     config.idle_timeout = std::chrono::milliseconds{600};
     config.handshake_timeout = std::chrono::milliseconds{1500};
     config.retry_delay = std::chrono::milliseconds{50};
     config.synthetic = true;
-    const std::string_view scenario{argv[8]};
-    config.public_trades = scenario == "paper_trades" || scenario == "trade_gap" || scenario == "trade_ack_timeout";
-    if (argc == 10) { config.paper_policy = argv[9]; }
+    config.public_trades = scenario == "paper_trades" || scenario == "trade_gap" || scenario == "trade_ack_timeout" || scenario == "basket_trades";
+    if (argc == 10) {
+        if (scenario.starts_with("basket")) { config.basket_policy = argv[9]; }
+        else { config.paper_policy = argv[9]; }
+    }
     if (scenario == "overflow") { config.queue.retained_bytes = 4096U; }
     const auto result = transport::capture_readonly(config, metadata);
     std::cout << session::detail::Json{{"finalized", result.finalized}, {"market_updates", result.market_updates},

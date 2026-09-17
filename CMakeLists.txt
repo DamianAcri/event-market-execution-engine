@@ -23,6 +23,7 @@ configure_file(
 add_library(eme_core
     src/core/execution_cost.cpp
     src/core/net_sizing.cpp
+    src/core/basket_sizing.cpp
     src/book/order_book.cpp
     src/constraint/payoff.cpp
     src/journal/journal_codec.cpp
@@ -93,6 +94,7 @@ if(EME_BUILD_KALSHI_GATEWAY)
         src/session/session_files.cpp
         src/session/replay.cpp
         src/session/execution_study.cpp
+        src/session/basket_observation.cpp
         src/session/study_policy.cpp
         src/session/import_capture.cpp
     )
@@ -158,6 +160,13 @@ if(EME_BUILD_BENCHMARKS)
         add_test(NAME eme_benchmark_smoke COMMAND eme_benchmarks --smoke)
     endif()
     if(EME_BUILD_KALSHI_GATEWAY)
+        add_executable(eme_basket_observation_benchmark benchmarks/basket_observation_benchmark.cpp)
+        target_include_directories(eme_basket_observation_benchmark PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_basket_observation_benchmark PRIVATE eme_session nlohmann_json::nlohmann_json)
+        eme_enable_warnings(eme_basket_observation_benchmark)
+        if(BUILD_TESTING)
+            add_test(NAME eme_basket_observation_benchmark_smoke COMMAND eme_basket_observation_benchmark --smoke)
+        endif()
         add_executable(eme_feed_benchmarks benchmarks/feed_benchmarks.cpp)
         target_link_libraries(eme_feed_benchmarks PRIVATE eme_session)
         eme_enable_warnings(eme_feed_benchmarks)
@@ -249,13 +258,16 @@ if(BUILD_TESTING)
         target_sources(eme_basket_screen_tests PRIVATE src/cli/basket_screen.cpp)
         target_include_directories(eme_basket_screen_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
         target_link_libraries(eme_basket_screen_tests PRIVATE nlohmann_json::nlohmann_json)
+        eme_add_test(eme_basket_observation_tests tests/basket_observation_tests.cpp eme_session)
+        target_include_directories(eme_basket_observation_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_basket_observation_tests PRIVATE nlohmann_json::nlohmann_json)
         find_package(Python3 COMPONENTS Interpreter QUIET)
         if(Python3_Interpreter_FOUND)
             if(EME_BUILD_CLI)
                 add_test(NAME eme_basket_screen_oracle_tests COMMAND ${Python3_EXECUTABLE} -B
                     ${PROJECT_SOURCE_DIR}/tests/basket_screen_oracle_tests.py --engine $<TARGET_FILE:event-engine>)
             endif()
-            foreach(basket_python_test basket_families public_pool basket_research)
+            foreach(basket_python_test basket_families public_pool basket_research basket_observe)
                 add_test(NAME eme_${basket_python_test}_tests COMMAND ${Python3_EXECUTABLE} -B
                     ${PROJECT_SOURCE_DIR}/tests/${basket_python_test}_tests.py)
             endforeach()

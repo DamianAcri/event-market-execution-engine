@@ -16,6 +16,8 @@ struct CaptureConfig final {
     std::filesystem::path directory;
     // Empty means capture only. Nonempty enables local simulated orders only.
     std::filesystem::path paper_policy;
+    // Conditional quote episodes only, mutually exclusive with paper fills.
+    std::filesystem::path basket_policy;
     std::vector<market::MarketId> markets;
     std::chrono::milliseconds duration{60'000};
     std::chrono::milliseconds handshake_timeout{10'000};

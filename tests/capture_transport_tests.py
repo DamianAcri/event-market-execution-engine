@@ -84,9 +84,20 @@ def main():
         spec.loader.exec_module(runner)
         paper_path = root / 'paper-policy.json'
         params = runner.paper_policy(json.loads(Path(args.metadata).read_text()))
+        basket_metadata = root / 'basket-metadata.json'
+        basket_metadata_value = {'schema_version': 1, 'metadata_version': 2, 'venue': 'kalshi',
+            'markets': [{'id': i, 'ticker': 'SYNTHETIC-BASKET-' + str(i)} for i in (1, 2, 3)], 'constraints': []}
+        basket_metadata.write_text(json.dumps(basket_metadata_value))
+        basket_canonical = subprocess.run([args.engine, 'metadata', 'canonical', str(basket_metadata)],
+            capture_output=True, check=True).stdout.rstrip(b'\n')
+        basket_metadata_hash = hashlib.sha256(basket_canonical).hexdigest()
+        from basket_screen_oracle_tests import fixture as basket_fixture
         passed = 0
-        for scenario in ('untrusted', 'hostname', 'normal', 'empty_sides', 'reconnect', 'gap', 'duplicate', 'subscription_error', 'malformed', 'auth', 'idle', 'snapshot_timeout', 'handshake_timeout', 'oversize', 'overflow', 'paper_quiet', 'paper_partial', 'paper_disconnect', 'paper_eof', 'paper_burst', 'paper_trades', 'trade_gap', 'trade_ack_timeout'):
-            trades_enabled = scenario in ('paper_trades', 'trade_gap', 'trade_ack_timeout')
+        for scenario in ('untrusted', 'hostname', 'normal', 'empty_sides', 'reconnect', 'gap', 'duplicate', 'subscription_error', 'malformed', 'auth', 'idle', 'snapshot_timeout', 'handshake_timeout', 'oversize', 'overflow', 'paper_quiet', 'paper_partial', 'paper_disconnect', 'paper_eof', 'paper_burst', 'paper_trades', 'trade_gap', 'trade_ack_timeout', 'basket_quiet', 'basket_gap', 'basket_burst', 'basket_expiry', 'basket_trades'):
+            is_basket = scenario.startswith('basket_')
+            selected_tickers = ([m['ticker'] for m in basket_metadata_value['markets']] if is_basket else
+                [m['ticker'] for m in sorted(json.loads(Path(args.metadata).read_text())['markets'], key=lambda m: m['id']) if m['id'] in (1, 2)])
+            trades_enabled = scenario in ('paper_trades', 'trade_gap', 'trade_ack_timeout', 'basket_trades')
             errors, wire_messages, headers_seen, pong_seen = [], [], [], []
             listener = socket.socket()
             listener.bind(('127.0.0.1', 0))
@@ -170,7 +181,7 @@ def main():
                                 if block is not None:
                                     message['msg']['is_block_trade'] = block
                                 send_message(message)
-                            if scenario in ('paper_trades', 'trade_gap'):
+                            if scenario in ('paper_trades', 'basket_trades', 'trade_gap'):
                                 # Trade sequencing is independent of book seq=40;
                                 # observation is valid before any book snapshot.
                                 send_trade(700, selected_tickers[0], block=False)
@@ -186,7 +197,7 @@ def main():
                                         'msg': {'market_ticker': ticker,
                                                 'yes_dollars_fp': [['0.5000' if market_index == 0 else '0.7000', '5.00']],
                                                 'no_dollars_fp': [['0.6000' if market_index == 0 else '0.8000', '5.00']]}}, fragment=scenario == 'normal')
-                                    if scenario == 'paper_trades' and market_index == 0:
+                                    if scenario in ('paper_trades', 'basket_trades') and market_index == 0:
                                         send_trade(701, selected_tickers[1], block=True)
                                 if scenario == 'malformed':
                                     send_frame(sock, '{"type":')
@@ -204,17 +215,23 @@ def main():
                                         time.sleep(0.15)
                                 else:
                                     send_message({'type': 'orderbook_delta', 'sid': 11,
-                                        'seq': 44 if scenario in ('gap', 'reconnect') and attempt == 0 else 41 if scenario == 'duplicate' else 42,
+                                        'seq': 44 if scenario in ('gap', 'reconnect') and attempt == 0 else 41 if scenario == 'duplicate' else 40 + len(selected_tickers),
                                         'msg': {'market_ticker': commands[0]['params']['market_tickers'][0], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
-                                    if scenario == 'paper_trades':
+                                    if scenario in ('paper_trades', 'basket_trades'):
                                         send_trade(702, selected_tickers[0], millis=False)
-                            if scenario == 'paper_disconnect':
+                            if scenario in ('paper_disconnect', 'basket_gap'):
                                 send_message({'type': 'orderbook_delta', 'sid': 11, 'seq': 100,
                                     'msg': {'market_ticker': selected_tickers[0], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
-                            if scenario == 'paper_burst':
-                                for seq in range(43, 2043):
+                            if scenario in ('paper_burst', 'basket_burst'):
+                                for seq in range(41 + len(selected_tickers), 2041 + len(selected_tickers)):
                                     send_message({'type': 'orderbook_delta', 'sid': 11, 'seq': seq,
                                         'msg': {'market_ticker': selected_tickers[0], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
+                            if scenario == 'basket_expiry':
+                                # Healthy transport, unchanged books: the policy
+                                # deadline must fire without a new market tick.
+                                for _ in range(10):
+                                    send_frame(sock, b'heartbeat', opcode=9)
+                                    time.sleep(0.2)
                             if scenario == 'paper_quiet':
                                 # No market message follows the signal. Orders must
                                 # complete before idle timeout, while client lives.
@@ -254,8 +271,22 @@ def main():
             if scenario == 'paper_eof':
                 parameters['lifecycle']['response_latency_ns'] = [5000000000, 5000000000]
             paper_path.write_text(json.dumps(parameters))
-            result = subprocess.run([args.client, args.metadata, str(port), str(trusted_cert), str(key), str(output_dir),
-                                     '6000' if scenario == 'reconnect' else '4000', str(attempts), scenario] + ([str(paper_path)] if scenario.startswith('paper_') else []),
+            basket_policy_path = root / 'basket-policy.json'
+            if is_basket:
+                screen = basket_fixture(1000)
+                screen['markets'] = basket_metadata_value['markets']
+                screen['books'], screen['as_of_ms'] = [], 0
+                # Quiet books must remain eligible even though these REST-only
+                # age/skew fields are smaller than the fixture's quiet period.
+                screen['max_age_ms'], screen['max_skew_ms'] = 1, 1
+                wall_ms = int(time.time() * 1000)
+                basket_policy_path.write_text(json.dumps({'schema_version': 1,
+                    'kind': 'conditional_basket_observation', 'qualification_sha256': 'a' * 64,
+                    'metadata_sha256': basket_metadata_hash, 'valid_from_unix_ms': wall_ms - 60000,
+                    'valid_until_unix_ms': wall_ms + (1200 if scenario == 'basket_expiry' else 60000), 'max_episode_events': 10000,
+                    'freshness_mode': 'contiguous_shared_stream', 'screen': screen}))
+            result = subprocess.run([args.client, str(basket_metadata) if is_basket else args.metadata, str(port), str(trusted_cert), str(key), str(output_dir),
+                                     '6000' if scenario == 'reconnect' else '4000', str(attempts), scenario] + ([str(basket_policy_path)] if is_basket else [str(paper_path)] if scenario.startswith('paper_') else []),
                                     capture_output=True, text=True, timeout=10)
             thread.join(timeout=6)
             assert not thread.is_alive() and not errors, (scenario, errors, result.stdout, result.stderr)
@@ -274,9 +305,9 @@ def main():
                 replay_lines = [json.loads(line) for line in transcripts[0].splitlines()]
                 observed_trades = [line for line in replay_lines if line['type'] == 'public_trade']
                 assert len(observed_trades) == summary['public_trades'], (scenario, summary, observed_trades)
-                if scenario in ('paper_trades', 'trade_gap'):
+                if scenario in ('paper_trades', 'basket_trades', 'trade_gap'):
                     expected = [(700, 1, False, 1760000000123)]
-                    if scenario == 'paper_trades':
+                    if scenario in ('paper_trades', 'basket_trades'):
                         expected += [(701, 2, True, 1760000000123), (702, 1, None, 1760000000000)]
                     assert len(observed_trades) == len(expected), (scenario, observed_trades)
                     for trade, (seq, market, block, timestamp) in zip(observed_trades, expected):
@@ -327,7 +358,7 @@ def main():
                     assert paper['lifecycle']['unknown_orders'] == 2 and paper['lifecycle']['reserved_micro_usd'] > 0, paper
                 if scenario == 'paper_burst':
                     assert summary['market_updates'] == 2003, summary
-                if scenario == 'paper_trades':
+                if scenario in ('paper_trades', 'basket_trades'):
                     assert summary['market_updates'] == 3 and summary['public_trades'] == 3, summary
                     # Independently compare the economic records; timestamps and
                     # all execution quantities must match, not just final totals.
@@ -344,6 +375,35 @@ def main():
                         return records
                     assert economic_trace(output_dir / 'paper.jsonl') == economic_trace(output_dir / 'paper-replay.jsonl')
                 assert paper['receive_callback_to_decisions']['samples'] == summary['market_updates'], paper
+            if is_basket:
+                if scenario == 'basket_trades':
+                    assert summary['public_trades'] == 3, summary
+                basket = json.loads((output_dir / 'basket-summary.json').read_text())
+                assert basket['live_replay_equal'] is True, (scenario, basket)
+                assert basket['mode'] == 'live_conditional_observation_no_orders', basket
+                assert basket['orders_sent'] == 0 and basket['simulated_fills'] is False, basket
+                assert basket['incomplete'] is False and basket['event_budget_exceeded'] is False, basket
+                assert not (output_dir / 'paper.jsonl').exists()
+                def basket_trace(path):
+                    values = []
+                    for line in path.read_text().splitlines():
+                        value = json.loads(line)
+                        if value['type'] in ('basket_start', 'basket_status', 'basket_timing'):
+                            continue
+                        if value['type'] == 'basket_complete':
+                            value.pop('manifest_sha256', None)
+                            value.pop('plan_sha256', None)
+                        values.append(value)
+                    return values
+                assert basket_trace(output_dir / 'basket.jsonl') == basket_trace(output_dir / 'basket-replay.jsonl')
+                replayed = subprocess.run([args.engine, 'basket', 'observe', str(output_dir), str(output_dir / 'basket-policy.json')],
+                    capture_output=True, text=True, check=True)
+                independent_path = root / 'independent-basket-replay.jsonl'
+                independent_path.write_text(replayed.stdout)
+                assert basket_trace(independent_path) == basket_trace(output_dir / 'basket.jsonl')
+                assert basket['receive_callback_to_decisions']['samples'] == summary['market_updates'], basket
+                assert summary['market_updates'] == (2004 if scenario == 'basket_burst' else 4), summary
+                assert summary['reason'] == ('feed_invalidated' if scenario == 'basket_gap' else 'idle_timeout'), summary
             passed += 1
             print('PASS', scenario, summary, flush=True)
         print('PASS', passed, 'TLS/WS fixture scenarios')

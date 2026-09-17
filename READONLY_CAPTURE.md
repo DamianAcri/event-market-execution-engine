@@ -136,6 +136,81 @@ This preflight does not measure opportunity duration, market-hours or P&L. A
 prospective streaming cohort and separate completion-risk analysis remain the
 next evidence steps when justified by the selected family.
 
+## Continuous conditional basket observation
+
+`scripts/basket_observe.py` prepares a fresh frozen BTC cohort, registers its
+observation policy and then runs the existing read-only WebSocket collector with
+`--basket-observe`. The same native three-leg cost kernel serves REST screening
+and streaming observation. There is no basket order simulator or submission API.
+The alternative paper mode is mutually exclusive with basket observation.
+
+From a built repository:
+
+```sh
+python3 scripts/basket_observe.py --engine build/event-engine --binary build/eme-capture --seconds 1800 --window-label initial-window
+```
+
+This records a 30-minute initial window, not enough evidence by itself to establish
+profitability. Selection and limits freeze before streaming; a zero-margin
+preflight does not silently select different baskets or prevent observation.
+`--prepare-only` performs public preparation and writes the policy without reading
+credentials or opening WebSocket. Default budgets remain 20 baskets, 64 markets,
+100 whole contracts and USD 1,000 fictional funding per independent quote.
+
+The operator's local settings supply market-data authentication only. Public
+preparation and fee/closing-window checks precede credential loading. No key,
+settings contents or authentication headers enter research artifacts. Engine,
+collector, module, policy and source hashes identify the run; changes during the
+run invalidate the runner's success flag. `--window-label` is a declared operator
+label, not an automatic classification as quiet, active or representative.
+
+The observer reconstructs each book from the existing contiguous shared stream.
+It rebuilds cached depth for a changed market and recalculates only dependent
+baskets. It records book-update ages as diagnostics. An unchanged book remains
+valid while the stream is contiguous; the REST age/skew thresholds are not
+reinterpreted as missing WebSocket data. Disconnects, gaps and invalid books
+remove quote eligibility. A journalled local clock expires the policy even if no
+new price arrives. Local wall times bound policy validity; monotonic timestamps
+measure elapsed durations. Neither proves exchange-atomic multi-market prices.
+
+Each basket tracks time in valid, unpriceable and invalid states, and positive
+episodes with start/end times and quantity/cost information. A positive quote at
+the start or after missing data has an unknown beginning. Loss of visibility,
+policy expiry and observation end censor its ending. These are quote episodes,
+not fills. Shared markets can support several baskets, so overlapping episodes
+are not independent opportunities and their margins must not be summed as P&L.
+
+Artifacts in each timestamped observation directory:
+
+- `preparation/`: public sources, frozen qualification and REST screen.
+- `observation-plan.json` / `observation-policy.json`: declared window, hypothesis,
+  model limits, bindings and reproducible policy.
+- `session/market.journal`: original feed messages and controller/clock records.
+- `session/basket.jsonl`: sparse live episode events, status and timing counters.
+- `session/basket-replay.jsonl`: offline replay through the same observer.
+- `session/basket-summary.json`: completion and exact live/replay comparison,
+  per-basket coverage/censoring, and local processing-latency histograms.
+- `result.json`: finalization, provenance stability and whether the run is usable.
+
+There is no database or full book dump per update beyond the existing raw journal.
+The default 256 MiB storage threshold covers the entire output tree and is checked
+every five seconds; it is a **soft stop**, with possible overshoot and finalization
+overhead. A full episode-event budget or output failure stops the analysis and
+cannot publish a successful summary. Keep incomplete recordings for diagnostics.
+Ctrl+C requests finalization; the report records that the planned window ended
+early. The runner does not automatically schedule or repeat a collection.
+
+After recording, reproduce the episode analysis without credentials or network:
+
+```sh
+build/event-engine basket observe captures/<run>/session captures/<run>/session/basket-policy.json
+```
+
+The initial window is exploratory. Whole later expiries/days must remain unused
+for confirmation; repeating or tuning this same window is not an independent
+test. The remaining research decisions are in
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+
 ## Two-leg economic discovery before capture (2026-09-17)
 
 For the existing two-leg strategy, the economic profile first scans the public open

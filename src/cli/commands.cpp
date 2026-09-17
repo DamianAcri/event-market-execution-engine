@@ -7,6 +7,7 @@
 #include "cli/session_commands.hpp"
 #include "cli/market_screen.hpp"
 #include "cli/basket_screen.hpp"
+#include "eme/session/basket_observation.hpp"
 #include "eme/gateway/kalshi/metadata_snapshot.hpp"
 #include <fstream>
 #include <string>
@@ -31,6 +32,7 @@ void print_help() {
 #ifdef EME_CLI_KALSHI
               << "  event-engine market screen <metadata.json> <screen.json>\n"
               << "  event-engine basket screen <screen.json>\n"
+              << "  event-engine basket observe <session-directory> <policy.json>\n"
               << "  event-engine metadata verify <path>\n"
               << "  event-engine metadata canonical <path>\n"
               << "  event-engine session pack <metadata> <journal> <new-directory>\n"
@@ -160,6 +162,19 @@ int run(const int argc, const char* const argv[]) {
 #ifdef EME_CLI_KALSHI
     if (command == "session") { return run_session_command(argc, argv); }
     if (command == "market") { return run_market_screen_command(argc, argv); }
+    if (command == "basket" && argc == 5 && std::string_view{argv[2]} == "observe") {
+        const std::filesystem::path directory{argv[3]};
+        auto loaded = session::load_replay(directory, directory / "replay.json");
+        if (const auto* error = std::get_if<session::ReplayError>(&loaded)) {
+            std::cerr << "Basket replay load failed: " << error->reason << '\n';
+            return 1;
+        }
+        if (const auto error = session::run_basket_observation(std::get<session::ReplayInput>(loaded), argv[4], std::cout)) {
+            std::cerr << "Basket observation failed: " << error->reason << '\n';
+            return 1;
+        }
+        return std::cout ? 0 : 1;
+    }
     if (command == "basket") { return run_basket_screen_command(argc, argv); }
     if (command == "metadata" && argc == 4) {
         const std::string_view action{argv[2]};

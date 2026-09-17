@@ -24,8 +24,8 @@ std::optional<std::string> environment(const char* name) {
 
 int main(const int argc, const char* const argv[]) {
     using namespace eme;
-    if (argc < 5 || argc > 7 || (std::string_view{argv[4]} != "production" && std::string_view{argv[4]} != "demo")) {
-        std::cerr << "Usage: eme-capture <metadata.json> <new-directory> <seconds 1..86400> <production|demo> [paper-policy.json] [--public-trades]\n"
+    if (argc < 5 || argc > 8 || (std::string_view{argv[4]} != "production" && std::string_view{argv[4]} != "demo")) {
+        std::cerr << "Usage: eme-capture <metadata.json> <new-directory> <seconds 1..86400> <production|demo> [paper-policy.json | --basket-observe policy.json] [--public-trades]\n"
                   << "Configure EME_KALSHI_KEY_ID and EME_KALSHI_PRIVATE_KEY_PATH. Read-only market data.\n";
         return 2;
     }
@@ -48,7 +48,11 @@ int main(const int argc, const char* const argv[]) {
         config.directory = argv[2];
         for (int i = 5; i < argc; ++i) {
             if (std::string_view{argv[i]} == "--public-trades" && !config.public_trades) { config.public_trades = true; }
-            else if (std::string_view{argv[i]}.starts_with("--") || !config.paper_policy.empty()) { return 2; }
+            else if (std::string_view{argv[i]} == "--basket-observe" && config.basket_policy.empty() && config.paper_policy.empty() && i + 1 < argc) {
+                config.basket_policy = argv[++i];
+                if (config.basket_policy.string().starts_with("--")) { return 2; }
+            }
+            else if (std::string_view{argv[i]}.starts_with("--") || !config.paper_policy.empty() || !config.basket_policy.empty()) { return 2; }
             else { config.paper_policy = argv[i]; }
         }
         config.duration = std::chrono::seconds{seconds};

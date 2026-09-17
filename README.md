@@ -33,6 +33,13 @@ public REST only, exact native depth/fee sizing and explicit conditional settlem
 assumptions. It neither places orders nor adds basket fills to the existing paper
 simulation. See the implementation plan before starting another long capture.
 
+[Continuous basket observation](READONLY_CAPTURE.md#continuous-conditional-basket-observation)
+now records the feed and measures conditional margin episodes concurrently,
+including coverage and censored starts/ends. It shares the native cost kernel
+with REST screening and verifies the live trace against offline replay. Run
+`scripts/basket_observe.py` with the built engine/collector paths; the default
+30-minute window is an initial observation, not evidence of profitability.
+
 The completed v0.1 foundation establishes the venue-neutral core used by live,
 recorded, and synthetic event sources:
 

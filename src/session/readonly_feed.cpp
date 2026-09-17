@@ -65,7 +65,7 @@ FeedUpdate ReadOnlyFeed::accept(const journal::RawMarketRecord& record) {
     last_time_ = time;
     // Local simulation clock, never sent to the venue. May advance pending
     // responses during a disconnected interval without making books valid.
-    if (record.channel == "paper.clock.v1" && protocol_ != FeedProtocol::per_market_v1 &&
+    if ((record.channel == "paper.clock.v1" || record.channel == "basket.clock.v1") && protocol_ != FeedProtocol::per_market_v1 &&
         record.connection_generation == generation_ && generation_ != 0U && record.payload == "{}") { return {}; }
     if (record.channel == "ws.attempt.v1") {
         if (attempting_ || record.connection_generation <= generation_) {

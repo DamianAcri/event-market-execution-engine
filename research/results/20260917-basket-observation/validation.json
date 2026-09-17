@@ -1,0 +1,76 @@
+{
+  "base_commit": "2856a88",
+  "branch": "feat/basket-observation",
+  "checks": [
+    {
+      "elapsed_seconds": 21.3,
+      "failed": 0,
+      "passed": 46,
+      "suite": "CTest full Release"
+    },
+    {
+      "elapsed_seconds": 21.0,
+      "failed": 0,
+      "passed": 3,
+      "suite": "Final observer concurrency-metric correction; CTest basket_observation,basket_observe,capture_transport"
+    },
+    {
+      "diagnostics": 0,
+      "passed_checks": 31,
+      "suite": "Native observation ASAN/UBSAN"
+    },
+    {
+      "diagnostics": 0,
+      "passed_checks": 59,
+      "suite": "Shared basket sizing and REST ASAN/UBSAN"
+    },
+    {
+      "passed_tests": 17,
+      "suite": "Python runner"
+    },
+    {
+      "basket_scenarios": [
+        "quiet",
+        "sequence_gap",
+        "burst",
+        "policy_expiry_without_price_update",
+        "public_trades_with_shared_books"
+      ],
+      "invariant": "Only subscription and WebSocket protocol-control traffic; no order messages.",
+      "passed_scenarios": 28,
+      "suite": "Local TLS/WebSocket"
+    },
+    {
+      "elapsed_seconds": 0.1,
+      "failed": 0,
+      "passed": 1,
+      "suite": "Added CTest callback benchmark smoke"
+    },
+    {
+      "passed_tests": 17,
+      "suite": "Runner after operator progress messages"
+    }
+  ],
+  "compiler": "AppleClang 21, C++20; Release -O3 -DNDEBUG with strict warnings; sanitizer Debug -fsanitize=address,undefined -fno-omit-frame-pointer",
+  "current_ctest_entries_verified": 47,
+  "kind": "local_validation",
+  "limits": [
+    "Local macOS validation; remote Linux/Windows CI not run on this branch.",
+    "Synthetic transport timings or callback benchmarks do not measure network order execution.",
+    "No new live economic evidence or own-fill calibration is claimed."
+  ],
+  "network_scope": "Only local TLS/WebSocket fixture; no authenticated venue capture. Public-only preparation acceptance recorded separately.",
+  "platform": "macOS-26.5-arm64-arm-64bit",
+  "schema_version": 1,
+  "source_sha256": {
+    "include/eme/core/basket_sizing.hpp": "a8c46a941d293174d063bca2ef7c831f2ed1b94bdb0b8fef8904c7b4ca1865ca",
+    "include/eme/session/basket_observation.hpp": "d0f327581ecfae63e1b6cba57828c64fb78975d2f4c495ec49defa323ad476dc",
+    "scripts/basket_observe.py": "8d4a6069c1a4dc9f0eb70cb53c999872773a74b80862278a3d9b85e58143991d",
+    "src/core/basket_sizing.cpp": "2ed805ca5cb2240f1761d6b93752953c61cdd1c6eb358376af8995d1dd34d77c",
+    "src/session/basket_observation.cpp": "354d89a4682a068bb6237fd985139cb26e1fbb8dc1c9b6bedddc379abefab198",
+    "src/transport/readonly_capture.cpp": "7e6545477387239485142dfca350f833e32f4ce00851a569e1aec69b0c260fba",
+    "tests/basket_observation_tests.cpp": "a90938453788d760ac7cb5e05f47fb30952a53934e7271329abf0b02fb06c81d",
+    "tests/basket_observe_tests.py": "6f8fe593cc9c3ad2fa3a03c090041cd3013374bc3f0c50ea4a90d2da0367310b",
+    "tests/capture_transport_tests.py": "e476143deaed9556153376a6d436d1ab0e8f03e1b6901adf82c03a0eb0ef5e74"
+  }
+}

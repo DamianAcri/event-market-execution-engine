@@ -37,9 +37,43 @@ Fixed decisions for the initial strategy:
 - Low latency is part of each measured decision. New hardware, concurrency or
   model complexity requires evidence that it improves the relevant result.
 
-## Current research decision — 2026-09-17, after the economic capture
+## Continuous observation delivery — 2026-09-17
 
-**Local delivery update:** `feat/structural-basket-screen` implements the bounded
+Branch `feat/basket-observation` implements the tooling for step 3 below. The
+native basket cost kernel is shared by REST screening and a streaming
+`ReplayObserver`. The existing read-only collector records the feed and computes
+conditional quote episodes concurrently, then compares the live result with
+offline replay. Cache/dependency updates avoid reconstructing all books or
+parsing a screen JSON on every tick. No basket executor is introduced.
+
+The prospective runner registers the cohort, policy, collection window and source
+hashes before streaming. It retains zero-margin cohorts, reports missing depth,
+invalid-feed coverage and censored episodes, and does not sum shared-liquidity
+quotes as independent profits. Quiet books stay valid in a contiguous stream;
+policy expiry has its own deterministic clock. Full collection evidence over
+multiple expiries remains pending; implementing these tools does not complete
+the economic acceptance of step 3.
+
+Next operator action: one declared initial window using the
+[continuous observation command](READONLY_CAPTURE.md#continuous-conditional-basket-observation).
+Inspect coverage and distinct episodes before choosing additional active or
+near-resolution windows. Preserve later whole expiry cohorts for confirmation.
+The default 30-minute duration is a bounded initial collection, not a statistical
+sufficiency claim. No long live run is started during development.
+
+**Local verification:** all 47 current CTest entries pass (46-suite run plus
+the added callback benchmark smoke). The 28 local TLS/WebSocket
+scenarios include basket observation with quiet books, sequence gaps, bursts,
+public trades and policy expiry without a new price. Live and replay episode
+records match exactly. The final simultaneous-count correction passes its
+targeted rerun; 31 observer checks and 59 shared-sizing/REST checks also pass
+AddressSanitizer and UndefinedBehaviorSanitizer. Evidence is in
+[validation.json](research/results/20260917-basket-observation/validation.json).
+Remote portability CI for this branch remains pending.
+
+## Research decision — 2026-09-17, after the economic capture
+
+**Preceding delivery at `2856a88`:** `feat/structural-basket-screen` implements the bounded
 public preflight and native cost screen described in steps 1–2 below. Exact BTC
 source/terms/boundaries and ordinary/all-NO payoff arithmetic are checked;
 operative general-review outcomes remain unresolved, so every basket is explicitly
@@ -73,7 +107,8 @@ not millions of independent observations; both were hours from resolution.
 
 **Current workstream: certify and observe a small BTC range/threshold three-leg
 family, before implementing another execution policy.** Public preflight and
-conditional arithmetic are delivered; step 3 is next. This is a new payoff
+conditional arithmetic are delivered; step 3's tools are now delivered and its
+prospective evidence is next. This is a new payoff
 relationship, not merely more of the existing nested pairs. Research rationale,
 primary sources and the failed fresh-price example are in
 [ECONOMIC_STRATEGY_RESEARCH.md](ECONOMIC_STRATEGY_RESEARCH.md).

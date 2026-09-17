@@ -171,7 +171,7 @@ std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
             if (update.event == FeedEvent::public_trade) {
                 ++summary.public_trades;
                 const auto& trade = *update.trade;
-                after({summary.records, time, update.market_id, false, update.trade}, {},
+                after({summary.records, time, update.market_id, false, update.trade, record->observed_at.time_since_epoch().count()}, {},
                     {{"type", "public_trade"}, {"generation", record->connection_generation},
                      {"market_id", trade.market_id}, {"trade_id", trade.trade_id},
                      {"yes_price_1e4", trade.yes_price_1e4}, {"quantity_centicontracts", trade.quantity_centicontracts},
@@ -184,7 +184,7 @@ std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
             if (update.event == FeedEvent::invalidated) { ++summary.rejected_updates; }
             if (!applied) { ++summary.controls; }
             const auto events = update.market_id ? tracker.refresh(*update.market_id, state()) : tracker.refresh_all(state());
-            after({summary.records, time, update.market_id, applied}, events,
+            after({summary.records, time, update.market_id, applied, {}, record->observed_at.time_since_epoch().count()}, events,
                   {{"type", applied ? "market" : "feed_control"}, {"channel", record->channel},
                    {"generation", record->connection_generation}, {"status", update.reason}});
             ++summary.records;
@@ -197,7 +197,7 @@ std::variant<ReplaySummary, ReplayError> replay(const ReplayInput& input,
         if (!result || !market_id) { return ReplayError{"payload/metadata/connection rejected", summary.records}; }
         const bool applied = *result == book::BookUpdateResult::applied;
         if (!applied) { ++summary.rejected_updates; }
-        after({summary.records, time, market_id, applied}, tracker.refresh(*market_id, state()),
+        after({summary.records, time, market_id, applied, {}, record->observed_at.time_since_epoch().count()}, tracker.refresh(*market_id, state()),
             {{"type", "market"}, {"market_id", *market_id}, {"generation", record->connection_generation},
              {"sequence", record->sequence}, {"status", status(*result)}});
         ++summary.records;

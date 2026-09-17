@@ -1,9 +1,11 @@
 #include "cli/basket_screen.hpp"
+#include "eme/core/basket_sizing.hpp"
 #include "test_support.hpp"
 
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
+#include <limits>
 #include <stdexcept>
 #include <string>
 
@@ -166,6 +168,48 @@ void shared_budget_and_semantics(eme::test::Context& test) {
     input["baskets"][1]["lower_threshold_cents"] = 9999;
     rejection(test, input, "reusing a threshold market with different economic meaning is rejected");
 }
+
+void direct_core_contract(eme::test::Context& test) {
+    namespace core = eme::core;
+    using eme::test::price;
+    using eme::test::quantity;
+    std::array<core::BuyLevel, 2U> fractional{{{price(4000), quantity(50)}, {price(6000), quantity(150)}}};
+    std::array<core::BuyLevel, 1U> flat{{{price(5000), quantity(200)}}};
+    std::array<core::BuyDepth, 3U> depth{{{fractional, {0U, 10000U}}, {flat, {0U, 10000U}}, {flat, {0U, 10000U}}}};
+    core::SizingLimits limits{quantity(200), quantity(100), *core::Cash::from_raw(1000000000),
+        *core::Cash::from_raw(0), 100U};
+    const auto result = core::size_buy_basket(depth, limits);
+    test.expect(result.status == core::SizingStatus::optimal && result.quote &&
+        result.quote->quantity.raw() == 200 && result.quote->net_margin_micro == 900000 &&
+        result.one_contract_diagnostic && result.one_contract_diagnostic->net_margin_micro == 500000,
+        "shared core preserves fractional fills, full-grid optimum and signed single-contract diagnostic");
+    limits.max_evaluations = 1;
+    const auto incomplete = core::size_buy_basket(depth, limits);
+    test.expect(incomplete.status == core::SizingStatus::search_budget_exceeded && !incomplete.quote &&
+        incomplete.one_contract_diagnostic && incomplete.evaluated_quantities == 1,
+        "direct caller never receives the partial optimum after budget exhaustion");
+    limits.max_evaluations = 100;
+    limits.step = quantity(1);
+    test.expect(core::size_buy_basket(depth, limits).status == core::SizingStatus::invalid_input,
+        "core rejects unsupported order grid independently of JSON validation");
+    limits.step = quantity(100);
+    fractional[1].price = price(4000);
+    test.expect(core::size_buy_basket(depth, limits).status == core::SizingStatus::invalid_input,
+        "core independently rejects duplicate or nonascending acquisition levels");
+    fractional[1].price = price(6000);
+    fractional[0].quantity = quantity(0);
+    test.expect(core::size_buy_basket(depth, limits).status == core::SizingStatus::invalid_input,
+        "zero quantity is invalid input instead of silently creating phantom liquidity");
+    fractional[0].quantity = quantity(50);
+    depth[0].fees.coefficient_ppm = 1000001U;
+    test.expect(core::size_buy_basket(depth, limits).status == core::SizingStatus::invalid_input,
+        "shared core rejects unsupported fee coefficients");
+    depth[0].fees.coefficient_ppm = 0U;
+    flat[0].quantity = quantity(std::numeric_limits<std::int64_t>::max());
+    const auto large = core::size_buy_basket(depth, limits);
+    test.expect(large.status == core::SizingStatus::optimal && large.quote->net_margin_micro == 900000,
+        "bounded demand handles very large visible depth without intermediate overflow or mutation");
+}
 }  // namespace
 
 int main() {
@@ -173,5 +217,6 @@ int main() {
     costing(test);
     invalid_and_missing(test);
     shared_budget_and_semantics(test);
+    direct_core_contract(test);
     return test.result();
 }

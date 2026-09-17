@@ -1,0 +1,100 @@
+{
+  "artifact_sha256": {
+    "observation-plan.json": "20769dc0ddf8b0c3e952fa082b145d4caf818824a6ec3a19bd83c69bbfc45a84",
+    "observation-policy.json": "7930b696f0e63f0468360e95f02bac9f260510906a9f29e6d2e50519810015c0",
+    "preparation/qualification.json": "e4f9878972bde92b97e08d9283d82e2067dbfc87db930338b3a0b935e897d7bc",
+    "preparation/screen-input.json": "5c6bb9c71289910a395ee22de70c2bf8f3622a7f49181ccd96e53f32487f97c2",
+    "preparation/screen-output.json": "64f6538a67686af88d33c8314a3a889f1d3e1a84c466c7b3478877edd33039e4"
+  },
+  "authenticated_connection_started": false,
+  "credential_settings_path": "Intentionally nonexistent test path; prepare-only never calls loader.",
+  "kind": "public_preparation_acceptance",
+  "observation_plan": {
+    "analysis_role": "prospective_observation_not_confirmatory_profit_test",
+    "book_freshness": "contiguous shared stream; quiet books retained; ages reported",
+    "cohort_frozen_before_rest_books": true,
+    "collector_sha256": "a167e02c7d4fdfe28345cf376ed380ab27fc3afedf25b6b3fae0e83dd73f0238",
+    "confirmation_requirement": "Separate future expiries untouched by model changes; this single window is not economic confirmation.",
+    "confirmation_unit": "event_expiry_cohort; updates_and_shared_depth_are_not_independent_trials",
+    "duration_is_statistical_proof": false,
+    "hypothesis": "Positive costed three-leg conditional payoff bounds exist in this frozen cohort.",
+    "latest_permitted_end": "2026-09-17T15:33:01.025835+00:00",
+    "max_episode_events": 100000,
+    "metadata_sha256": "7f32b87caa2e7fa38d2db010cec5d7f115ff64a0f12390236e0bbeab722cfb5a",
+    "native_engine_sha256": "11ff85efccaa80da6b9bdc72c5694b139849d3edef66e20be1bba9e496ccfdb8",
+    "no_adaptive_parameter_changes": true,
+    "own_fills_or_profit_measured": false,
+    "planned_collection_start_not_before": "2026-09-17T14:53:01.848479+00:00",
+    "planned_duration_seconds": 1800,
+    "policy_frozen_before_stream": true,
+    "policy_sha256": "7930b696f0e63f0468360e95f02bac9f260510906a9f29e6d2e50519810015c0",
+    "preparation_provenance_sha256": "f4cb7148563d715a5c7b97b462aa8f05cbf8abd207793f92f27b9b7642851f37",
+    "qualification_sha256": "e4f9878972bde92b97e08d9283d82e2067dbfc87db930338b3a0b935e897d7bc",
+    "registered_at": "2026-09-17T14:53:01.848479+00:00",
+    "schema_version": 1,
+    "selection_policy": {
+      "description": "Nearest enclosing thresholds by cents; rotate ascending expiries; within expiry descending bottleneck pre-observation 24h volume, then minimum enclosure slack and stable key.",
+      "economic_optimality_claim": false,
+      "max_baskets": 20,
+      "max_markets": 64,
+      "ranking_uses_future_outcomes": false,
+      "ranking_uses_prices": false,
+      "version": "nearest-enclosing-expiry-round-robin-volume-v1"
+    },
+    "soft_storage_limit_mib": 256,
+    "source_modules_sha256": {
+      "basket_families.py": "006b929ebbc1193f367292886a7290dc386b0f59b9a6cdb5c6e9fe5ab38cb3b7",
+      "basket_observe.py": "040d57888cd800a65a43c151d96fe3c7fffa3540718bd9427e663b4f8b87136a",
+      "basket_research.py": "51f71916ba257510cc86096f45fa8c12f0acf2c760c5348aa51f40b29446e8a0",
+      "capture_readonly.py": "cda5412e1d1f2eaf43e8e73928c0ef3a2663b00dd0bd88398c5eb5afa4e0296d",
+      "economic_selection.py": "5eda47c978b1b3020212e7a594180593e8015ef4b093b6974ea537cdfbef3672",
+      "market_catalog.py": "9718bc07a69af9c460b96e361f6a138b13baf6a8915202b54e24d6d287d41160",
+      "market_families.py": "31d975c7b5b4e9618a1a7eed16e579888930a6abf7c770780c887263f8f7e849",
+      "public_pool.py": "8b357576a9bcbe00b694bc3d39441c625c103f5d9206e26ccd42b0eab6a32518",
+      "research_selection.py": "4fb97e28afb5e849fa483c51bfdc19cd03fdd162a31def01c8f94d88faa5ae23"
+    },
+    "storage_check_seconds": 5,
+    "storage_limit_can_overshoot": true,
+    "window_label": "public-preparation-acceptance"
+  },
+  "operator_result": {
+    "execution": "not_started",
+    "policy_prepared": true,
+    "reason": "prepare_only",
+    "simulated_fills": false,
+    "simulated_orders": 0,
+    "usable": false
+  },
+  "preparation": {
+    "continuous_observation": false,
+    "counts": {
+      "budget_exclusions_by_reason": {
+        "basket_budget": 106
+      },
+      "catalog_markets": 636,
+      "conditional_candidates": 126,
+      "exclusions_by_reason": {
+        "closes_before_capture_end": 374,
+        "unsupported_range_payoff": 6
+      },
+      "selected_baskets": 20,
+      "selected_markets": 46
+    },
+    "elapsed_seconds": 5.672762416,
+    "execution": "public_data_only",
+    "model": "conditional_common_scalar_observation_only",
+    "screen": {
+      "evaluated_quantities": 1800,
+      "positive_quotes": 0,
+      "solver_complete": true,
+      "status_counts": {
+        "no_depth": 2,
+        "no_positive_margin": 18
+      }
+    },
+    "simulated_orders": 0,
+    "state": "complete"
+  },
+  "schema_version": 1,
+  "subsequent_change": "Operator progress messages added after this public acceptance; runner tests rerun, no model/selection/transport change."
+}

@@ -1,6 +1,6 @@
 #include "cli/basket_screen.hpp"
 
-#include "eme/core/net_sizing.hpp"
+#include "eme/core/basket_sizing.hpp"
 #include "session/study_json.hpp"
 
 #include <algorithm>
@@ -30,46 +30,6 @@ struct Basket final {
     std::string key;
     std::array<MarketId, 3U> markets{};
 };
-struct Evaluation final {
-    std::int64_t quantity{}, notional{}, debit{}, reserve{}, margin{};
-    std::array<core::SizedLeg, 3U> legs;
-};
-
-// Completed price levels are charged once. The last (possibly fractional)
-// level is recomputed from that prefix for each whole-contract candidate, so
-// expanding q does not incorrectly split one assumed fill into several fills.
-struct CostCursor final {
-    core::BuyDepth depth;
-    std::size_t index{};
-    std::int64_t prefix_quantity{}, prefix_notional{}, prefix_debit{};
-    core::FeeAccumulator accumulator;
-
-    std::optional<core::SizedLeg> at(const std::int64_t quantity) {
-        while (index < depth.levels.size() &&
-               depth.levels[index].quantity.raw() < quantity - prefix_quantity) {
-            const auto& level = depth.levels[index];
-            const auto charge = core::charge_buy_fill(level.quantity, level.price, depth.fees, accumulator);
-            if (!charge) { return std::nullopt; }
-            prefix_quantity += level.quantity.raw();
-            prefix_notional += charge->notional.raw();
-            prefix_debit += charge->debit.raw();
-            ++index;
-        }
-        if (index == depth.levels.size()) { return std::nullopt; }
-        const auto& level = depth.levels[index];
-        auto partial_accumulator = accumulator;
-        const auto charge = core::charge_buy_fill(*core::Quantity::from_raw(quantity - prefix_quantity),
-            level.price, depth.fees, partial_accumulator);
-        // Order quantities are whole contracts; possible executions may be
-        // centicontract fragments. Reserve conservatively for that finer grid.
-        const auto reserve = core::buy_reservation(*core::Quantity::from_raw(quantity),
-            *core::Quantity::from_raw(1), level.price, depth.fees);
-        if (!charge || !reserve) { return std::nullopt; }
-        return core::SizedLeg{level.price, *core::Cash::from_raw(prefix_notional + charge->notional.raw()),
-            *core::Cash::from_raw(prefix_debit + charge->debit.raw()), *reserve};
-    }
-};
-
 std::uint32_t positive_id(const Json& row, const std::string_view field) {
     const auto id = detail::integer(row, field, std::numeric_limits<std::uint32_t>::max());
     if (id == 0U) { detail::invalid(std::string{field}); }
@@ -111,18 +71,35 @@ std::vector<core::BuyLevel> parse_bids(const Json& rows, std::size_t& total_leve
     return result;
 }
 
-Json quote_json(const Evaluation& value, const Basket& basket) {
+std::string_view status_name(const core::SizingStatus status) noexcept {
+    switch (status) {
+    case core::SizingStatus::optimal: return "optimal";
+    case core::SizingStatus::no_positive_margin: return "no_positive_margin";
+    case core::SizingStatus::no_depth: return "no_depth";
+    case core::SizingStatus::insufficient_cash: return "insufficient_cash";
+    case core::SizingStatus::search_budget_exceeded: return "search_budget_exceeded";
+    case core::SizingStatus::invalid_input: return "invalid_input";
+    case core::SizingStatus::arithmetic_error: return "arithmetic_error";
+    }
+    return "invalid_input";
+}
+
+Json quote_json(const core::SizedBasket& value, const Basket& basket) {
     Json legs = Json::array();
+    std::int64_t notional = 0, debit = 0, reserve = 0;
     for (std::size_t index = 0U; index < 3U; ++index) {
         const auto& leg = value.legs[index];
+        notional += leg.notional.raw();
+        debit += leg.debit.raw();
+        reserve += leg.reservation.raw();
         legs.push_back({{"market_id", basket.markets[index]}, {"outcome", index == 0U ? "yes" : "no"},
             {"limit_price_1e4", leg.limit.raw()}, {"notional_micro", leg.notional.raw()},
             {"debit_micro", leg.debit.raw()}, {"fees_and_rounding_micro", leg.debit.raw() - leg.notional.raw()},
             {"reservation_micro", leg.reservation.raw()}});
     }
-    return {{"quantity_centicontracts", value.quantity}, {"net_margin_micro", value.margin},
-        {"payout_floor_micro", value.quantity * 20'000}, {"notional_micro", value.notional},
-        {"debit_micro", value.debit}, {"reservation_micro", value.reserve}, {"legs", std::move(legs)}};
+    return {{"quantity_centicontracts", value.quantity.raw()}, {"net_margin_micro", value.net_margin_micro},
+        {"payout_floor_micro", value.payout_floor.raw()}, {"notional_micro", notional},
+        {"debit_micro", debit}, {"reservation_micro", reserve}, {"legs", std::move(legs)}};
 }
 
 Json screen(const Json& input) {
@@ -262,53 +239,28 @@ Json screen(const Json& input) {
             else if (available < quantity_step) { row["status"] = "no_depth"; }
             else if (evaluated == total_budget) { row["status"] = "screening_budget_exceeded"; complete = false; }
             else {
-                std::array<CostCursor, 3U> cursors;
+                std::array<core::BuyDepth, 3U> depth;
                 for (std::size_t index = 0U; index < 3U; ++index) {
                     const auto id = basket.markets[index];
-                    cursors[index].depth = {books.at(id).buys[index == 0U ? 0U : 1U], fees.at(id)};
+                    depth[index] = {books.at(id).buys[index == 0U ? 0U : 1U], fees.at(id)};
                 }
-                std::optional<Evaluation> best;
-                std::uint64_t row_evaluated = 0U;
-                bool funded = false, failed = false;
-                row["status"] = "no_positive_margin";
-                for (std::int64_t q = quantity_step; q <= available; q += quantity_step) {
-                    if (row_evaluated == row_budget || evaluated == total_budget) {
-                        row["status"] = "search_budget_exceeded";
-                        complete = false; failed = true; break;
-                    }
-                    ++row_evaluated;
-                    ++evaluated;
-                    Evaluation value;
-                    value.quantity = q;
-                    for (std::size_t index = 0U; index < 3U; ++index) {
-                        const auto leg = cursors[index].at(q);
-                        if (!leg) { failed = true; break; }
-                        value.legs[index] = *leg;
-                        value.notional += leg->notional.raw();
-                        value.debit += leg->debit.raw();
-                        value.reserve += leg->reservation.raw();
-                    }
-                    if (failed) { row["status"] = "arithmetic_error"; complete = false; break; }
-                    value.margin = q * 20'000 - value.debit;
-                    if (q == quantity_step) {
-                        auto diagnostic = quote_json(value, basket);
-                        diagnostic["gross_margin_micro"] = q * 20'000 - value.notional;
-                        diagnostic["funded"] = value.reserve <= cash;
-                        row["one_contract_diagnostic"] = std::move(diagnostic);
-                    }
-                    // Reserve is monotone in q and worst consumed price. An
-                    // unfunded candidate proves all following sizes unfunded.
-                    if (value.reserve > cash) { break; }
-                    funded = true;
-                    if (value.margin > margin_threshold && (!best || value.margin > best->margin ||
-                        (value.margin == best->margin && (value.reserve < best->reserve ||
-                            (value.reserve == best->reserve && q < best->quantity))))) {
-                        best = value;
-                    }
+                const core::SizingLimits limits{*core::Quantity::from_raw(cap), *core::Quantity::from_raw(quantity_step),
+                    *core::Cash::from_raw(cash), *core::Cash::from_raw(margin_threshold),
+                    std::min(row_budget, total_budget - evaluated)};
+                const auto result = core::size_buy_basket(depth, limits);
+                evaluated += result.evaluated_quantities;
+                row["evaluated_quantities"] = result.evaluated_quantities;
+                row["status"] = status_name(result.status);
+                if (result.one_contract_diagnostic) {
+                    auto diagnostic = quote_json(*result.one_contract_diagnostic, basket);
+                    diagnostic["gross_margin_micro"] = result.one_contract_diagnostic->payout_floor.raw() -
+                        diagnostic.at("notional_micro").get<std::int64_t>();
+                    diagnostic["funded"] = diagnostic.at("reservation_micro").get<std::int64_t>() <= cash;
+                    row["one_contract_diagnostic"] = std::move(diagnostic);
                 }
-                row["evaluated_quantities"] = row_evaluated;
-                if (!failed && best) { row["status"] = "optimal"; row["quote"] = quote_json(*best, basket); ++positive; }
-                else if (!failed && !funded) { row["status"] = "insufficient_cash"; }
+                if (result.quote) { row["quote"] = quote_json(*result.quote, basket); ++positive; }
+                if (result.status == core::SizingStatus::search_budget_exceeded || result.status == core::SizingStatus::invalid_input ||
+                    result.status == core::SizingStatus::arithmetic_error) { complete = false; }
             }
         }
         const auto status = row.at("status").get<std::string>();

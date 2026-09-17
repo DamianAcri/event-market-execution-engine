@@ -60,6 +60,41 @@ covers consecutive length-delimited and chunked responses. The
 are retained as such, not silently replaced. `benchmarks/public_read_benchmark.py`
 requires an explicit `--network` option; without it, it only emits the frozen plan.
 
+### Continuous basket observer — 2026-09-17
+
+The REST screen's allocation-free three-leg sizing kernel now lives in `eme_core`
+and also serves the streaming observer. All eight retained REST benchmark
+outputs remain byte-identical after extraction; see
+[parity evidence](benchmarks/results/20260917-basket-observation/rest-core-extraction-parity.json).
+Changed books rebuild their cached acquisition depth once; a precompiled
+market-to-basket index selects the affected calculations. Unchanged public trades
+do not reprice books. Positive quote changes stay in one episode and avoid
+per-update JSONL writes.
+
+[Native callback measurements](benchmarks/results/20260917-basket-observation/native-callbacks.json)
+use eight levels per side, whole quantities 1–100, one warmup and nine batches
+of 200 callbacks on the recorded Apple M2 Pro Release build:
+
+| Basket calculations affected by one update | Median batch mean |
+|---|---:|
+| One basket | 4.239 µs |
+| Five of 100 baskets | 21.422 µs |
+| All 100 baskets sharing the changed leg | 438.656 µs |
+
+Each batch verifies dependency/quantity counts, deterministic results and economic
+parity with an untimed full rescreen. The public-trade-only callback benchmark
+measured about 25 ns, including clock overhead, but that tiny bookkeeping path
+excludes trade decoding and transport and must not be presented as message latency.
+
+These are `before` + `after` observer callbacks only. Book mutation, payload
+parsing, socket work, setup, reporting and network/order latency are excluded.
+Sparse episode-opening/closing costs occur outside the timed steady-positive
+batches. The workloads differ in affected fanout; this is not a before/after
+speedup ratio or a tail-latency guarantee. Full live runs separately record
+book-update, decision-callback, receive-callback-to-decisions and timer-lateness
+histograms with fixed storage. No CPU-specific intrinsics or tuning flags were
+introduced; other deployment machines still need their own measurements.
+
 ### Research-to-experiment mapping
 
 | Source | Applicable idea | Experiment and constraint |
