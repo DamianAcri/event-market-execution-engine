@@ -2,7 +2,7 @@
 """Bounded market-data recording; no order endpoints or account operations.
 
 Python 3.9+, curl, and the optional compiled eme-capture target are required.
-Contract selection is restricted to the reviewed BTC above-threshold family.
+Certified relationships are BTC thresholds; optional NFL coverage is observation only.
 """
 import argparse
 import datetime as dt
@@ -18,6 +18,9 @@ import shutil
 import subprocess
 import sys
 import time
+from urllib.parse import urlencode
+
+from research_selection import NFL_TERMS, select_research
 
 REPO = Path(__file__).resolve().parents[1]
 API = 'https://external-api.kalshi.com/trade-api/v2/'
@@ -47,6 +50,33 @@ def public_get(url):
     if result.returncode or len(result.stdout) > 16 * 1024 * 1024:
         raise OperatorError('No se pudo obtener la fuente publica; no se ha iniciado la captura.')
     return result.stdout
+
+
+def archive_markets(root, ticker, sources, max_pages=20):
+    """Complete bounded public listing; repeated cursors/duplicates fail closed."""
+    markets, cursor, seen_cursors, seen_tickers = [], '', set(), set()
+    for page in range(max_pages):
+        query = {'series_ticker': ticker, 'status': 'open', 'limit': 1000}
+        if cursor:
+            query['cursor'] = cursor
+        url = API + 'markets?' + urlencode(query)
+        filename = ticker + '-markets-page-' + str(page + 1) + '.json'
+        content = public_get(url)
+        (root / filename).write_bytes(content)
+        sources[filename] = {'url': url, 'sha256': hashlib.sha256(content).hexdigest()}
+        data = json.loads(content)
+        for market in data['markets']:
+            if market['ticker'] in seen_tickers:
+                raise OperatorError('Listado cambiante o duplicado; repite la preparacion.')
+            seen_tickers.add(market['ticker'])
+            markets.append(market)
+        cursor = data.get('cursor', '')
+        if not cursor:
+            return {'markets': markets, 'cursor': ''}
+        if not isinstance(cursor, str) or cursor in seen_cursors:
+            raise OperatorError('Paginacion publica repetida o no valida.')
+        seen_cursors.add(cursor)
+    raise OperatorError('La lista supera el limite de paginas; no se inicia una cobertura incompleta.')
 
 
 def select_metadata(public, series, now, seconds, count=8):
@@ -103,6 +133,8 @@ def select_metadata(public, series, now, seconds, count=8):
 
 def paper_policy(metadata):
     """Frozen starting scenario, not fitted parameters or measured exchange fills."""
+    certified = {value for constraint in metadata['constraints']
+                 for key, value in constraint['relationship'].items() if key in ('antecedent', 'consequent', 'left', 'right')}
     return {
         'schema_version': 4, 'strategy': 'residual_exit_v4',
         'fee_provenance': 'General taker 0.07; selected series quadratic multiplier 1 is checked. '
@@ -114,7 +146,7 @@ def paper_policy(metadata):
         'leg_latency_ns': [100000000, 100000000], 'reject_legs': [False, False],
         'available_liquidity_bps': 10000, 'max_sizing_evaluations': 100000,
         'fees': [{'market_id': market['id'], 'coefficient_ppm': 70000,
-                  'balance_quantum_micro': 10000} for market in metadata['markets']],
+                  'balance_quantum_micro': 10000} for market in metadata['markets'] if market['id'] in certified],
         'lifecycle': {'execution_policy': 'parallel_hold', 'first_leg': 0,
                       'response_latency_ns': [100000000, 100000000],
                       'completion_timeout_ns': 5000000000, 'completion_loss_limit_micro_usd': 0,
@@ -155,49 +187,100 @@ def main():
     parser.add_argument('--settings', type=Path, default=SETTINGS)
     parser.add_argument('--output', type=Path, default=REPO / 'captures')
     parser.add_argument('--paper', action='store_true', help='Live local IOC simulation plus recording; never submits orders')
+    parser.add_argument('--profile', choices=['baseline', 'research'], default='baseline')
+    parser.add_argument('--public-trades', action='store_true', help='Record public trades; implied by research profile')
+    parser.add_argument('--btc-events', type=int, default=2)
+    parser.add_argument('--btc-per-event', type=int, default=16)
+    parser.add_argument('--nfl-markets', type=int, default=16)
+    parser.add_argument('--max-mib', type=int, default=1024, help='Soft storage stop, checked every 5 seconds; can overshoot')
     parser.add_argument('--prepare-only', action='store_true', help='Public metadata only; no credential access or WS connection')
     args = parser.parse_args()
     if not 1 <= args.seconds <= 10800:
         raise OperatorError('La duracion debe estar entre 1 y 10800 segundos.')
+    if not 32 <= args.max_mib <= 2048:
+        raise OperatorError('El limite de almacenamiento debe estar entre 32 y 2048 MiB.')
+    if args.profile == 'research' and (not 1 <= args.btc_events <= 4 or not 2 <= args.btc_per_event <= 32 or
+            args.nfl_markets not in [0, *range(4, 33)] or args.btc_events * args.btc_per_event + args.nfl_markets > 64):
+        raise OperatorError('Presupuesto de investigacion no valido; maximo 64 mercados.')
+    args.public_trades = args.public_trades or args.profile == 'research'
     if not args.prepare_only and not args.binary.is_file():
         raise OperatorError('Falta el binario eme-capture; consulta READONLY_CAPTURE.md.')
     os.umask(0o077)
     now = dt.datetime.now(dt.timezone.utc)
-    root = args.output.resolve() / now.strftime('btc-%Y%m%dT%H%M%S.%fZ')
+    root = args.output.resolve() / now.strftime(args.profile + '-%Y%m%dT%H%M%S.%fZ')
     root.mkdir(parents=True, mode=0o700)
     print('Preparando captura en: ' + str(root), flush=True)
     sources = {}
-    for filename, url in [('public-markets.json', API + 'markets?series_ticker=KXBTCD&status=open&limit=1000'),
-                          ('public-series.json', API + 'series/KXBTCD'), ('BTC.pdf', TERMS)]:
+    public = archive_markets(root, 'KXBTCD', sources)
+    write_json(root / 'public-markets.json', public)
+    for filename, url in [('public-series.json', API + 'series/KXBTCD'), ('BTC.pdf', TERMS)]:
         content = public_get(url)
         (root / filename).write_bytes(content)
         sources[filename] = {'url': url, 'sha256': hashlib.sha256(content).hexdigest()}
     if sources['BTC.pdf']['sha256'] != TERMS_SHA256:
         raise OperatorError('Ha cambiado el documento de reglas de BTC; hace falta revisarlo antes de capturar.')
-    public = json.loads((root / 'public-markets.json').read_text())
     series = json.loads((root / 'public-series.json').read_text())['series']
-    metadata, selected = select_metadata(public, series, now, args.seconds)
+    if args.profile == 'research':
+        nfl = {}
+        if args.nfl_markets:
+            for ticker, (url, expected_hash) in NFL_TERMS.items():
+                series_content = public_get(API + 'series/' + ticker)
+                filename = ticker + '-series.json'
+                (root / filename).write_bytes(series_content)
+                sources[filename] = {'url': API + 'series/' + ticker, 'sha256': hashlib.sha256(series_content).hexdigest()}
+                sport = json.loads(series_content)['series']
+                if sport['ticker'] != ticker or sport['contract_terms_url'] != url:
+                    raise OperatorError('Han cambiado las condiciones NFL; revisar antes de observar.')
+                terms = public_get(url)
+                filename = ticker + '-terms.pdf'
+                (root / filename).write_bytes(terms)
+                sources[filename] = {'url': url, 'sha256': hashlib.sha256(terms).hexdigest()}
+                if sources[filename]['sha256'] != expected_hash:
+                    raise OperatorError('Han cambiado las reglas NFL; revisar antes de observar.')
+                nfl[ticker] = archive_markets(root, ticker, sources)
+        selected_at = dt.datetime.now(dt.timezone.utc)
+        metadata, selected, coverage = select_research(public, series, selected_at, args.seconds,
+            select_metadata, OperatorError, args.btc_events, args.btc_per_event, args.nfl_markets, nfl)
+    else:
+        selected_at = dt.datetime.now(dt.timezone.utc)
+        metadata, selected = select_metadata(public, series, selected_at, args.seconds)
+        coverage = {'profile': 'baseline', 'selected_markets': len(selected),
+                    'certified_relationships': len(metadata['constraints']), 'observation_only_markets': 0,
+                    'selection_method': 'Eight thresholds nearest public midpoint 0.5 in the earliest eligible BTC event; frozen before capture. Not an optimal-market claim.'}
+    write_json(root / 'coverage.json', coverage)
     write_json(root / 'metadata.json', metadata)
     write_json(root / 'selection.json', selected)
     if args.paper:
         write_json(root / 'paper-policy.json', paper_policy(metadata))
     write_json(root / 'provenance.json', {
-        'started_at': now.isoformat(), 'duration_seconds': args.seconds, 'sources': sources,
-        'selection': 'Eight thresholds nearest public midpoint 0.5 in the earliest event closing after duration + 10 minutes; frozen before capture.',
+        'preparation_started_at': now.isoformat(), 'selection_frozen_at': selected_at.isoformat(), 'duration_seconds': args.seconds, 'sources': sources,
+        'selection': coverage['selection_method'], 'profile': args.profile,
+        'public_trades': args.public_trades, 'soft_storage_limit_mib': args.max_mib,
+        'selection_sha256': hashlib.sha256((root / 'selection.json').read_bytes()).hexdigest(),
+        'coverage_sha256': hashlib.sha256((root / 'coverage.json').read_bytes()).hexdigest(),
+        'selector_sha256': hashlib.sha256(Path(__file__).with_name('research_selection.py').read_bytes()).hexdigest(),
         'execution': 'live_paper_no_orders_sent' if args.paper else 'market_data_only',
         'policy_sha256': hashlib.sha256((root / 'paper-policy.json').read_bytes()).hexdigest() if args.paper else None, 'runner_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'binary_sha256': hashlib.sha256(args.binary.read_bytes()).hexdigest() if args.binary.is_file() else None})
-    print('Seleccion: 8 mercados, 28 relaciones; cierre ' + selected[0]['close_time'], flush=True)
+    print('Seleccion: ' + str(len(selected)) + ' mercados, ' + str(len(metadata['constraints'])) +
+          ' relaciones BTC verificadas; ' + str(coverage['observation_only_markets']) + ' mercados solo de observacion.', flush=True)
+    if args.public_trades:
+        print('Se registran libros y operaciones publicas. Las operaciones publicas no son ejecuciones nuestras.', flush=True)
     if args.prepare_only:
         print('Metadatos preparados. No se ha abierto ninguna conexion autenticada.')
         return 0
     if shutil.disk_usage(root).free < 3 * 1024**3:
         raise OperatorError('Se necesitan al menos 3 GiB libres para empezar.')
+    deadline = dt.datetime.now(dt.timezone.utc) + dt.timedelta(seconds=args.seconds + 600)
+    if any(dt.datetime.fromisoformat(m['close_time'].replace('Z', '+00:00')) <= deadline for m in selected):
+        raise OperatorError('La preparacion ha consumido el margen de cierre; repite la seleccion.')
     environment = os.environ.copy()
     environment.update(credentials(args.settings))
     command = [str(args.binary.resolve()), str(root / 'metadata.json'), str(root / 'session'), str(args.seconds), 'production']
     if args.paper:
         command.append(str(root / 'paper-policy.json'))
+    if args.public_trades:
+        command.append('--public-trades')
     print(('Grabando y simulando en vivo' if args.paper else 'Grabando solo datos') + ' durante ' + str(args.seconds) + ' segundos. Ctrl+C detiene y finaliza.', flush=True)
     if args.paper:
         print('Capital ficticio: 1000 USD; maximo 100 contratos por intento; retrasos supuestos de 100 ms. Ninguna orden se envia.', flush=True)
@@ -211,7 +294,7 @@ def main():
             except subprocess.TimeoutExpired:
                 elapsed = int(time.monotonic() - started)
                 size = sum(path.stat().st_size for path in (root / 'session').glob('*') if path.is_file()) if (root / 'session').exists() else 0
-                if stopped is None and (size > 2 * 1024**3 or shutil.disk_usage(root).free < 1024**3):
+                if stopped is None and (size > args.max_mib * 1024**2 or shutil.disk_usage(root).free < 1024**3):
                     stopped = 'storage_limit'
                     stop_time = time.monotonic()
                     child.terminate()
@@ -233,6 +316,7 @@ def main():
     try:
         raw = json.loads(output)
         result = {key: raw[key] for key in ('finalized', 'market_updates', 'connections', 'reason')}
+        result['public_trades'] = raw.get('public_trades', 0)
     except (ValueError, KeyError):
         result = {'finalized': False, 'reason': 'collector_failed'}
     if args.paper:

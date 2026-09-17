@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 import threading
 import time
+import sys
 
 
 def main():
@@ -77,13 +78,15 @@ def main():
             sock.sendall(header + payload)
 
         import importlib.util
+        sys.path.insert(0, str(Path(__file__).parents[1] / 'scripts'))
         spec = importlib.util.spec_from_file_location('runner', Path(__file__).parents[1] / 'scripts/capture_readonly.py')
         runner = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(runner)
         paper_path = root / 'paper-policy.json'
         params = runner.paper_policy(json.loads(Path(args.metadata).read_text()))
         passed = 0
-        for scenario in ('untrusted', 'hostname', 'normal', 'empty_sides', 'reconnect', 'gap', 'duplicate', 'subscription_error', 'malformed', 'auth', 'idle', 'snapshot_timeout', 'handshake_timeout', 'oversize', 'overflow', 'paper_quiet', 'paper_partial', 'paper_disconnect', 'paper_eof', 'paper_burst'):
+        for scenario in ('untrusted', 'hostname', 'normal', 'empty_sides', 'reconnect', 'gap', 'duplicate', 'subscription_error', 'malformed', 'auth', 'idle', 'snapshot_timeout', 'handshake_timeout', 'oversize', 'overflow', 'paper_quiet', 'paper_partial', 'paper_disconnect', 'paper_eof', 'paper_burst', 'paper_trades', 'trade_gap', 'trade_ack_timeout'):
+            trades_enabled = scenario in ('paper_trades', 'trade_gap', 'trade_ack_timeout')
             errors, wire_messages, headers_seen, pong_seen = [], [], [], []
             listener = socket.socket()
             listener.bind(('127.0.0.1', 0))
@@ -125,13 +128,18 @@ def main():
                             accept = base64.b64encode(hashlib.sha1((headers['sec-websocket-key'] + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').encode()).digest())
                             sock.sendall(b'HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + accept + b'\r\n\r\n')
                             commands = []
-                            for _ in range(1):
+                            for command_index in range(2 if trades_enabled else 1):
                                 opcode, payload = read_frame(sock)
                                 assert opcode == 1
                                 command = json.loads(payload)
                                 assert command['cmd'] == 'subscribe'
-                                assert command['params']['use_yes_price'] is True
-                                assert command['params']['channels'] == ['orderbook_delta']
+                                assert command['id'] == command_index + 1
+                                if command_index == 0:
+                                    assert command['params']['use_yes_price'] is True
+                                    assert command['params']['channels'] == ['orderbook_delta']
+                                else:
+                                    assert 'use_yes_price' not in command['params']
+                                    assert command['params']['channels'] == ['trade']
                                 assert command['params']['market_tickers'] == selected_tickers
                                 commands.append(command)
                             def send_message(message, fragment=False):
@@ -149,7 +157,23 @@ def main():
                                 else:
                                     send_frame(sock, payload)
                             for command in reversed(commands):
-                                send_message({'type': 'subscribed', 'id': command['id'], 'msg': {'channel': 'orderbook_delta', 'sid': 10 + command['id']}})
+                                if scenario != 'trade_ack_timeout' or command['id'] == 1:
+                                    send_message({'type': 'subscribed', 'id': command['id'], 'msg': {'channel': command['params']['channels'][0], 'sid': 10 + command['id']}})
+                            def send_trade(seq, ticker, *, block=None, millis=True):
+                                message = {'type': 'trade', 'sid': 12, 'seq': seq, 'msg': {
+                                    'trade_id': 'fixture-' + str(seq), 'market_ticker': ticker,
+                                    'yes_price_dollars': '0.2400', 'no_price_dollars': '0.7600',
+                                    'count_fp': '1.25', 'taker_side': 'no', 'taker_outcome_side': 'no',
+                                    'taker_book_side': 'ask', 'ts': 1760000000}}
+                                if millis:
+                                    message['msg']['ts_ms'] = 1760000000123
+                                if block is not None:
+                                    message['msg']['is_block_trade'] = block
+                                send_message(message)
+                            if scenario in ('paper_trades', 'trade_gap'):
+                                # Trade sequencing is independent of book seq=40;
+                                # observation is valid before any book snapshot.
+                                send_trade(700, selected_tickers[0], block=False)
                             if scenario == 'subscription_error':
                                 send_message({'type': 'error', 'sid': 11, 'seq': 1, 'msg': {'code': 25}})
                             elif scenario == 'snapshot_timeout':
@@ -162,16 +186,28 @@ def main():
                                         'msg': {'market_ticker': ticker,
                                                 'yes_dollars_fp': [['0.5000' if market_index == 0 else '0.7000', '5.00']],
                                                 'no_dollars_fp': [['0.6000' if market_index == 0 else '0.8000', '5.00']]}}, fragment=scenario == 'normal')
+                                    if scenario == 'paper_trades' and market_index == 0:
+                                        send_trade(701, selected_tickers[1], block=True)
                                 if scenario == 'malformed':
                                     send_frame(sock, '{"type":')
                                 elif scenario == 'oversize':
                                     send_frame(sock, ' ' * (1024 * 1024 + 1))
                                 elif scenario == 'overflow':
                                     send_message({'type': 'ignored', 'padding': 'x' * 8192})
+                                elif scenario == 'trade_gap':
+                                    send_trade(702, selected_tickers[0])
+                                elif scenario == 'trade_ack_timeout':
+                                    # Valid books and transport heartbeats cannot
+                                    # hide the missing trade-channel acknowledgement.
+                                    for _ in range(13):
+                                        send_frame(sock, b'heartbeat', opcode=9)
+                                        time.sleep(0.15)
                                 else:
                                     send_message({'type': 'orderbook_delta', 'sid': 11,
                                         'seq': 44 if scenario in ('gap', 'reconnect') and attempt == 0 else 41 if scenario == 'duplicate' else 42,
                                         'msg': {'market_ticker': commands[0]['params']['market_tickers'][0], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
+                                    if scenario == 'paper_trades':
+                                        send_trade(702, selected_tickers[0], millis=False)
                             if scenario == 'paper_disconnect':
                                 send_message({'type': 'orderbook_delta', 'sid': 11, 'seq': 100,
                                     'msg': {'market_ticker': selected_tickers[0], 'side': 'yes', 'price_dollars': '0.5000', 'delta_fp': '1.00'}})
@@ -200,7 +236,7 @@ def main():
                             except (EOFError, ConnectionError, ssl.SSLError):
                                 pass
                 except (ConnectionError, ssl.SSLError):
-                    if scenario not in ('oversize', 'overflow', 'snapshot_timeout', 'untrusted', 'hostname'):
+                    if scenario not in ('oversize', 'overflow', 'snapshot_timeout', 'trade_ack_timeout', 'untrusted', 'hostname'):
                         errors.append('unexpected disconnect')
                 except Exception as error:
                     errors.append(repr(error))
@@ -233,6 +269,22 @@ def main():
                 transcripts = [subprocess.run([args.engine, 'session', 'replay', str(output_dir), str(output_dir / 'replay.json')],
                                               capture_output=True, text=True, check=True).stdout for _ in range(2)]
                 assert transcripts[0] == transcripts[1], 'replay must be byte-identical'
+                plan = json.loads((output_dir / 'replay.json').read_text())
+                assert plan['schema_version'] == (4 if trades_enabled else 3), (scenario, plan)
+                replay_lines = [json.loads(line) for line in transcripts[0].splitlines()]
+                observed_trades = [line for line in replay_lines if line['type'] == 'public_trade']
+                assert len(observed_trades) == summary['public_trades'], (scenario, summary, observed_trades)
+                if scenario in ('paper_trades', 'trade_gap'):
+                    expected = [(700, 1, False, 1760000000123)]
+                    if scenario == 'paper_trades':
+                        expected += [(701, 2, True, 1760000000123), (702, 1, None, 1760000000000)]
+                    assert len(observed_trades) == len(expected), (scenario, observed_trades)
+                    for trade, (seq, market, block, timestamp) in zip(observed_trades, expected):
+                        assert {name: trade[name] for name in ('trade_id', 'market_id', 'yes_price_1e4',
+                            'quantity_centicontracts', 'taker_side', 'exchange_time_ms', 'is_block_trade', 'candidates')} == {
+                            'trade_id': 'fixture-' + str(seq), 'market_id': market, 'yes_price_1e4': 2400,
+                            'quantity_centicontracts': 125, 'taker_side': 'no', 'exchange_time_ms': timestamp,
+                            'is_block_trade': block, 'candidates': []}, trade
                 raw_journal = (output_dir / 'market.journal').read_bytes()
                 for header in headers_seen:
                     assert header['kalshi-access-signature'].encode() not in raw_journal
@@ -249,11 +301,13 @@ def main():
                 assert summary['reason'] == 'authentication_rejected', summary
             if scenario == 'reconnect':
                 assert summary['market_updates'] == 5, summary
-            if scenario in ('gap', 'duplicate', 'malformed', 'subscription_error'):
+            if scenario in ('gap', 'duplicate', 'malformed', 'subscription_error', 'trade_gap'):
                 assert summary['reason'] == 'feed_invalidated', summary
+            if scenario == 'trade_gap':
+                assert summary['market_updates'] == 2 and summary['public_trades'] == 1, summary
             if scenario == 'idle':
                 assert summary['reason'] == 'idle_timeout', summary
-            if scenario == 'snapshot_timeout':
+            if scenario in ('snapshot_timeout', 'trade_ack_timeout'):
                 assert summary['reason'] == 'snapshot_timeout', summary
             if scenario == 'handshake_timeout':
                 assert summary['reason'] == 'connect_timeout', summary
@@ -262,7 +316,7 @@ def main():
             if scenario.startswith('paper_'):
                 paper = json.loads((output_dir / 'paper-summary.json').read_text())
                 assert paper['live_replay_equal'] is True and paper['attempts'] == 1, (scenario, paper)
-                if scenario in ('paper_quiet', 'paper_burst'):
+                if scenario in ('paper_quiet', 'paper_burst', 'paper_trades'):
                     assert paper['completed_pairs'] == 1 and paper['lifecycle']['unknown_orders'] == 0, paper
                     assert paper['lifecycle']['simulated_net_pnl_micro_usd'] is None, paper
                 if scenario == 'paper_partial':
@@ -273,6 +327,22 @@ def main():
                     assert paper['lifecycle']['unknown_orders'] == 2 and paper['lifecycle']['reserved_micro_usd'] > 0, paper
                 if scenario == 'paper_burst':
                     assert summary['market_updates'] == 2003, summary
+                if scenario == 'paper_trades':
+                    assert summary['market_updates'] == 3 and summary['public_trades'] == 3, summary
+                    # Independently compare the economic records; timestamps and
+                    # all execution quantities must match, not just final totals.
+                    def economic_trace(path):
+                        records = []
+                        for line in path.read_text().splitlines():
+                            record = json.loads(line)
+                            if record['type'] in ('paper_status', 'paper_timing', 'study_start'):
+                                continue
+                            if record['type'] == 'study_complete':
+                                record.pop('manifest_sha256', None)
+                                record.pop('plan_sha256', None)
+                            records.append(record)
+                        return records
+                    assert economic_trace(output_dir / 'paper.jsonl') == economic_trace(output_dir / 'paper-replay.jsonl')
                 assert paper['receive_callback_to_decisions']['samples'] == summary['market_updates'], paper
             passed += 1
             print('PASS', scenario, summary, flush=True)

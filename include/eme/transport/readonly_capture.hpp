@@ -24,12 +24,14 @@ struct CaptureConfig final {
     std::size_t maximum_connections{8U};
     session::CaptureQueueLimits queue;
     bool synthetic{};
+    bool public_trades{};
 };
 struct CaptureResult final {
     bool finalized{};
     std::uint64_t market_updates{};
     std::uint64_t connections{};
     std::string reason;
+    std::uint64_t public_trades{};
 };
 [[nodiscard]] CaptureResult capture_readonly(
     const CaptureConfig&, const gateway::kalshi::MetadataSnapshot&);

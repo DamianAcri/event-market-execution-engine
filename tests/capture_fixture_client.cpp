@@ -22,10 +22,12 @@ int main(int argc, char** argv) {
     config.handshake_timeout = std::chrono::milliseconds{1500};
     config.retry_delay = std::chrono::milliseconds{50};
     config.synthetic = true;
+    const std::string_view scenario{argv[8]};
+    config.public_trades = scenario == "paper_trades" || scenario == "trade_gap" || scenario == "trade_ack_timeout";
     if (argc == 10) { config.paper_policy = argv[9]; }
-    if (std::string_view{argv[8]} == "overflow") { config.queue.retained_bytes = 4096U; }
+    if (scenario == "overflow") { config.queue.retained_bytes = 4096U; }
     const auto result = transport::capture_readonly(config, metadata);
     std::cout << session::detail::Json{{"finalized", result.finalized}, {"market_updates", result.market_updates},
-        {"connections", result.connections}, {"reason", result.reason}}.dump() << '\n';
+        {"public_trades", result.public_trades}, {"connections", result.connections}, {"reason", result.reason}}.dump() << '\n';
     return 0;
 }

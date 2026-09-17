@@ -24,8 +24,8 @@ std::optional<std::string> environment(const char* name) {
 
 int main(const int argc, const char* const argv[]) {
     using namespace eme;
-    if ((argc != 5 && argc != 6) || (std::string_view{argv[4]} != "production" && std::string_view{argv[4]} != "demo")) {
-        std::cerr << "Usage: eme-capture <metadata.json> <new-directory> <seconds 1..86400> <production|demo> [paper-policy.json]\n"
+    if (argc < 5 || argc > 7 || (std::string_view{argv[4]} != "production" && std::string_view{argv[4]} != "demo")) {
+        std::cerr << "Usage: eme-capture <metadata.json> <new-directory> <seconds 1..86400> <production|demo> [paper-policy.json] [--public-trades]\n"
                   << "Configure EME_KALSHI_KEY_ID and EME_KALSHI_PRIVATE_KEY_PATH. Read-only market data.\n";
         return 2;
     }
@@ -46,13 +46,17 @@ int main(const int argc, const char* const argv[]) {
         config.private_key = *key_file;
         if (const auto ca = environment("EME_KALSHI_CA_FILE")) { config.ca_file = *ca; }
         config.directory = argv[2];
-        if (argc == 6) { config.paper_policy = argv[5]; }
+        for (int i = 5; i < argc; ++i) {
+            if (std::string_view{argv[i]} == "--public-trades" && !config.public_trades) { config.public_trades = true; }
+            else if (std::string_view{argv[i]}.starts_with("--") || !config.paper_policy.empty()) { return 2; }
+            else { config.paper_policy = argv[i]; }
+        }
         config.duration = std::chrono::seconds{seconds};
         const auto root = session::detail::Json::parse(metadata.canonical_json());
         for (const auto& market : root["markets"]) { config.markets.push_back(market.at("id").get<market::MarketId>()); }
         const auto result = transport::capture_readonly(config, metadata);
         std::cout << session::detail::Json{{"finalized", result.finalized}, {"market_updates", result.market_updates},
-            {"connections", result.connections}, {"reason", result.reason}}.dump() << '\n';
+            {"connections", result.connections}, {"reason", result.reason}, {"public_trades", result.public_trades}}.dump() << '\n';
         return result.finalized && (result.reason == "duration" || result.reason == "operator_stop") ? 0 : 1;
     } catch (...) { std::cerr << "Capture configuration could not be loaded.\n"; return 2; }
 }

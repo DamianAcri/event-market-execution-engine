@@ -699,3 +699,45 @@ I/O on the decision thread. Timers are rearmed only when the earliest outstandin
 simulated deadline changes. [LIVE_PAPER.md](LIVE_PAPER.md) defines the clocks,
 percentile rounding and uncalibrated execution assumptions. Re-measure on the
 actual deployment host and on representative active sessions before specializing.
+
+
+## Precompiled paper dependencies — 2026-09-17
+
+Immutable market dependencies and two-leg order are now compiled once per study.
+The previous implementation allocated and sorted these on every relevant update.
+Constraint-ID priority and all policy parameters are unchanged. No native CPU
+flags, platform-specific SIMD, new dependency or concurrency change was added.
+
+A reproducible synthetic workload has 48 markets, two groups of 16 related
+thresholds (240 implications), 16 observation-only markets and 30,000 updates.
+Books reject every acquisition on cost, so this measures the common rejection
+path and full replay/serialization, not order completion. Generate it with:
+
+```sh
+python3 scripts/make_coverage_benchmark.py out/coverage-bench
+event-engine session import out/coverage-bench/metadata.json out/coverage-bench/capture.json out/coverage-bench/session
+eme_study_benchmarks out/coverage-bench/session out/coverage-bench/session/replay.json out/coverage-bench/policy.json 9
+```
+
+On the existing Apple M2 / AppleClang 21 arm64 Release build (`-O3 -DNDEBUG`),
+three alternating before/after pairs each used three warmups and nine measured
+runs. Baseline was the executable at `ed47c7c`; candidate includes the public-trade
+adapter as well as dependency precompilation. Median of per-run p50 study times:
+
+| Workload | Before | After | Reduction |
+|---|---:|---:|---:|
+| Synthetic full study | 179.294 ms | 167.638 ms | 6.50% |
+
+All six output digests are `10353883350594503574`. Raw CSVs and the report are in
+[benchmarks/results/20260917-coverage](benchmarks/results/20260917-coverage).
+An initial equivalent workload using archived public identifiers also showed a
+small improvement; the committed generator removes that external-input dependency.
+This is one host and workload, not a portable tail-latency guarantee or evidence
+of more profitable trading. Low sample counts do not establish robust p99 tails.
+
+The original two-hour observed session (1,947,001 updates) was also studied by
+both executables. The complete 279,261,400-byte transcripts matched SHA-256
+`81e4fdbdc05577432e2c2d458aca365f7fa44a80d56e60cd43c4db22a5c56fd9`.
+Duplicate generated transcripts were removed after comparison; the original
+capture and the compact parity report are retained. The change does not create
+opportunities that were absent from that recording.

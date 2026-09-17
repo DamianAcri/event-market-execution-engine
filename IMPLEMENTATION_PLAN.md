@@ -1,6 +1,6 @@
 # Implementation plan
 
-Updated: 2026-09-16. This is the **single execution plan** for the project: priorities,
+Updated: 2026-09-17. This is the **single execution plan** for the project: priorities,
 dependencies, current status and acceptance criteria are maintained here.
 [PROJECT_DIRECTION.md](PROJECT_DIRECTION.md) defines the product objective;
 [ARCHITECTURE.md](ARCHITECTURE.md) defines component boundaries. Research documents
@@ -119,6 +119,55 @@ follows from synthetic cases.
 its measured comparison before starting another major strategy feature.
 
 ### P2 — Opportunity supply and read-only capture
+
+**Current decision, 2026-09-17 — locally implemented and tested:** the two-hour capture
+`btc-20260916T183127.659551Z` contains 1,947,001 updates, eight BTC markets in one
+event and 28 implications. Replay and an independent reconstruction found zero
+positive gross opportunities in those pairs, including relaxed freshness and
+fractional sizing checks. No paper orders were generated. This identifies a
+coverage question; it does not establish returns for other events or policies.
+
+The next delivery is `feat/research-market-coverage`, extending the existing
+capture/replay and aggressive paper path:
+
+1. Add a frozen `research` selection: up to two BTC events with 16 evenly spaced
+   strike ranks per event, including tails, plus up to 16 NFL observation markets.
+   This is a bounded sample of up to 48 markets, not an economic optimum. Keep
+   BTC implications within the same reviewed event and resolution rules.
+2. Archive paginated public inputs and their hashes; write `coverage.json` with
+   selected/excluded markets and certified versus observation-only coverage.
+   NFL winner/spread terms allow fractional and discretionary fair-price payouts.
+   A tie alone does not break the proposed payoff floor, but the Boolean oracle
+   cannot represent it and no joint guarantee covers the exceptional payouts.
+   NFL therefore contributes observations, not certified paper trades.
+3. Record public trades on a separate subscription and replay them as observations,
+   preserving direction, price, quantity and block status. They neither mutate
+   books nor create simulated fills. Validate sequence handling and interleaving,
+   legacy replay compatibility, reconnects and live/replay accounting agreement.
+4. Precompile immutable dependency and leg ordering once. Require equivalent
+   decisions and measured performance before reporting an optimization result.
+
+Local Release validation passes all 35 CTest entries (including 23 TLS scenarios).
+Focused feed/study/paper/residual tests pass ASan and UBSan; leak detection is not
+supported by this macOS sanitizer runtime. The old two-hour study is byte-identical,
+and the reproducible benchmark shows a 6.50% median study-time reduction on this
+host; see [PERFORMANCE.md](PERFORMANCE.md). A 30-second authenticated read-only
+preflight finalized 48 initial books on one connection with identical paper/replay
+accounting. It received no deltas or public trades, so real trade-stream sequencing
+and representative economic observations remain unverified. No remote CI or merge
+claim is made by this local validation.
+The research-to-decision mapping and primary sources are in the dated update to
+[ECONOMIC_STRATEGY_RESEARCH.md](ECONOMIC_STRATEGY_RESEARCH.md).
+
+**Next gate:** after capture/replay acceptance and sufficient usable trade/book
+observations, define one bounded passive-versus-aggressive experiment in P3.
+Specify arrival latency, queue ahead, uncertain cancellations, block exclusion,
+fees, adverse selection and residual exposure; avoid counting trade/delta volume
+twice. Aggregate depth and public trades cannot identify our exact hypothetical
+queue position. Freeze assumptions and limits before using reserved later whole
+events/dates; run sensitivity checks and disclose exclusions. The two-hour session
+already inspected is exploratory data, not a holdout. Passive fills, optimal
+universe selection and joint capital allocation are not delivered by this branch.
 
 **Status, 2026-09-15:** optional authenticated read-only TLS/WS transport,
 strict one-market subscription controller, reconnect/recovery, bounded background

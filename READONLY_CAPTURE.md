@@ -65,6 +65,68 @@ serves controller validation and the existing normalization/sequence checks. The
 maximum reassembled text message is 1 MiB. Binary/oversized messages terminate the
 generation; they are recorded as transport failures, not accepted book data.
 
+## Research coverage and public trades (2026-09-17)
+
+The runner retains `--profile baseline` for the original eight-market BTC sample.
+`--profile research` prepares two eligible BTC events, up to sixteen thresholds
+per event, plus up to sixteen NFL winner/spread markets for **observation only**.
+Use `--btc-events`, `--btc-per-event` and `--nfl-markets` to set explicit budgets;
+the requested total must not exceed 64. `--nfl-markets 0` disables sports.
+BTC strikes are sampled at evenly spaced ranks, including both tails. This
+provides coverage across strikes; it is not a profitability ranking. Events must
+remain open for the requested duration plus ten minutes. NFL groups are ordered
+by expected expiration, not by a verified live-game state. The sample stays fixed
+throughout the run; it does not scan every market or resubscribe dynamically.
+
+```sh
+python3 scripts/capture_readonly.py --profile research --paper --seconds 7200 --max-mib 1024
+```
+
+`--prepare-only` downloads public metadata without opening credentials or an
+authenticated connection. The runner archives every REST page, series terms and
+hashes, and rejects incomplete/looping pagination or duplicate tickers. BTC and
+NFL terms must match reviewed hashes. `selection.json` stores the chosen contracts;
+`coverage.json` lists selected/excluded counts, roles and limitations. Terms and
+selection are fixed before recording. NFL contracts have no certified constraints
+or paper fee entries: exceptional discretionary settlements do not have an
+established cross-contract payoff lower bound. See
+[the research decision](ECONOMIC_STRATEGY_RESEARCH.md).
+
+Research mode implies `--public-trades`, which can also be used with the baseline.
+The native CLI accepts `[paper-policy.json] [--public-trades]` after the venue.
+It sends a separate `trade` subscription for the same explicit tickers; no trade
+subscription requests account fills or order endpoints. Book and trade streams
+have independent subscription IDs and sequence checks. Readiness requires both
+acknowledgements and initial books. A trade gap or malformed message terminates
+the generation conservatively; reconnect requires fresh books. Sequence scope
+must be revalidated if the venue protocol changes. The official
+[AsyncAPI schema](https://docs.kalshi.com/asyncapi.yaml) defines sequence numbers
+for detecting missing messages, including the trade payload.
+
+Replay plan schema 4 records this dual-channel contract. Schemas 1–3 keep their
+old interpretation and output. Normalized `public_trade` events preserve the
+trade ID, YES price, fractional quantity, exchange milliseconds, taker outcome
+and optional block-trade status. Original wire fields stay in the journal.
+`ts_ms` is preferred; deprecated `ts` is accepted, with agreement checked if both
+exist. Trades advance the causal clock but do not change book quantities, book
+freshness, candidate prices or paper fill attribution. Trade IDs are not globally
+deduplicated across reconnects; consumers must not count raw events as unique
+fills without accounting for that boundary. `is_block_trade` absent is unknown,
+not false. See [Public Trades](https://docs.kalshi.com/websockets/public-trades)
+and [order direction](https://docs.kalshi.com/getting_started/order_direction).
+
+The current paper strategy still uses simulated IOC arrivals. Recording public
+trades does **not** implement passive orders, queue position or measured network
+order latency. A future queue simulator must handle unknown cancellation position,
+block trades, duplicate observations, and trade/book double counting explicitly.
+
+Storage uses the existing raw binary journal plus small metadata/JSONL sidecars.
+`--max-mib` defaults to 1024 MiB and requests a graceful stop when exceeded; the
+five-second check and finalization can overshoot. It is a soft stop, not an exact
+byte quota or a promise about two-hour size. An early stop is labeled in
+`result.json`; a finalized partial window remains censored. No compression or
+new external dependency was introduced.
+
 ## Controller history and replay
 
 The collector persists raw text messages and controller actions into the existing
@@ -89,7 +151,7 @@ that unchanged sequence. This differs explicitly from legacy market-only records
 where envelope and payload sequences must agree. Binary framing stays schema 2;
 versioned channel names and replay-plan schema select interpretation.
 
-An acknowledgement must match the only sent command and identify the requested
+An acknowledgement must match a sent command and identify the requested
 channel. A first snapshot establishes each selected market. Every following
 snapshot or delta advances the common stream sequence by exactly one. Duplicate
 acks, extra snapshots, gaps, unknown markets/subscriptions, malformed messages or
@@ -234,7 +296,7 @@ user's home directory, containing `EME_KALSHI_KEY_ID` and
 as data, never sources a shell, never prints their values, and never reads the
 private-key contents itself. The collector consumes the key internally.
 
-Public preflight archives the current BTC series, market definitions and contract
+In the baseline profile, public preflight archives the current BTC series, market definitions and contract
 PDF. The PDF hash must match the version reviewed on 2026-09-16. Selection requires
 the exact reviewed above-threshold rule, same event/time/secondary conditions,
 $1 notional and standard series fees. Eight thresholds nearest midpoint 0.5 are
@@ -243,11 +305,12 @@ relation is used. The earliest eligible event must stay open for the requested
 window plus ten minutes. A changed contract, partial listing or incompatible rule
 stops preparation. `--prepare-only` does not load credentials or open WebSockets.
 
-Artifacts go to a new `captures/btc-<UTC timestamp>/` directory, ignored by Git:
+Artifacts go to a new `captures/<profile>-<UTC timestamp>/` directory, ignored by Git:
 public sources, metadata, selection, provenance and binary/script hashes, result,
 and the original finalized session. The default duration is two hours (maximum
 three). The process reports disk usage each minute; Ctrl+C requests finalization.
-A 2 GiB journal budget and 1 GiB free-space floor request early termination.
+The configurable soft storage budget (default 1024 MiB) and 1 GiB free-space
+floor request early termination, with possible overshoot during the five-second check.
 Keep the computer awake and connected. A partial capture is diagnostic data, not
 a completed window; never delete it merely because the process failed.
 
@@ -277,3 +340,15 @@ See [LIVE_PAPER.md](LIVE_PAPER.md) for exact assumptions and output files. Live
 and replay economic traces are compared after collection, without writing a
 second verbose per-tick transcript. Credentials and capture-only defaults are
 unchanged.
+
+
+## Coverage preflight, 2026-09-17
+
+The research profile prepared 48 markets: two BTC events with 16 sampled strikes
+each and 240 within-event implications, plus 16 observation-only NFL markets.
+A 30-second authenticated run finalized on one connection with all 48 snapshots,
+no deltas/trades, zero simulated orders and exact live/replay accounting. Both
+subscriptions were acknowledged. This validates setup and initial-book handling;
+it does not validate actual trade-stream sequence behavior or economic activity.
+Synthetic fixtures cover interleaved trades, independent sequence gaps and a
+missing trade acknowledgement. Longer observations remain operator-run.

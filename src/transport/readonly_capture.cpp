@@ -76,7 +76,8 @@ struct Connection final {
 class Runner final {
 public:
     Runner(const CaptureConfig& config, const gateway::kalshi::MetadataSnapshot& metadata)
-        : config_{config}, metadata_{metadata}, feed_{metadata.markets(), config.markets, session::FeedProtocol::shared_subscription_v1},
+        : config_{config}, metadata_{metadata}, feed_{metadata.markets(), config.markets, config.public_trades
+            ? session::FeedProtocol::book_and_trades_v1 : session::FeedProtocol::shared_subscription_v1},
           context_{ssl::context::tls_client}, key_{load_key(config.private_key)},
           duration_{io_}, health_{io_}, retry_{io_}, paper_timer_{io_}, signals_{io_, SIGINT, SIGTERM} {
         if (config.duration.count() <= 0 || config.duration > std::chrono::hours{24} ||
@@ -125,7 +126,7 @@ public:
         if (!std::holds_alternative<session::SessionManifest>(finalized)) { return {false, updates_, generation_, "finalization_failure"}; }
         const auto fingerprint = session::detail::fingerprint_file(config_.directory / session::manifest_filename);
         if (!std::holds_alternative<session::ArtifactFingerprint>(fingerprint)) { return {false, updates_, generation_, "manifest_read_failure"}; }
-        const auto plan = Json{{"schema_version", 3U}, {"source_kind", config_.synthetic ? "synthetic" : "observed_ws"},
+        const auto plan = Json{{"schema_version", config_.public_trades ? 4U : 3U}, {"source_kind", config_.synthetic ? "synthetic" : "observed_ws"},
             {"provenance", config_.synthetic ? "local TLS/WebSocket fixture" : "Kalshi read-only WS capture; shared subscription sequence"},
             {"manifest_sha256", std::get<session::ArtifactFingerprint>(fingerprint).sha256},
             {"use_yes_price", true}, {"markets", config_.markets}}.dump();
@@ -141,7 +142,7 @@ public:
         if (simulation_ && !verify_paper(std::get<session::ReplayInput>(input))) {
             return {true, updates_, generation_, "paper_replay_mismatch"};
         }
-        return {true, updates_, generation_, reason_};
+        return {true, updates_, generation_, reason_, public_trades_};
     }
 private:
     bool current(const std::shared_ptr<Connection>& connection) const { return !done_ && connection_ == connection; }
@@ -165,9 +166,10 @@ private:
                 return false;
             }
             if (update.event == session::FeedEvent::market) { ++updates_; }
+            if (update.event == session::FeedEvent::public_trade) { ++public_trades_; }
             if (simulation_ && !paper_failed_) {
                 const auto before_decision = Clock::now();
-                simulation_->after({records_, last_time_, update.market_id, update.event == session::FeedEvent::market}, {}, feed_.state());
+                simulation_->after({records_, last_time_, update.market_id, update.event == session::FeedEvent::market, update.trade}, {}, feed_.state());
                 const auto ended = Clock::now();
                 if (update.event == session::FeedEvent::market) {
                     book_latency_.observe(std::chrono::duration_cast<std::chrono::nanoseconds>(after_book - before_book).count());
@@ -291,7 +293,7 @@ private:
             if (connection_ && connection_->opened) {
                 const auto now = Clock::now();
                 if (now - connection_->last_receive >= config_.idle_timeout) { failed("idle_timeout"); }
-                else if (feed_.state().valid_book_count() < config_.markets.size() && now - connection_->opened_at >= config_.handshake_timeout) {
+                else if (!feed_.ready() && now - connection_->opened_at >= config_.handshake_timeout) {
                     failed("snapshot_timeout");
                 }
             }
@@ -404,6 +406,7 @@ private:
     std::uint64_t records_{};
     Clock::time_point last_status_{Clock::now()};
     PaperLatency book_latency_, decision_latency_, processing_latency_, timer_lateness_;
+    std::uint64_t public_trades_{};
     bool paper_failed_{};
     std::uint64_t generation_{}, updates_{};
     bool done_{}, storage_failed_{};

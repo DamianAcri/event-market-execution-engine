@@ -22,7 +22,8 @@ archives public definitions and the policy without reading credentials or openin
 an authenticated connection. Omitting `--paper` preserves capture-only behavior.
 
 The existing storage guard now counts every file in the session directory. It
-requests termination above 2 GiB or below 1 GiB free, checked every five seconds;
+requests termination above the configurable `--max-mib` budget (default 1024 MiB)
+or below 1 GiB free, checked every five seconds;
 this is not a hard byte cap. It requires 3 GiB free initially. Sessions accumulate.
 
 ## Fixed first scenario
@@ -33,7 +34,7 @@ execution. They are archived and hashed; no tuning happens during the session.
 
 | Parameter | Value |
 |---|---|
-| Selection | Existing reviewed BTC threshold family; eight markets, 28 implications, one event |
+| Selection | Baseline: eight BTC markets / 28 implications. Research profile: multiple BTC events plus NFL observation only; exact coverage archived. |
 | Capital | USD 1,000 of fictional cash; no account balance lookup |
 | Sizing | Existing exact funded net-profit sizing, whole contracts, maximum 100 per leg |
 | Admission | Strictly positive costed margin; one attempt per constraint per session |
@@ -59,7 +60,7 @@ replenish simulated consumed liquidity. These existing restrictions are preserve
 
 ## What is saved
 
-Within the printed `captures/btc-<UTC>/session/` directory:
+Within the printed `captures/<profile>-<UTC>/session/` directory:
 
 | File | Purpose |
 |---|---|

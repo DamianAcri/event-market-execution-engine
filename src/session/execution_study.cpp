@@ -71,7 +71,19 @@ struct LifecycleEvent final {
 class Simulation final : public ExecutionSimulation {
 public:
     Simulation(const gateway::kalshi::MetadataSnapshot& metadata, Policy policy, std::ostream& output)
-        : metadata_{metadata}, policy_{std::move(policy)}, output_{output}, available_{policy_.capital} {
+        : policy_{std::move(policy)}, output_{output}, available_{policy_.capital} {
+        // Session metadata and policy are immutable. Compile the original ID
+        // priority and leg ordering once, not on every book update.
+        for (const auto id : metadata.constraints().sorted_ids()) {
+            auto legs = metadata.constraints().find(id)->guaranteed_leg_templates;
+            if (legs.size() != 2U) { detail::invalid("unsupported portfolio"); }
+            std::sort(legs.begin(), legs.end(), [](const auto& a, const auto& b) { return a.market_id < b.market_id; });
+            if (policy_.lifecycle && policy_.lifecycle->reverse_legs) { std::swap(legs[0U], legs[1U]); }
+            compiled_legs_.emplace(id, std::array{legs[0U], legs[1U]});
+            for (const auto market : metadata.constraints().find(id)->dependent_markets) {
+                ordered_dependencies_[market].push_back(id);
+            }
+        }
         if (policy_.lifecycle) {
             const auto per_attempt = policy_.lifecycle->sequential ? 1U + policy_.lifecycle->maximum_completion_orders : 2U;
             const auto bound = metadata.constraints().size() * static_cast<std::size_t>(per_attempt + (policy_.residual_exit ? 1U : 0U));
@@ -92,10 +104,9 @@ public:
                const market::MarketState& state) override {
         if (frame.market_id && frame.applied) { last_update_[*frame.market_id] = frame.time_ns; }
         if (!frame.market_id || !frame.applied) { return; }
-        auto dependencies = metadata_.constraints().dependencies(*frame.market_id);
-        std::vector<constraint::ConstraintId> ordered(dependencies.begin(), dependencies.end());
-        std::sort(ordered.begin(), ordered.end());
-        for (const auto id : ordered) {
+        const auto dependencies = ordered_dependencies_.find(*frame.market_id);
+        if (dependencies == ordered_dependencies_.end()) { return; }
+        for (const auto id : dependencies->second) {
             if (!attempted_.contains(id)) { decide(id, frame, state); }
         }
     }
@@ -372,12 +383,7 @@ private:
     }
     void decide(const constraint::ConstraintId id, const ReplayFrame& frame, const market::MarketState& state) {
         ++evaluated_;
-        const auto& compiled = *metadata_.constraints().find(id);
-        auto templates = compiled.guaranteed_leg_templates;
-        if (templates.size() != 2U) { detail::invalid("unsupported portfolio"); }
-        std::sort(templates.begin(), templates.end(), [](const auto& a, const auto& b) { return a.market_id < b.market_id; });
-        if (policy_.lifecycle && policy_.lifecycle->reverse_legs) { std::swap(templates[0U], templates[1U]); }
-        const std::array<constraint::PayoffLegTemplate, 2U> legs{templates[0U], templates[1U]};
+        const auto& legs = compiled_legs_.at(id);
         if (!fresh(legs[0U], frame.time_ns, state) || !fresh(legs[1U], frame.time_ns, state)) { decline("stale_or_missing_book"); return; }
         if (policy_.lifecycle && (settled_markets_.contains(legs[0U].market_id) || settled_markets_.contains(legs[1U].market_id))) {
             decline("settled_market"); return;
@@ -614,7 +620,8 @@ private:
         }
     }
 
-    const gateway::kalshi::MetadataSnapshot& metadata_;
+    std::map<constraint::ConstraintId, std::array<constraint::PayoffLegTemplate, 2U>> compiled_legs_;
+    std::map<market::MarketId, std::vector<constraint::ConstraintId>> ordered_dependencies_;
     Policy policy_;
     std::ostream& output_;
     std::int64_t available_{};

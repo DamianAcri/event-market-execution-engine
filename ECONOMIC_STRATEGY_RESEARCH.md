@@ -1,10 +1,22 @@
 # Investigación aplicada: encontrar, dimensionar y capturar margen
 
-Fecha de revisión: 15 de septiembre de 2026. Proyecto: Event Market Execution Engine (Calci). Investigación y propuestas; las funcionalidades existentes se identifican expresamente.
+Revisión base: 15 de septiembre de 2026. Actualización: 17 de septiembre de 2026. Proyecto: Event Market Execution Engine (Calci). Investigación y propuestas; las funcionalidades existentes se identifican expresamente.
 
 **Plan vigente:** [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) mantiene el orden, estado y criterios de ejecución. Este documento conserva la investigación y sus propuestas; las extensiones solo se incorporan bajo las condiciones del plan.
 
-## Decisión que resulta de esta revisión
+## Actualización aplicada — 17 de septiembre de 2026
+
+La captura de dos horas de `btc-20260916T183127.659551Z` registró 1.947.001 actualizaciones en ocho mercados de un evento BTC, con 28 implicaciones. El replay y la reconstrucción independiente no encontraron margen bruto positivo en esas parejas, incluso al relajar frescura y cantidades enteras; no hubo órdenes simuladas ni beneficio. El resultado limita esa muestra y política: no mide el universo de Kalshi ni demuestra que aumentar velocidad o capital hubiera creado oportunidades.
+
+**Decisión actual, implementada y probada localmente:** ampliar observaciones antes de ajustar la estrategia. El perfil `research` selecciona hasta dos eventos BTC y 16 rangos de strike uniformemente espaciados por evento, incluidos los extremos; añade hasta 16 mercados NFL para observación. Son hasta 48 mercados estáticos, con límites operativos explícitos, no una selección que maximice ingresos. La paginación pública, los archivos originales con hashes y `coverage.json` deben hacer visibles selección, exclusiones y relaciones admitidas. La política y selección se fijan antes de capturar; las pruebas locales y un preflight autenticado de 30 segundos pasan, pero este último solo recibió los 48 libros iniciales. La recepción de trades reales y la evaluación económica representativa siguen pendientes.
+
+La literatura determina qué hipótesis merece observarse y qué supuestos hay que comprobar. Saguillo apoya buscar relaciones y revisar su semántica; Cheng, Yang y Zou motiva observar ganador/margen y fases del evento, sin trasladar resultados NBA/Polymarket a NFL/Kalshi.[^saguillo][^nba] Los términos NFL revisados incluyen empate a 0,50 y liquidaciones excepcionales a precio justo discrecional. El empate por sí solo conserva el mínimo de ganador-YES más spread-positivo-NO —paga 1,50—, pero nuestro oráculo booleano no representa ese estado. Tampoco hemos establecido una garantía conjunta para los pagos discrecionales. **NFL queda fuera de las restricciones certificadas y de las operaciones simuladas de esta entrega**; admitirlo requiere modelar y justificar esos pagos, no solo emparejar títulos.[^nflwinner][^nflspread]
+
+Capturar operaciones públicas junto al libro prepara la comparación de ejecución pasiva y agresiva estudiada por Cont y Kukanov; no implementa su optimizador ni acredita nuestras ejecuciones.[^cont] Huang, Lehalle y Rosenbaum explican que los cambios agregados de cola no identifican qué orden se canceló y que ciertos supuestos pueden sobreestimar fills.[^queue] Por ello los trades observados conservan su dirección, precio y condición de bloque; no alteran por sí mismos el libro ni producen fills simulados. Los bloques se negocian fuera del libro. No se atribuirá dos veces el mismo consumo a un trade y a su delta.[^trades]
+
+El siguiente experimento pasivo solo se abre tras validar captura/replay y disponer de flujo suficiente para evaluar sus supuestos. Debe declarar cola inicial, latencia, tratamiento de cancelaciones, comisiones, selección adversa y exposición de patas; comparar con la referencia agresiva a iguales límites y mostrar sensibilidad. Los eventos/fechas posteriores reservados no se usan para ajustar parámetros. Siguen pendientes selección económica óptima del universo, asignación conjunta de capital y calibración de fills. La precompilación de dependencias y patas conserva la salida de la captura original de dos horas; en el benchmark reproducible de 48 mercados reduce un 6,50 % la mediana del tiempo del estudio en este M2. Es una medición de ingeniería, no de ingresos; véase [PERFORMANCE.md](PERFORMANCE.md).
+
+## Decisión de la revisión base — 15 de septiembre de 2026
 
 La siguiente etapa debe mejorar **qué operaciones elige el motor, cuánto compra y cómo completa la cartera**. La base de arbitraje estructural sigue siendo una hipótesis razonable: adquirir posiciones cuyo pago mínimo conjunto supere su coste completo. Su rentabilidad en Kalshi permanece **indeterminada**. La revisión no convierte esa incertidumbre en una previsión de pérdidas ni en una promesa de beneficios.
 
@@ -253,7 +265,12 @@ La ejecución nueva de esta revisión consiste en los cinco estudios sintéticos
 
 ## Fuentes
 
-Fuentes primarias consultadas el 14–15 de septiembre de 2026. Las secciones fijan el alcance utilizado; acceso al texto completo no implica reproducción de sus resultados.
+Fuentes de la revisión base consultadas el 14–15 de septiembre de 2026; las añadidas en la actualización se consultaron el 17. Las secciones fijan el alcance utilizado; acceso al texto completo no implica reproducción de sus resultados.
+
+[^nflwinner]: Kalshi. [FOOTBALLGAMEWIN](https://assets.kalshi.com/contract_terms/FOOTBALLGAMEWIN.pdf). Términos archivados el 17 de septiembre de 2026, SHA-256 `19578b71cd63da63cc2894c60542ef06bb5de56b9366add56f07cee645cfca4b`: empate, suspensión, aplazamiento, forfeit y cambios de sede.
+[^nflspread]: Kalshi. [FOOTBALLSPREAD](https://assets.kalshi.com/contract_terms/FOOTBALLSPREAD.pdf). Términos archivados el 17 de septiembre de 2026, SHA-256 `1daaea87a853adcb485bdb80fb8bd5c5fa7c831d8e237f7446bc16ea43705f5a`: márgenes, prórrogas y liquidaciones excepcionales.
+[^queue]: Weibing Huang, Charles-Albert Lehalle y Mathieu Rosenbaum. [Simulating and analyzing order book data: The queue-reactive model](https://arxiv.org/html/1312.0563). Versión de autores, v2, 2014; Lehalle afiliado a Capital Fund Management. Sección 2.5: prioridad, cancelaciones y límite informativo sin identificadores de órdenes. Modelo de renta variable, no calibración de Kalshi.
+[^trades]: Kalshi. [Public Trades](https://docs.kalshi.com/websockets/public-trades), [Order direction](https://docs.kalshi.com/getting_started/order_direction) y [AsyncAPI](https://docs.kalshi.com/asyncapi.yaml), consultados el 17 de septiembre de 2026. `tradePayload`, `sequenceNumber` y `is_block_trade`; dirección del taker y precios expresados en YES.
 
 [^saguillo]: Oriol Saguillo, Vahid Ghafouri, Lucianna Kiffer y Guillermo Suarez-Tangil. [Unravelling the Probabilistic Forest: Arbitrage in Prediction Markets](https://arxiv.org/html/2508.03474v1). Preprint, 2025, v1. Secciones 4–7: búsqueda, reconstrucción y atribución.
 [^executable]: Jonas Gebele, Timm Mutzel y Florian Matthes. [Executable Arbitrage and Market Efficiency in Prediction Markets](https://arxiv.org/html/2608.00666v1). Preprint, agosto de 2026, v1. Secciones 4–7 y apéndice A: paneles, imputaciones y mecanismos.
