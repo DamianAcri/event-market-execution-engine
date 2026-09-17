@@ -1,0 +1,31 @@
+{
+  "authenticated_requests": false,
+  "baseline_git_commit": "7f04390e734f592ba6584fcb29bb84db5164e8bd",
+  "capture": "basket-observe-20260917T145824.308090Z",
+  "compile_flags": [
+    "-std=c++20",
+    "-O3",
+    "-DNDEBUG",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wconversion",
+    "-Wshadow",
+    "-Werror"
+  ],
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+  "dependencies_installed": false,
+  "deterministic_full_replay_repeat_equal": true,
+  "macos_sdk": "MacOSX26.5.sdk",
+  "production_runtime_changed": false,
+  "repeat_seconds": 5.909181375,
+  "sha256": {
+    "eme_core": "41733dd16df7cd307f59a36d20692dc36a5a2635284c00a67467b46dc2f74daf",
+    "eme_kalshi_gateway": "a8496a61dfbef1797b1bb4e867244929f8b2cd2b85ebc3d38918a53cd1d5811f",
+    "eme_session": "f8ba6ba7da37532c8c18b7b1f2309440fcaf41497e9bada210e682a2defb0fda",
+    "research_binary": "eecf51aba8e4cb8751cd85cbaa1c1f8505e85863c292f542a66cabc7274334ab",
+    "research_source": "03394c3dc773b0344a3c2f970cb09539d68ca9393e3e2eceaf08ccbbbb9e7525"
+  },
+  "strict_compile_passed": true,
+  "timings_are_not_live_latency_benchmarks": true
+}

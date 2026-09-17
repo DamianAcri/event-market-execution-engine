@@ -37,7 +37,49 @@ Fixed decisions for the initial strategy:
 - Low latency is part of each measured decision. New hardware, concurrency or
   model complexity requires evidence that it improves the relevant result.
 
-## Continuous observation delivery — 2026-09-17
+## Current decision — 2026-09-17, after interrupted observation and size research
+
+The initial observation was attempted and is **not accepted as a complete
+window**: host sleep interrupted receipt and the policy expired. See the
+[capture audit](research/results/20260917-basket-live/README.md). The runner now
+detects long scheduling gaps, but the old observer's integrated duration counters
+do not certify uninterrupted coverage. No automatic repeat capture is scheduled.
+
+The [all-size diagnostic](research/results/20260917-economic-frontier/README.md)
+reproduces the original 24,054,100 correlated quantity checks, with no positive
+all-taker margin at sizes 1–100. Hypothetical one-passive-leg quotes can be
+positive, but their best examples have little or no public-trade support; the
+largest assumes a 12-cent fill while the ask is 98 cents. This is an execution
+feasibility question, not demonstrated profit or a reason to deploy a maker bot.
+
+**Next deliverable: a bounded offline passive-entry feasibility probe**, using
+the same conditional baskets and aggressive acquisition as the control.
+This is an explicit research subgate before step 4's executor decision below;
+it does not mark step 3's prospective evidence complete. Its literature mapping
+and limitations are in the [applied review](ECONOMIC_STRATEGY_RESEARCH.md#revisión-aplicada-de-colas-costes-y-tamaños--17-de-septiembre-de-2026).
+
+| Order | Work selected now | Acceptance / stop condition |
+| --- | --- | --- |
+| A — completed locally | Exhaust whole sizes with the original depth, fee and funding model; retain negative outcomes and compare one passive leg under two declared fee hypotheses. | Native parity and independent rational witnesses pass. No fill or PnL is imputed. Artifacts and source hashes are retained. |
+| B — next implementation | Align public trades, book changes and candidate entry states within contiguous connection segments. Retain displayed queue ahead, depth of the two hedge legs, partial quantities and censoring; prevent look-ahead. | Synthetic cases distinguish trades from cancellations and invalidate on gaps/reconnects. No book reduction alone creates a fill. Cancellation ahead/behind and ambiguous message ordering are explicit scenarios, not claimed observations. A real-data report may correctly say execution is unidentified. |
+| C — before another operator run | Specify one passive-entry policy and an aggressive control, verified public maker-fee terms or explicitly unresolved fees, conditional delayed hedge-cost scenarios and residual inventory limits. Predeclare cohort selection and future expiry splits. | No independent Bernoulli-fill shortcut, no shared-liquidity double counting, no claimed network/order latency from CPU timings. Delay grids are sensitivity assumptions until measured. If available trades cannot support the model, report what data is missing before asking for more collection. |
+| D — prospective confirmation, not started | The user runs a declared read-only window that collects the required trades/books and continuity diagnostics, with later whole expiries reserved for confirmation. | Report coverage and distinct supported episodes, including zero/negative cohorts. A fixed duration alone is not sufficient. Stop or revise this scoped hypothesis if positive results rely on unobserved fills or optimistic-only assumptions. |
+
+The existing operational cohort cap is not a research-derived optimum. Any new
+market ranking must use prior information and retain a control/exclusion report;
+do not select on profits measured in its evaluation window. Capital allocation
+remains full gross funding with shared-liquidity constraints, not an optimized
+investment policy. Settlement exception certification is still required before
+calling these baskets guaranteed or enabling an executor.
+
+Engineering work serves this gate: reuse the existing incremental cost kernel,
+test decision parity, then measure backlog and tail latency under real bursts
+and how delay affects hedge margin. Do not rewrite the production data structures
+or adopt a general queue-reactive simulator without evidence of a bottleneck or
+modeling need. No actual/demo orders, credentials or new long run are needed for
+the immediate offline implementation.
+
+## Continuous observation delivery — 2026-09-17 (delivery record)
 
 Branch `feat/basket-observation` implements the tooling for step 3 below. The
 native basket cost kernel is shared by REST screening and a streaming
@@ -54,12 +96,11 @@ policy expiry has its own deterministic clock. Full collection evidence over
 multiple expiries remains pending; implementing these tools does not complete
 the economic acceptance of step 3.
 
-Next operator action: one declared initial window using the
-[continuous observation command](READONLY_CAPTURE.md#continuous-conditional-basket-observation).
-Inspect coverage and distinct episodes before choosing additional active or
-near-resolution windows. Preserve later whole expiry cohorts for confirmation.
-The default 30-minute duration is a bounded initial collection, not a statistical
-sufficiency claim. No long live run is started during development.
+The originally planned initial window has now been attempted; its result and the
+superseding next action are recorded above. The
+[continuous observation command](READONLY_CAPTURE.md#continuous-conditional-basket-observation)
+remains available. Its default 30-minute duration is an operational bound, not a
+statistical sufficiency claim or an instruction to repeat it now.
 
 **Local verification:** all 47 current CTest entries pass (46-suite run plus
 the added callback benchmark smoke). The 28 local TLS/WebSocket
@@ -107,8 +148,9 @@ not millions of independent observations; both were hours from resolution.
 
 **Current workstream: certify and observe a small BTC range/threshold three-leg
 family, before implementing another execution policy.** Public preflight and
-conditional arithmetic are delivered; step 3's tools are now delivered and its
-prospective evidence is next. This is a new payoff
+conditional arithmetic and step 3's tools are delivered. The first attempted
+window provides partial point evidence only; the current passive feasibility
+subgate above now precedes another operator run. This is a new payoff
 relationship, not merely more of the existing nested pairs. Research rationale,
 primary sources and the failed fresh-price example are in
 [ECONOMIC_STRATEGY_RESEARCH.md](ECONOMIC_STRATEGY_RESEARCH.md).

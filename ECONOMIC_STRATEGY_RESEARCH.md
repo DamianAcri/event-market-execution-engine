@@ -4,6 +4,86 @@ Revisión base: 15 de septiembre de 2026. Actualización: 17 de septiembre de 20
 
 **Plan vigente:** [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) mantiene el orden, estado y criterios de ejecución. Este documento conserva la investigación y sus propuestas; las extensiones solo se incorporan bajo las condiciones del plan.
 
+## Revisión aplicada de colas, costes y tamaños — 17 de septiembre de 2026
+
+**Decisión vigente:** conservar la adquisición agresiva como control y preparar
+una prueba acotada de viabilidad de entrada pasiva con cobertura. Antes de
+atribuirle ingresos hay que comprobar qué flujos podrían ejecutar la entrada,
+qué cola tenemos delante y cuánto cuestan las otras patas en esas circunstancias.
+Esto sigue la línea existente; no introduce una estrategia direccional ni un
+controlador general de market making. El orden de entrega está en el plan único.
+
+### Investigación contrastada y consecuencia concreta
+
+Se han releído los apartados indicados de fuentes primarias. Varias ya estaban
+citadas: esta revisión precisa su alcance y su relación con una decisión, sin
+presentarlas como descubrimientos nuevos ni como implementaciones terminadas.
+
+| Fuente y lectura | Qué permite trasladar | Aplicación / límite en este proyecto |
+| --- | --- | --- |
+| [Moallemi–Yuan, *Queue Position Valuation*](https://moallemi.com/ciamac/papers/queue-value-2016.pdf), introducción, modelo y calibración | El valor de cola depende tanto de la ejecución como de la selección adversa. | Estimar el coste de cobertura **condicionado al fill**, no multiplicar una probabilidad independiente por el margen actual. Su validación con datos por orden de acciones no calibra nuestro feed agregado. Modelo de ejecución todavía pendiente. |
+| [Cont–Kukanov, *Optimal Order Placement*](https://arxiv.org/pdf/1210.1625), formulación y simulación empírica | Tamaños y colocación dependen de colas, flujo, comisiones y objetivo de ejecución. | Comparar una entrada pasiva con la adquisición inmediata. Su simulación simplifica cancelaciones y cambios de cotización; no copiar sus parámetros, horizonte o asignación entre venues como solución óptima de nuestras tres patas. |
+| [Huang–Lehalle–Rosenbaum, *Queue-reactive Model*](https://arxiv.org/html/1312.0563), hipótesis de flujos y §2.5 | Intensidades dependientes del estado y sensibilidad al tratamiento de cancelaciones. | Separar trades de reducciones del libro; con datos agregados no sabemos si una cancelación ocurrió delante o detrás. Comparar supuestos explícitos antes de ajustar un modelo de colas. |
+| [Lehalle–Mounjid, *Limit Order Strategic Placement*](https://arxiv.org/html/1610.00261), estudio empírico y conclusiones | La selección adversa y la latencia condicionan el valor de colocación/cancelación. | Medir margen después de retrasos y pérdida de prioridad, además del tiempo de CPU. Una señal de desequilibrio no equivale a beneficio neto. |
+| [Bürgi–Deng–Whelan, *Makers and Takers*](https://www2.gwu.edu/~forcpgm/2026-001.pdf), §2.2 y §3.1 | Evidencia histórica relevante sobre diferencias entre provisión y consumo de liquidez en Kalshi. | La muestra termina en abril de 2025, antes de las comisiones maker estudiadas como cambio posterior; exige actividad, limita spread final y excluye mercados que reinician cada hora. No demuestra que nuestras cestas BTC ni cualquier creador de mercado actual ganen dinero. |
+| [Kroer et al., *Arbitrage-Free Combinatorial Market Making*](https://www.columbia.edu/~ck2945/papers/milp_market.pdf), introducción y definición de pagos | Representar correctamente pagos factibles y restricciones lógicas. | Mantener certificación de reglas fuera del cálculo por actualización. Su mecanismo central de precios no es un bot para un libro de órdenes; no justifica introducir MILP en nuestro camino crítico de una plantilla fija. |
+| [Gebele et al., *Executable Arbitrage*](https://arxiv.org/html/2608.00666v1), resumen y planteamiento | Separar identidades de pago y mecanismos realmente ejecutables. | El preprint estudia conversiones específicas de Polymarket. No atribuir a Kalshi esas conversiones ni liberación inmediata de capital; seguimos reservando adquisición completa. |
+| [Bailey–López de Prado, *Deflated Sharpe Ratio*](https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf), selección entre múltiples ensayos | La selección del mejor resultado entre muchas pruebas introduce sesgo. | Registrar también variantes negativas y separar futuros vencimientos completos. No calcular Sharpe sobre reevaluaciones de libros: no son una serie de rentabilidades realizadas. |
+| [Jane Street, *Safe at Any Speed*](https://www.janestreet.com/tech-talks/safe-at-any-speed/), análisis de ráfagas y cola de procesamiento | Una pequeña variación del tiempo de servicio puede acumular retraso bajo ráfagas. | Medir espera, cola y percentiles de latencia con llegadas reales. Los tiempos de NASDAQ del ejemplo no son un objetivo validado para nuestro WebSocket. La implementación incremental existe; falta vincular sus retrasos al margen de cobertura. |
+| [Optiver, *When Speed and Scale Collide*](https://www.optiver.com/insights/technology-blog/when-speed-and-scale-collide/), artículo completo | Dónde se hace el trabajo importa a lo largo de una cadena de datos. | El artículo trata una plataforma interactiva de datos, no revela su estrategia ni su motor de órdenes. Apoya revisar trabajo repetido y movimiento de datos; no acredita una optimización concreta de nuestro código. |
+| [HRT, *In Trading, ML Benchmarks Don't Track What You Care About*](https://www.hudsonrivertrading.com/hrtbeat/trading-machine-learning/), artículo | Un mejor benchmark genérico no garantiza valor económico; importan reproducibilidad y generalidad. | Aceptar complejidad por mejoras fuera de muestra y en resultados relevantes, no por parecerse a una firma quant. Ningún modelo propietario queda reproducido por citar este texto. |
+
+Las fuentes de Ng/Peng/Tao/Zhou y Bartlett/O'Hara que siguen disponibles aquí
+solo como resumen no se elevan a métodos verificados: no se ha obtenido su texto
+completo en esta revisión. Tampoco se ha auditado cada demostración de cada paper.
+Las lecturas anteriores bastan para formular la siguiente prueba concreta;
+no permiten afirmar que todo el sistema esté económicamente calibrado.
+
+### Qué se ha aplicado y comprobado ahora
+
+La [frontera reproducible de costes](research/results/20260917-economic-frontier/README.md)
+reutiliza el replay, el ledger y la reserva de capital nativos. Amplía el
+diagnóstico de un contrato a todos los tamaños enteros 1–100, conserva los
+resultados negativos y añade dos comparadores **hipotéticos** con una pata pasiva.
+No cambia la estrategia activa ni envía órdenes.
+
+- **Adquisición inmediata:** cero márgenes netos positivos en 24.054.100
+  evaluaciones de tamaño correlacionadas; sí existen discrepancias brutas que
+  las comisiones eliminan. No bastaba aumentar tamaño para repartir el redondeo.
+- **Entrada pasiva:** 12 de 20 cestas tienen algún margen positivo suponiendo
+  comisión maker cero; ocho lo tienen incluso usando el coeficiente taker.
+  Ninguna cifra incluye un modelo que acredite la ejecución de esa entrada.
+- **Contraejemplo útil:** el mejor margen hipotético depende de comprar a $0,12
+  frente a una oferta disponible a $0,98. Las dos operaciones públicas posteriores
+  de ese mercado fueron a $0,94. Seis de las ocho cestas positivas del escenario
+  de estrés no tienen trades registrados en el mercado de su pata pasiva elegida.
+  Esto obliga a comprobar soporte de ejecución antes de ordenar por margen.
+- **Verificación:** coincidencia con los recuentos nativos, replay determinista,
+  58 ejemplos contrastados con aritmética racional y controles de corrupción.
+  Sigue siendo una captura parcial; no estima tasas de oportunidad ni beneficios.
+
+Las [reglas oficiales de redondeo](https://docs.kalshi.com/getting_started/fee_rounding)
+motivan conservar el acumulador por orden y distinguir precisión monetaria.
+Los [tipos de comisiones](https://help.kalshi.com/en/articles/13823805-fees)
+requieren verificar la serie y fecha antes de sustituir las hipótesis maker.
+No se presuponen descuentos institucionales o pertenencia a programas de liquidez.
+
+**Selección de mercados:** los 20 elegidos de 126 candidatos son un presupuesto
+operativo congelado, no un óptimo deducido de un paper. La siguiente comparación
+debe conservar una cohorte de control y clasificar usando únicamente información
+previa: compatibilidad de reglas, profundidad de cobertura, cola, actividad y
+tiempo a resolución. La fórmula económica objetivo debe incluir ingreso neto
+condicionado a ejecución, exposición residual y tiempo de capital bloqueado.
+Los coeficientes y umbrales de una clasificación rentable aún no están estimados.
+
+**Optimización técnica:** conservar costes acumulados, actualización de
+dependencias afectadas y separación de preparación frente a decisiones. Para
+cualquier cambio futuro se exige igualdad de decisiones frente al oráculo y
+mediciones de p50/p99/máximo, espera en ráfagas, asignaciones y memoria a igual
+carga; después, sensibilidad del margen al retraso. Son criterios seleccionados
+para trabajo futuro, no nuevas mejoras de rendimiento ya demostradas. El nuevo
+análisis es offline y su duración no mide latencia de negociación.
+
 ## Revisión tras la segunda captura — 17 de septiembre de 2026
 
 **Esta sección actualiza las prioridades; las secciones anteriores en el tiempo
