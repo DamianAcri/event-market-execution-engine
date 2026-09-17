@@ -65,7 +65,7 @@ not market profitability. Details and reproductions are in
 **P1 and P2's transport/controller implementation are merged.** P2 representative collection remains open; short authenticated acceptance
 now passes, including eight markets after the shared-subscription correction. P3's first offline acquisition-to-settlement
 loop is delivered in [PR #11](https://github.com/DamianAcri/event-market-execution-engine/pull/11).
-Start P2 collection now; it must not wait for all simulator or product features. P3 can
+Use the economic discovery preflight below before starting another long P2 collection; do not repeat the fixed sample solely for a speed improvement. P3 can
 be developed against fixtures while data is collected, but passing its economic
 acceptance requires suitable observations from P2. P4 follows P3. P5 requires
 separate authorization and operational readiness.
@@ -127,7 +127,7 @@ positive gross opportunities in those pairs, including relaxed freshness and
 fractional sizing checks. No paper orders were generated. This identifies a
 coverage question; it does not establish returns for other events or policies.
 
-The next delivery is `feat/research-market-coverage`, extending the existing
+The previous local delivery, `feat/research-market-coverage`, extended the existing
 capture/replay and aggressive paper path:
 
 1. Add a frozen `research` selection: up to two BTC events with 16 evenly spaced
@@ -158,6 +158,42 @@ and representative economic observations remain unverified. No remote CI or merg
 claim is made by this local validation.
 The research-to-decision mapping and primary sources are in the dated update to
 [ECONOMIC_STRATEGY_RESEARCH.md](ECONOMIC_STRATEGY_RESEARCH.md).
+
+**Current implementation — economic discovery:** `feat/economic-market-selection`
+adds `--profile economic` before the next long capture. It traverses the open
+non-MVE catalog with explicit page/byte limits and refuses incomplete discovery.
+It refreshes reviewed series after the broad scan, verifies BTC/ETH threshold
+semantics and event fee overrides/scheduled changes, acquires depth in batches,
+and reuses the native funded sizing/fee ledger. Public non-block trades establish
+recent activity; book refresh precedes the final frozen watchlist. The public
+research frontier shows active excluded families and why rules still need review.
+
+The selection policy prefers positive indicative net margins, then active pairs
+nearest zero after one-contract costs, with deterministic subscription budgets.
+This is an auditable observation policy, **not an estimated-profit optimizer**.
+The 15-minute activity window, 64 subscription cap, 100-contract sizing cap and
+USD 1,000 fictional funding are disclosed operational/scenario choices, not paper
+recommendations or inferred optima. Zero eligible pairs produces a no-run report.
+All inputs, exclusions, fees, selection code and executable are archived/hashed.
+
+Acceptance before the next independent two-hour run: public discovery must
+complete, rule/fee/depth validation must pass, and the report must justify an
+active watchlist (or decline the run). Replay policy tests and native cost tests
+must pass. Do not tune on that future run and relabel it a holdout; reserve later
+whole events/dates for confirmation. Dynamic rotation and a calibrated model of
+expected profit remain further work, as do passive execution and joint allocation.
+
+Local acceptance completed on public data: the complete non-MVE catalog had
+127,876 markets; 220 refreshed contracts passed semantics and fees. All 220 books
+were examined; 62 markets had recent trades queried. The frozen result contained
+20 markets / 69 certified relationships, with 48 non-block trades observed on
+those markets in the preceding 15 minutes. No positive indicative margin was
+found. Of the initially depth-qualified pairs, 389 failed two-leg recent activity.
+All 39 local Release CTests pass, including the local TLS transport fixtures;
+the new native screen passes ASan/UBSan, and the gateway-disabled build passes
+11 CTests. This validates discovery and selection plumbing; the new prospective
+simulation has not been run and profitability remains unproven. Evidence is in
+[public-preparation.json](benchmarks/results/20260917-market-selection/public-preparation.json).
 
 **Next gate:** after capture/replay acceptance and sufficient usable trade/book
 observations, define one bounded passive-versus-aggressive experiment in P3.

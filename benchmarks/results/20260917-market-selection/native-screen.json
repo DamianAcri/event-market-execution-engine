@@ -1,0 +1,100 @@
+{
+  "benchmark": "native_market_screen_synthetic_batch",
+  "environment": {
+    "architecture": "arm64",
+    "background_load_controlled": false,
+    "cmake_build_type": "Release",
+    "compile_flags": [
+      "-O3",
+      "-DNDEBUG",
+      "-std=gnu++20",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Wconversion",
+      "-Wshadow",
+      "-Werror"
+    ],
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+    "compiler_target": "arm64-apple-darwin25.5.0",
+    "cpu": "Apple M2 Pro",
+    "cpu_affinity_pinned": false,
+    "logical_cpus": 10,
+    "memory_bytes": 34359738368,
+    "os": "Darwin",
+    "power_state_recorded": false,
+    "sanitizers": false,
+    "sdk": "MacOSX26.5.sdk"
+  },
+  "fixture": {
+    "available_cash_per_independent_quote_micro": 1000000000,
+    "balance_quantum_micro": 10000,
+    "constraints": 512,
+    "expected_positive_quotes": 512,
+    "fee_coefficient_ppm": 0,
+    "input": "One to two price levels per outcome, a depth cliff, positive indicative quotes.",
+    "markets": 1024,
+    "metadata_parsed_once_before_timing": true,
+    "quantity_cap_centicontracts": 300,
+    "quantity_step_centicontracts": 100,
+    "relationships": "512 disjoint two-market threshold implications",
+    "screen_json_serialized_once_before_timing": true,
+    "source": "tests/market_screen_tests.cpp:benchmark",
+    "synthetic": true
+  },
+  "limitations": [
+    "This is a small-depth synthetic batch sanity benchmark, not whole-CLI timing or real-market execution latency.",
+    "Only the arithmetic mean of one timed loop is available; no p95/p99 or confidence interval is claimed.",
+    "The workload has no shared-market contention between relationships and zero fee coefficients; it does not exercise worst-case economic sizing.",
+    "Hardware/compiler/load-specific observation; no cross-platform speedup or profitability claim.",
+    "Quotes are independent funded hypotheticals; their margins must not be summed as simultaneous realizable profit."
+  ],
+  "measurement": {
+    "clock": "std::chrono::steady_clock",
+    "correctness": {
+      "byte_identical_outputs": true,
+      "checks_passed_in_command": 97
+    },
+    "excludes": [
+      "metadata JSON parsing and constraint compilation",
+      "input fixture creation and input serialization",
+      "filesystem I/O",
+      "CLI process startup",
+      "Python orchestration",
+      "public HTTP discovery or book acquisition",
+      "network or order execution"
+    ],
+    "explicit_full_dataset_warmup_runs": 1,
+    "includes": [
+      "strict screen-input JSON parse",
+      "book/fee validation and normalization",
+      "per-constraint diagnostics and exact bounded fixed-point sizing",
+      "result JSON construction and serialization",
+      "byte-for-byte output comparison and test assertion for each repetition"
+    ],
+    "mean_definition": "Aggregate timed loop wall duration divided by 20; individual latency samples were not recorded.",
+    "mean_ms": 11.6785,
+    "preceding_unit_checks": 76,
+    "stdout": "screen_markets=1024 constraints=512 samples=20 mean_ms=11.6785\nPASS: 97 checks\n",
+    "timed_repetitions": 20
+  },
+  "recorded_at_utc": "2026-09-17T09:34:24.426242+00:00",
+  "reproduce": [
+    "cmake -S . -B out/screen-benchmark -DCMAKE_BUILD_TYPE=Release -DEME_BUILD_KALSHI_GATEWAY=ON -DEME_BUILD_LIVE_CAPTURE=OFF -DBUILD_TESTING=ON",
+    "cmake --build out/screen-benchmark --target eme_market_screen_tests -j 4",
+    "./out/screen-benchmark/eme_market_screen_tests --benchmark"
+  ],
+  "schema_version": 1,
+  "source_state": {
+    "base_commit": "d0613210c91514c5687f63a3a5f662772d8eaa2a",
+    "binary_sha256": "789f1555628ce85ce98a6d70e9730b1fab05908e493985d673ae61f9342d60b3",
+    "source_sha256": {
+      "src/cli/market_screen.cpp": "b53af97d067a8faec2cb19f3fdfba2b3fb67459980b68f8ae351b31a31d1ef54",
+      "src/cli/market_screen.hpp": "56641498470d9c09cfcf8685e4a0214d9254bf7759f90b734abf3fa896a02617",
+      "src/core/execution_cost.cpp": "4e5b7579aaee7c46368628b12627ac8408f19899eae9f5c95cc724fead2aded1",
+      "src/core/net_sizing.cpp": "bd5f30435714ab1ad0e27211c8168059d09b362cbda58d7de5365ccb150d1265",
+      "tests/market_screen_tests.cpp": "22d08e7c065c97356e2080ff24aa1dc035f02c0c37e1b69d7af09e21a8a4ae61"
+    },
+    "working_tree_changes": true
+  }
+}

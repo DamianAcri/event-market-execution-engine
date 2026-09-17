@@ -2,9 +2,9 @@
 
 The optional `--paper` runner mode evaluates the existing exact net-sizing and
 residual-exit strategy as market data arrives. It submits **no orders**, in either
-production or demo. The only application message sent over the authenticated WS
-connection remains the reviewed orderbook subscription. Protocol Pong replies are
-owned by Beast. No account, balance, trade or order endpoint is used.
+production or demo. The authenticated WS connection sends the reviewed orderbook subscription and,
+when enabled, a separate public-trade subscription. Protocol Pong replies are
+owned by Beast. No account, balance, private-fill or order endpoint is used.
 
 ## Run
 
@@ -12,7 +12,7 @@ Build the optional `eme-capture` target as described in [READONLY_CAPTURE.md](RE
 With the operator binaries installed in `out/bin`, run from the repository:
 
 ```sh
-python3 scripts/capture_readonly.py --paper --seconds 7200
+python3 scripts/capture_readonly.py --profile economic --paper --seconds 7200
 ```
 
 On macOS, prefix the command with the built-in `caffeinate -i` and keep the lid
@@ -34,7 +34,7 @@ execution. They are archived and hashed; no tuning happens during the session.
 
 | Parameter | Value |
 |---|---|
-| Selection | Baseline: eight BTC markets / 28 implications. Research profile: multiple BTC events plus NFL observation only; exact coverage archived. |
+| Selection | Economic: cost/activity-screened reviewed BTC/ETH relationships; see READONLY_CAPTURE.md. Baseline: eight BTC markets / 28 implications. Research profile: multiple BTC events plus NFL observation only; exact coverage archived. |
 | Capital | USD 1,000 of fictional cash; no account balance lookup |
 | Sizing | Existing exact funded net-profit sizing, whole contracts, maximum 100 per leg |
 | Admission | Strictly positive costed margin; one attempt per constraint per session |
@@ -43,7 +43,7 @@ execution. They are archived and hashed; no tuning happens during the session.
 | Arrival / response delays | 100 ms each, including residual sale; assumptions, not measurements |
 | Book age limit | 10 seconds since the last applied update for that market |
 | Fill model | Available displayed depth at simulated arrival, with shared depletion and fees; no forced random rejects |
-| Fees | General quadratic 0.07 with public series multiplier 1; cent-aligned balance scenario |
+| Fees | Economic: verified public series/event quadratic coefficient and scheduled-change window; baseline/research retain multiplier 1. Cent-aligned balance scenario. |
 | Settlements | Empty: future outcomes are rejected by the live interface |
 | Operating costs | Zero in this initial scenario; infrastructure costs are excluded |
 
@@ -51,8 +51,9 @@ Fee arithmetic reuses the existing ledger. The public
 [rounding specification](https://docs.kalshi.com/getting_started/fee_rounding)
 distinguishes direct-member and non-direct-member precision. The first run uses
 cent alignment without assuming the user's account tier. The existing public
-series selector rejects an unexpected fee type or multiplier. Fee changes during
-the observation period and actual fill fragmentation remain model limitations.
+series selector rejects unsupported fee policies. Economic selection additionally
+checks public event overrides and announced changes through its capture window.
+Unannounced changes, private tiers and actual fill fragmentation remain limitations.
 
 This is not a continuously replenished trading policy: after an attempt, that
 constraint is not retried in this session. Observed book updates do not magically

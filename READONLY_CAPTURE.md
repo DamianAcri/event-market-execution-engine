@@ -65,6 +65,54 @@ serves controller validation and the existing normalization/sequence checks. The
 maximum reassembled text message is 1 MiB. Binary/oversized messages terminate the
 generation; they are recorded as transport failures, not accepted book data.
 
+## Economic discovery before capture (2026-09-17)
+
+Prefer the economic profile for a new experiment. It first scans the public open
+non-MVE catalog, refreshes the supported series, verifies settlement rules and
+fees, screens depth with the native C++ optimizer and checks recent non-block
+trades. It refreshes books before freezing up to 64 selected tickers. No fixed
+BTC/NFL count is requested. Only reviewed BTC/ETH threshold relationships can
+enter paper simulation; `research-frontier.json` ranks unreviewed families by
+past-day activity for the next rule review, not by estimated profit.
+
+```sh
+python3 scripts/capture_readonly.py --profile economic --paper --prepare-only --seconds 7200
+python3 scripts/capture_readonly.py --profile economic --paper --seconds 7200 --max-mib 1024
+```
+
+`--engine` points to the existing `event-engine` binary (default `out/bin/event-engine`).
+Preparation requires no credentials. The second command makes a fresh selection
+and then records/simulates for two hours if eligible pairs remain. Preparation
+can take several minutes because the catalog has over 100,000 contracts. A
+failed/incomplete public scan or invalid rules/fees stops before WS authentication.
+A successful scan with zero eligible pairs saves a no-run decision and exits.
+
+Budgets: `--market-budget 64`, `--book-budget 1024`, `--activity-budget 128`,
+`--discovery-max-pages 500`. These bound resources, not the economically optimal
+market count. Activity means at least one known non-block trade in the last
+15 minutes on each leg; an indicative positive margin can justify observing a
+quiet pair. Trade counts capped at one 1,000-trade page are marked lower bounds.
+The native screen uses USD 1,000 fictional cash and at most 100 whole contracts
+per pair independently. It ranks positive net margins first, otherwise funded
+one-contract margins nearest zero, then both legs' activity and a stable tie-break.
+There is no joint capital allocation or forecast of future opportunity frequency.
+
+The report distinguishes missing depth, unverified rules, fees, inactive pairs,
+subscription/activity/book budgets, unsynchronized request intervals and solver
+limits. All pair inputs/outputs are saved for deterministic policy replay.
+`selection-decision.json` and `coverage.json` summarize reasons; full qualification
+is in `qualification.json.gz`; public response archives are losslessly compressed
+and their original byte hashes retained. Public response bodies have a 256 MiB compressed / 1 GiB decoded cap; normalized
+preparation artifacts have a separate 256 MiB cap. Recording has the independent
+`--max-mib` soft limit. Sessions accumulate across runs. The broad catalog is a cursor walk,
+not an atomic snapshot of the venue. MVE combinations are explicitly excluded.
+
+REST screen quotes are indicative, not fills. Local request/response timing does
+not verify exchange book age. The watchlist stays fixed during capture, uses
+exact pinned BTC/ETH terms, and rejects announced fee changes within its run
+window. A private account fee tier is not queried. Unexpected live terms/fees
+cannot be detected continuously by this frozen preparation step.
+
 ## Research coverage and public trades (2026-09-17)
 
 The runner retains `--profile baseline` for the original eight-market BTC sample.

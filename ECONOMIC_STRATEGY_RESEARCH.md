@@ -4,11 +4,43 @@ Revisión base: 15 de septiembre de 2026. Actualización: 17 de septiembre de 20
 
 **Plan vigente:** [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) mantiene el orden, estado y criterios de ejecución. Este documento conserva la investigación y sus propuestas; las extensiones solo se incorporan bajo las condiciones del plan.
 
+## Selección económica aplicada — 17 de septiembre de 2026
+
+El perfil `economic` sustituye el muestreo fijo como siguiente experimento.
+La trazabilidad es concreta:
+
+| Evidencia o restricción | Implementación | Lo que no demuestra |
+|---|---|---|
+| Saguillo: reducir el universo por relaciones y verificar semántica | Catálogo abierto no-MVE, registro de reglas revisadas, términos fijados por hash y exclusiones por familia.[^saguillo] | No replica su clasificador ni certifica relaciones por títulos. |
+| Cheng, Yang y Zou: actividad y profundidad condicionan oportunidades | Libros completos y trades públicos recientes antes de escoger la observación.[^nba] | La ventana de 15 minutos y los presupuestos son nuestra política operativa; no recomendaciones del paper. |
+| Reglas de Kalshi y libro ejecutable | ETH además de BTC, misma fuente/fecha/reglas; comisiones de serie/evento, cambios anunciados, cantidades y redondeos del motor C++. | REST no demuestra que ambas patas puedan adquirirse juntas. |
+| Evitar ajustar después de ver el resultado | Política, selección, entradas y ejecutable fijados antes de la captura; un informe puede decidir no iniciarla. | No convierte datos ya explorados en una muestra independiente. |
+
+La selección prioriza margen neto positivo indicativo. Si no lo hay, prioriza
+parejas activas cuyo coste de un contrato está más cerca del pago mínimo. Esto
+es una **heurística explícita para observar mercados**, no un modelo calibrado
+de beneficio esperado. La investigación motiva sus componentes; no prueba que
+este orden sea óptimo. Se conservan los mercados excluidos y una frontera de
+investigación por actividad para revisar nuevas familias sin esconder el alcance.
+
+Las reglas ETH se revisan contra el [contrato oficial](https://assets.kalshi.com/contract_terms/ETH.pdf)
+(hash `ae079241099608c13c0c0ed31a6c91be174c6e61abe706dd76e8976ba682cc6d`).
+La API oficial de [libros por lote](https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks)
+y [trades públicos](https://docs.kalshi.com/api-reference/market/get-trades)
+alimenta el filtro; excepciones y cambios de comisiones se validan contra el
+[OpenAPI oficial](https://docs.kalshi.com/openapi.yaml). No se asume el régimen de
+comisiones de otro estudio, el tier privado de una cuenta ni colateral neteado.
+
+Quedan abiertos el modelo de frecuencia y duración de oportunidades, ejecución
+pasiva, selección adversa y asignación conjunta de capital. El siguiente paso es
+validar esta selección con datos prospectivos útiles antes de estimarlos; no
+repetir dos horas solo por una mejora del tiempo de replay.
+
 ## Actualización aplicada — 17 de septiembre de 2026
 
 La captura de dos horas de `btc-20260916T183127.659551Z` registró 1.947.001 actualizaciones en ocho mercados de un evento BTC, con 28 implicaciones. El replay y la reconstrucción independiente no encontraron margen bruto positivo en esas parejas, incluso al relajar frescura y cantidades enteras; no hubo órdenes simuladas ni beneficio. El resultado limita esa muestra y política: no mide el universo de Kalshi ni demuestra que aumentar velocidad o capital hubiera creado oportunidades.
 
-**Decisión actual, implementada y probada localmente:** ampliar observaciones antes de ajustar la estrategia. El perfil `research` selecciona hasta dos eventos BTC y 16 rangos de strike uniformemente espaciados por evento, incluidos los extremos; añade hasta 16 mercados NFL para observación. Son hasta 48 mercados estáticos, con límites operativos explícitos, no una selección que maximice ingresos. La paginación pública, los archivos originales con hashes y `coverage.json` deben hacer visibles selección, exclusiones y relaciones admitidas. La política y selección se fijan antes de capturar; las pruebas locales y un preflight autenticado de 30 segundos pasan, pero este último solo recibió los 48 libros iniciales. La recepción de trades reales y la evaluación económica representativa siguen pendientes.
+**Entrega anterior, implementada y probada localmente:** ampliar observaciones antes de ajustar la estrategia. El perfil `research` selecciona hasta dos eventos BTC y 16 rangos de strike uniformemente espaciados por evento, incluidos los extremos; añade hasta 16 mercados NFL para observación. Son hasta 48 mercados estáticos, con límites operativos explícitos, no una selección que maximice ingresos. La paginación pública, los archivos originales con hashes y `coverage.json` deben hacer visibles selección, exclusiones y relaciones admitidas. La política y selección se fijan antes de capturar; las pruebas locales y un preflight autenticado de 30 segundos pasan, pero este último solo recibió los 48 libros iniciales. La recepción de trades reales y la evaluación económica representativa siguen pendientes.
 
 La literatura determina qué hipótesis merece observarse y qué supuestos hay que comprobar. Saguillo apoya buscar relaciones y revisar su semántica; Cheng, Yang y Zou motiva observar ganador/margen y fases del evento, sin trasladar resultados NBA/Polymarket a NFL/Kalshi.[^saguillo][^nba] Los términos NFL revisados incluyen empate a 0,50 y liquidaciones excepcionales a precio justo discrecional. El empate por sí solo conserva el mínimo de ganador-YES más spread-positivo-NO —paga 1,50—, pero nuestro oráculo booleano no representa ese estado. Tampoco hemos establecido una garantía conjunta para los pagos discrecionales. **NFL queda fuera de las restricciones certificadas y de las operaciones simuladas de esta entrega**; admitirlo requiere modelar y justificar esos pagos, no solo emparejar títulos.[^nflwinner][^nflspread]
 

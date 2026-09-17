@@ -741,3 +741,39 @@ both executables. The complete 279,261,400-byte transcripts matched SHA-256
 Duplicate generated transcripts were removed after comparison; the original
 capture and the compact parity report are retained. The change does not create
 opportunities that were absent from that recording.
+
+
+## Market discovery and native screening — 2026-09-17
+
+Discovery runs before recording; it does not add HTTP, catalog parsing or gzip to
+the per-update decision path. The native screen reuses the existing fixed-point
+sizer and fee ledger. It normalizes book sides once per batch, retains numeric IDs,
+and Python passes only markets referenced by each bounded constraint batch.
+Normalized preparation artifacts have a separate 256 MiB ceiling; public archives
+have 256 MiB stored / 1 GiB decoded ceilings. Exceeding a limit fails explicitly.
+
+The complete public open non-MVE scan contained 127,876 markets and 14,129 series
+across 128 market pages. Lossless gzip reduced archived response bodies from
+288,558,795 to 12,927,444 bytes (12.33 MiB). Hashes bind both the original and stored
+bytes. The scan was resumed after an explicit initial storage failure; its full
+09:16:09–09:29:28 UTC interval includes that pause and is not an atomic snapshot.
+
+The selector retains only ticker, event and activity fields from broad discovery,
+then refreshes full metadata for reviewed families. Loading that same completed
+archive in separate Python processes measured peak RSS 1,008,959,488 bytes with
+full dictionaries and 289,095,680 bytes with the compact projection: 71.35% lower.
+There was one observation per variant; 2.985 / 2.539 seconds are illustrative load
+times, not a statistically established timing improvement. Full public originals
+remain available on disk. These are discovery-process measurements, not engine
+hot-path memory. Reproduction and raw metrics are in
+[the catalog measurement](benchmarks/results/20260917-market-selection/catalog-memory.json).
+
+The native synthetic screen processed 1,024 markets / 512 independent relations
+in a mean 11.6785 ms across 20 identical-output runs on Apple M2 Pro, AppleClang21,
+arm64 Release (`-O3 -DNDEBUG`). It includes screen JSON parsing, validation,
+normalization, sizing, output serialization and correctness comparisons. Metadata
+was precompiled outside timing; process startup, disk, Python and network are
+excluded. The small-depth fixture uses zero fees and a three-contract cap, so it
+is neither a worst-case cost model nor execution latency. No tail-latency or
+profitability claim follows. Run `eme_market_screen_tests --benchmark`; full
+provenance is in [native-screen.json](benchmarks/results/20260917-market-selection/native-screen.json).
