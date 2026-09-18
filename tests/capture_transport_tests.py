@@ -88,8 +88,12 @@ def main():
         basket_metadata_value = {'schema_version': 1, 'metadata_version': 2, 'venue': 'kalshi',
             'markets': [{'id': i, 'ticker': 'SYNTHETIC-BASKET-' + str(i)} for i in (1, 2, 3)], 'constraints': []}
         basket_metadata.write_text(json.dumps(basket_metadata_value))
+        # The CLI appends a text-mode newline: CRLF on Windows, LF on Unix.
+        # Neither terminator belongs to the canonical bytes bound by the policy.
         basket_canonical = subprocess.run([args.engine, 'metadata', 'canonical', str(basket_metadata)],
-            capture_output=True, check=True).stdout.rstrip(b'\n')
+            capture_output=True, check=True).stdout.rstrip(b'\r\n')
+        assert basket_canonical == json.dumps(basket_metadata_value, sort_keys=True,
+            separators=(',', ':'), ensure_ascii=False).encode('utf-8'), 'fixture canonical metadata mismatch'
         basket_metadata_hash = hashlib.sha256(basket_canonical).hexdigest()
         from basket_screen_oracle_tests import fixture as basket_fixture
         passed = 0
