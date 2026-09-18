@@ -120,6 +120,6 @@ bounded synchronization rather than adding network or account execution machiner
 The first recording is development/exploration evidence. Preserve all variants
 and failed results; reserve later complete event dates before evaluating policy
 changes. Two hours and many correlated ticks do not establish sustainable profit.
-See [ECONOMIC_VALIDATION.md](ECONOMIC_VALIDATION.md) for the fixed-policy protocol.
+See [ECONOMIC_VALIDATION.md](../research/ECONOMIC_VALIDATION.md) for the fixed-policy protocol.
 Live paper adds prospective decisions and observed processing timings, while
 replay makes debugging and controlled sensitivity experiments reproducible.

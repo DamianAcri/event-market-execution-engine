@@ -233,7 +233,7 @@ def main():
     if args.profile == 'economic' and not args.engine.is_file():
         raise OperatorError('Falta event-engine para evaluar costes y profundidad antes de la captura.')
     if not args.prepare_only and not args.binary.is_file():
-        raise OperatorError('Falta el binario eme-capture; consulta READONLY_CAPTURE.md.')
+        raise OperatorError('Falta el binario eme-capture; consulta docs/guides/READONLY_CAPTURE.md.')
     os.umask(0o077)
     now = dt.datetime.now(dt.timezone.utc)
     root = args.output.resolve() / now.strftime(args.profile + '-%Y%m%dT%H%M%S.%fZ')

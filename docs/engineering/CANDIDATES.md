@@ -75,7 +75,7 @@ The tracker must use the matching session metadata and one state history. It has
 single-owner sequencing. The returned span refers to a reusable event buffer and
 expires at the next refresh or destruction; copy events to retain a history.
 The caller supplies causal record indices and times. The
-[structured replay layer](OFFLINE_STUDY.md) now wraps these events in JSONL and
+[structured replay layer](../guides/OFFLINE_STUDY.md) now wraps these events in JSONL and
 feeds the offline costed execution study. The tracker itself remains gross-only.
 
 Startup builds canonical entries and market-to-entry indices. A normal refresh
@@ -109,4 +109,4 @@ controller actions are explicit test inputs; it does not establish that an
 arbitrary journal contains recoverable live control history.
 
 See [PERFORMANCE.md](PERFORMANCE.md) for measurements and
-[ECONOMIC_VALIDATION.md](ECONOMIC_VALIDATION.md) for the evidence gates ahead.
+[ECONOMIC_VALIDATION.md](../research/ECONOMIC_VALIDATION.md) for the evidence gates ahead.

@@ -4,7 +4,7 @@ The optional C++ TLS/WebSocket collector, strict subscription/recovery controlle
 background recorder and replay are implemented. Synthetic TLS fixtures exercise
 the complete path. **P2 observational acceptance remains open**: authenticated single-market and
 eight-market production data captures have now passed (2026-09-16), but a
-representative campaign and economic calibration remain pending. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) is the execution plan.
+representative campaign and economic calibration remain pending. [IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md) is the execution plan.
 
 ## Running the optional collector
 
@@ -117,7 +117,7 @@ covers ordinary common-scalar settlement and common all-NO missing data. The
 operative Rulebook's exceptional review/modification outcomes have not been
 jointly certified. This output never becomes an unconditional payoff certificate
 or execution permission. See the
-[contract review](research/results/20260917-basket-screen/contract-review.md).
+[contract review](../research/results/20260917-basket-screen/contract-review.md).
 
 Artifacts:
 
@@ -159,7 +159,7 @@ credentials or opening WebSocket. Default budgets remain 20 baskets, 64 markets,
 
 Keep the computer awake, connected and the laptop lid open. On macOS,
 `caffeinate -i` prevents idle sleep; it did not prevent the clamshell sleep
-observed in the [first basket run](research/results/20260917-basket-live/README.md).
+observed in the [first basket run](../research/results/20260917-basket-live/README.md).
 Software cannot collect data or finalize a session while the machine is asleep.
 The runner checks both monotonic and wall elapsed time, rejects a gap above
 15 seconds between its five-second supervision checks, and requests graceful
@@ -229,7 +229,7 @@ build/event-engine basket observe captures/<run>/session captures/<run>/session/
 The initial window is exploratory. Whole later expiries/days must remain unused
 for confirmation; repeating or tuning this same window is not an independent
 test. The remaining research decisions are in
-[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+[IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md).
 
 ## Two-leg economic discovery before capture (2026-09-17)
 
@@ -304,7 +304,7 @@ NFL terms must match reviewed hashes. `selection.json` stores the chosen contrac
 selection are fixed before recording. NFL contracts have no certified constraints
 or paper fee entries: exceptional discretionary settlements do not have an
 established cross-contract payoff lower bound. See
-[the research decision](ECONOMIC_STRATEGY_RESEARCH.md).
+[the research decision](../research/ECONOMIC_STRATEGY_RESEARCH.md).
 
 Research mode implies `--public-trades`, which can also be used with the baseline.
 The native CLI accepts `[paper-policy.json] [--public-trades]` after the venue.
@@ -393,7 +393,7 @@ produce byte-identical repeated replay. All tests use loopback, never a venue.
 Controller unit tests enforce invalidation and recovery. The portable feed
 benchmark checks exact final sequence and depth. The optimization removes a full
 payload copy and redundant JSON parse, retaining strict validation; measurements
-and limitations are in [PERFORMANCE.md](PERFORMANCE.md). TLS/socket/venue latency
+and limitations are in [PERFORMANCE.md](../engineering/PERFORMANCE.md). TLS/socket/venue latency
 and economic performance are not inferred from a prepared in-memory workload.
 
 ## Implemented persistence boundary
@@ -461,7 +461,7 @@ CI check in addition to the existing portability, ASan and UBSan checks.
 through verified finalization. It alternates synchronous/background runs on equal
 records and requires equal journal hashes. Bursts and scheduled arrivals measure
 different conditions; low handoff time does not imply faster total storage or a
-measured economic benefit. See [PERFORMANCE.md](PERFORMANCE.md).
+measured economic benefit. See [PERFORMANCE.md](../engineering/PERFORMANCE.md).
 
 ## Protocol findings to carry into the next implementation
 

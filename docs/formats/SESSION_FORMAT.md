@@ -89,7 +89,7 @@ reproduction. Downstream decoding still checks payload/envelope sequences,
 normalization and market-state transitions.
 
 Connection-open/close and explicit recovery commands remain outside raw journal
-v2. [Replay plans and execution studies](OFFLINE_STUDY.md) now bind an explicit
+v2. [Replay plans and execution studies](../guides/OFFLINE_STUDY.md) now bind an explicit
 controller history to this manifest and retain plan/policy hashes in structured
 output. Actual live recording still requires transport integration. Reproducing
 behavior also requires the relevant engine revision: session v1 binds data
@@ -130,7 +130,7 @@ CRC32 alone is insufficient as a whole-artifact identity. Duplicating metadata
 inside the manifest would enlarge it without addressing journal identity. Platform
 crypto backends introduce different setup requirements across operating systems.
 The selected baseline vendors the small MIT-licensed
-[PicoSHA2](third_party/picosha2/README.md) implementation at an exact revision. It
+[PicoSHA2](../../third_party/picosha2/README.md) implementation at an exact revision. It
 adds no configure-time download or runtime service. Faster hashing can be compared
 later if closing/verifying large sessions becomes a measured bottleneck.
 
@@ -150,4 +150,4 @@ system permits creating fixture links.
 
 SHA-256 checks include known empty, `abc` and million-`a` vectors. CLI tests compare
 hashes against CMake's independent SHA-256 and confirm packed journal bytes match
-the source. Measurements are in [PERFORMANCE.md](PERFORMANCE.md).
+the source. Measurements are in [PERFORMANCE.md](../engineering/PERFORMANCE.md).

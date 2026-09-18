@@ -14,26 +14,26 @@ state.
 
 ## Current state: live paper simulation, capture and replay
 
-**Start with [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)** for the current
-work order and acceptance criteria. [Exact net-profit sizing](NET_SIZING.md) is
-implemented; [read-only capture](READONLY_CAPTURE.md) includes an optional TLS/WS
+**Start with [IMPLEMENTATION_PLAN.md](docs/project/IMPLEMENTATION_PLAN.md)** for the current
+work order and acceptance criteria. [Exact net-profit sizing](docs/engineering/NET_SIZING.md) is
+implemented; [read-only capture](docs/guides/READONLY_CAPTURE.md) includes an optional TLS/WS
 collector, bounded persistence and controller replay. Short authenticated multi-market captures now pass; representative observations
 and economic calibration remain pending. An operator can run
 `python3 scripts/capture_readonly.py --paper --seconds 7200` to record and simulate
 with the same decision logic after installing the optional
-collector as described in [READONLY_CAPTURE.md](READONLY_CAPTURE.md).
-[LIVE_PAPER.md](LIVE_PAPER.md) defines the frozen scenario, artifacts and limitations.
+collector as described in [READONLY_CAPTURE.md](docs/guides/READONLY_CAPTURE.md).
+[LIVE_PAPER.md](docs/guides/LIVE_PAPER.md) defines the frozen scenario, artifacts and limitations.
 Omit `--paper` for recording only. Research documents contain
 evidence and conditional proposals; they do not create additional work queues.
 The package version remains 0.2.0, and capability status is described below.
 
-The new [BTC basket preflight](READONLY_CAPTURE.md#btc-basket-public-preflight)
+The new [BTC basket preflight](docs/guides/READONLY_CAPTURE.md#btc-basket-public-preflight)
 checks a frozen cohort of threshold/range combinations with three legs. It uses
 public REST only, exact native depth/fee sizing and explicit conditional settlement
 assumptions. It neither places orders nor adds basket fills to the existing paper
 simulation. See the implementation plan before starting another long capture.
 
-[Continuous basket observation](READONLY_CAPTURE.md#continuous-conditional-basket-observation)
+[Continuous basket observation](docs/guides/READONLY_CAPTURE.md#continuous-conditional-basket-observation)
 now records the feed and measures conditional margin episodes concurrently,
 including coverage and censored starts/ends. It shares the native cost kernel
 with REST screening and verifies the live trace against offline replay. Run
@@ -83,42 +83,33 @@ settlement across every valid world. Contract quantity and cash are distinct
 fixed-point types. There is deliberately no title matching or probability
 inference: semantic relationships must be curated explicitly.
 
-Reviewed [metadata snapshots](METADATA_FORMAT.md) now load stable market IDs and
+Reviewed [metadata snapshots](docs/formats/METADATA_FORMAT.md) now load stable market IDs and
 compiled relationships together, reject ambiguous/invalid input, and produce
 deterministic canonical output. The CLI can verify or canonicalize a snapshot.
-Finalized [sessions](SESSION_FORMAT.md) bind exact metadata and journal bytes with
+Finalized [sessions](docs/formats/SESSION_FORMAT.md) bind exact metadata and journal bytes with
 SHA-256 fingerprints and a verified record count. The CLI can pack existing files
 into a new session and verify integrity without mutating market state.
-The core now tracks [gross candidates](CANDIDATES.md) from the compiled two-leg
+The core now tracks [gross candidates](docs/engineering/CANDIDATES.md) from the compiled two-leg
 templates at the best available prices, with stable identity and incremental
 opened/updated/invalidated events. These exclude fees, funding and execution risk;
-the [offline study pipeline](OFFLINE_STUDY.md) adds structured replay, explicit
+the [offline study pipeline](docs/guides/OFFLINE_STUDY.md) adds structured replay, explicit
 controller plans, costed depth, conservative funding and delayed IOC simulation.
 Exact two-leg sizing now chooses the best funded margin after fees. Background
 recording preserves raw bytes with explicit memory limits and overload failure.
 Read-only transport/controller integration is tested with local TLS fixtures.
-The [simulated lifecycle](LIFECYCLE_STUDY.md) now compares parallel/sequential
+The [simulated lifecycle](docs/guides/LIFECYCLE_STUDY.md) now compares parallel/sequential
 acquisition through cash settlement, including unknown responses, residual loss
 and a bounded sale of unmatched holdings with fees and shared depth.
 Representative feed coverage, calibration and operational order management remain pending. The
-[economic validation plan](ECONOMIC_VALIDATION.md) defines the evidence needed
+[economic validation plan](docs/research/ECONOMIC_VALIDATION.md) defines the evidence needed
 to judge the hypothesis.
 
 ## Documentation
 
-- [Single implementation plan: priorities, dependencies and acceptance](IMPLEMENTATION_PLAN.md)
-- [Project direction and research basis](PROJECT_DIRECTION.md)
-- [Quantitative models, execution research and economic experiments](QUANT_RESEARCH.md)
-- [Applied economic research: search, sizing and joint execution (2026-09-15)](ECONOMIC_STRATEGY_RESEARCH.md)
-- [Performance methodology and research](PERFORMANCE.md)
-- [Architecture](ARCHITECTURE.md)
-- [Raw journal format](JOURNAL_FORMAT.md)
-- [Reviewed metadata snapshot format](METADATA_FORMAT.md)
-- [Finalized session format and offline verification](SESSION_FORMAT.md)
-- [Gross candidate calculation and lifecycle](CANDIDATES.md)
-- [Economic validation and decision gates](ECONOMIC_VALIDATION.md)
-- [Roadmap](ROADMAP.md)
-- [Contributing](CONTRIBUTING.md)
+The [documentation index](docs/README.md) groups the project plan, engineering,
+data formats, usage guides and research. Start with the
+[implementation plan](docs/project/IMPLEMENTATION_PLAN.md) for current work or
+[contributing](docs/CONTRIBUTING.md) for development conventions.
 
 ## Build
 
@@ -157,7 +148,7 @@ rejects incompatible or truncated data, and reports its record, generation, and
 sequence range. CLI version output is generated from the CMake project version.
 
 Metadata and session commands require the Kalshi gateway build. The
-[session workflow](SESSION_FORMAT.md#offline-cli) shows how to pack existing
+[session workflow](docs/formats/SESSION_FORMAT.md#offline-cli) shows how to pack existing
 metadata and journal files into a new finalized directory.
 
 ## Credentials
@@ -173,7 +164,7 @@ risk approval, and a kill switch before it is implemented.
 
 ## Offline economic studies
 
-The [structured replay and execution-study guide](OFFLINE_STUDY.md) covers
+The [structured replay and execution-study guide](docs/guides/OFFLINE_STUDY.md) covers
 `session import`, `session replay` and `session study`, versioned cost policies,
 IOC simulation and the first public-data pilot. No credentials are required;
 no orders are sent and no profitability has been established.

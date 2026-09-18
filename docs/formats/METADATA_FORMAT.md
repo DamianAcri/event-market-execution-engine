@@ -1,6 +1,6 @@
 # Reviewed Kalshi metadata snapshots
 
-Schema 1, introduced in v0.2. See [the synthetic example](examples/metadata.snapshot.json).
+Schema 1, introduced in v0.2. See [the synthetic example](../../examples/metadata.snapshot.json).
 This is an engine-owned format, not a Kalshi API response. Loading is an offline
 setup operation; credentials and environment variables are unnecessary.
 
@@ -91,7 +91,7 @@ string has no trailing LF. This is our schema-1 deterministic encoding, not an
 implementation of RFC 8785 and not a cryptographic hash or signature. Reordered
 arrays, object keys and insignificant whitespace produce the same encoding.
 
-Implemented: phase 1 steps 1–2 in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+Implemented: phase 1 steps 1–2 in [IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md).
 Still required: a crash-aware persisted session manifest, content binding,
 opportunity identity/lifecycle and an end-to-end session replay command. The CLI
 currently validates snapshots and journals independently.
@@ -114,4 +114,4 @@ canonical output and dependency counts. Destruction and file I/O are excluded.
 Two warmup loads precede samples. It uses the existing comparison CSV schema with
 batch size 1, so percentiles concern individual **snapshot loads**, not messages.
 Use `benchmarks/compare.py` with two versions of this executable, `--samples 20`
-and the same source/compiler/flags. See [PERFORMANCE.md](PERFORMANCE.md).
+and the same source/compiler/flags. See [PERFORMANCE.md](../engineering/PERFORMANCE.md).

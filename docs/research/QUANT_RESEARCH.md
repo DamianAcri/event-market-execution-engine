@@ -3,7 +3,7 @@
 Follow-up: [Applied economic research, September 15, 2026](ECONOMIC_STRATEGY_RESEARCH.md)
 reviews the later `7cf248f` offline-study baseline, additional primary papers and a
 reproduced sizing counterexample. Both research documents supply evidence and
-candidate experiments; [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) alone
+candidate experiments; [IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md) alone
 selects their priority and entry conditions. The dated implementation references
 below remain historical, not a list of work still to do.
 
@@ -24,8 +24,8 @@ profitability here.
 The review retains the C++20 structural-arbitrage direction. It adds explicit
 funding-path requirements, refines fee accounting and execution experiments, and
 qualifies historical maker-return evidence. The priorities and acceptance criteria
-are maintained in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md); low-level
-experiments remain in [PERFORMANCE.md](PERFORMANCE.md).
+are maintained in [IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md); low-level
+experiments remain in [PERFORMANCE.md](../engineering/PERFORMANCE.md).
 
 ## Implementation baseline and decisions
 
@@ -275,7 +275,7 @@ infrastructure expenditure when its plausible incremental benefit cannot cover
 its additional cost.
 
 The implementation sequence is maintained in
-[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Sessions, the initial detector,
+[IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md). Sessions, the initial detector,
 accounting reference and first execution simulator have since been implemented;
 their presence does not establish profitability. Further papers should answer
 specific gaps in the selected experiment rather than expand an automatic backlog.

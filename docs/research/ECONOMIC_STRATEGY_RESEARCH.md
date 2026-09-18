@@ -2,7 +2,7 @@
 
 Revisión base: 15 de septiembre de 2026. Actualización: 17 de septiembre de 2026. Proyecto: Event Market Execution Engine (Calci). Investigación y propuestas; las funcionalidades existentes se identifican expresamente.
 
-**Plan vigente:** [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) mantiene el orden, estado y criterios de ejecución. Este documento conserva la investigación y sus propuestas; las extensiones solo se incorporan bajo las condiciones del plan.
+**Plan vigente:** [IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md) mantiene el orden, estado y criterios de ejecución. Este documento conserva la investigación y sus propuestas; las extensiones solo se incorporan bajo las condiciones del plan.
 
 ## Revisión aplicada de colas, costes y tamaños — 17 de septiembre de 2026
 
@@ -41,7 +41,7 @@ no permiten afirmar que todo el sistema esté económicamente calibrado.
 
 ### Qué se ha aplicado y comprobado ahora
 
-La [frontera reproducible de costes](research/results/20260917-economic-frontier/README.md)
+La [frontera reproducible de costes](results/20260917-economic-frontier/README.md)
 reutiliza el replay, el ledger y la reserva de capital nativos. Amplía el
 diagnóstico de un contrato a todos los tamaños enteros 1–100, conserva los
 resultados negativos y añade dos comparadores **hipotéticos** con una pata pasiva.
@@ -95,7 +95,7 @@ funcionalidad implementada por aparecer aquí.
 
 **Entrega posterior de esta revisión:** el preflight público y el cálculo nativo
 de la plantilla BTC de tres patas ya están implementados en local. La
-[comprobación reproducible](research/results/20260917-basket-screen/README.md)
+[comprobación reproducible](results/20260917-basket-screen/README.md)
 examinó 20 combinaciones seleccionadas antes de consultar los libros: ocho sin
 profundidad suficiente y doce sin margen positivo en la rejilla estudiada.
 El modelo sigue siendo condicional; observar episodios en el tiempo y estudiar
@@ -200,7 +200,7 @@ profundidad visible para cubrirlos; en el nivel de la entrada pasiva ya se mostr
 orden pudiera ejecutarse ni conservar ese margen. Un caso tiene además 2,05
 segundos de separación entre las últimas actualizaciones de sus libros.
 Los contadores, supuestos, ejemplos, respuestas REST y hashes están en
-[evidence.json](research/results/20260917-economic-review/evidence.json).
+[evidence.json](results/20260917-economic-review/evidence.json).
 
 Nuestros libros agregados y operaciones públicas no identifican la posición FIFO
 contrafactual ni dónde se canceló cada orden. Que haya una operación al precio
@@ -293,7 +293,7 @@ La literatura determina qué hipótesis merece observarse y qué supuestos hay q
 
 Capturar operaciones públicas junto al libro prepara la comparación de ejecución pasiva y agresiva estudiada por Cont y Kukanov; no implementa su optimizador ni acredita nuestras ejecuciones.[^cont] Huang, Lehalle y Rosenbaum explican que los cambios agregados de cola no identifican qué orden se canceló y que ciertos supuestos pueden sobreestimar fills.[^queue] Por ello los trades observados conservan su dirección, precio y condición de bloque; no alteran por sí mismos el libro ni producen fills simulados. Los bloques se negocian fuera del libro. No se atribuirá dos veces el mismo consumo a un trade y a su delta.[^trades]
 
-El siguiente experimento pasivo solo se abre tras validar captura/replay y disponer de flujo suficiente para evaluar sus supuestos. Debe declarar cola inicial, latencia, tratamiento de cancelaciones, comisiones, selección adversa y exposición de patas; comparar con la referencia agresiva a iguales límites y mostrar sensibilidad. Los eventos/fechas posteriores reservados no se usan para ajustar parámetros. Siguen pendientes selección económica óptima del universo, asignación conjunta de capital y calibración de fills. La precompilación de dependencias y patas conserva la salida de la captura original de dos horas; en el benchmark reproducible de 48 mercados reduce un 6,50 % la mediana del tiempo del estudio en este M2. Es una medición de ingeniería, no de ingresos; véase [PERFORMANCE.md](PERFORMANCE.md).
+El siguiente experimento pasivo solo se abre tras validar captura/replay y disponer de flujo suficiente para evaluar sus supuestos. Debe declarar cola inicial, latencia, tratamiento de cancelaciones, comisiones, selección adversa y exposición de patas; comparar con la referencia agresiva a iguales límites y mostrar sensibilidad. Los eventos/fechas posteriores reservados no se usan para ajustar parámetros. Siguen pendientes selección económica óptima del universo, asignación conjunta de capital y calibración de fills. La precompilación de dependencias y patas conserva la salida de la captura original de dos horas; en el benchmark reproducible de 48 mercados reduce un 6,50 % la mediana del tiempo del estudio en este M2. Es una medición de ingeniería, no de ingresos; véase [PERFORMANCE.md](../engineering/PERFORMANCE.md).
 
 ## Decisión de la revisión base — 15 de septiembre de 2026
 
@@ -311,7 +311,7 @@ Se revisaron trabajos originales, copias de autores y documentación de Kalshi. 
 
 Los resultados empíricos de Polymarket son evidencia sobre ese entorno. Los modelos teóricos aportan herramientas condicionadas a sus supuestos. Las decisiones descritas como **propuestas** son adaptaciones para este proyecto; ningún paper citado acredita su rendimiento en nuestro motor. Los preprints se identifican como tales. Dos trabajos de SSRN quedaron limitados a sus resúmenes y no se usan como fundamento de una implementación.
 
-El código inspeccionado corresponde a `7cf248f8fe96fd01091998a1fe642073d9c6bb9a`, base de trabajo de [PR #7](https://github.com/DamianAcri/event-market-execution-engine/pull/7). Esta referencia fija el estado analizado y no afirma que el PR esté fusionado. El detalle funcional se mantiene en [OFFLINE_STUDY.md](OFFLINE_STUDY.md).
+El código inspeccionado corresponde a `7cf248f8fe96fd01091998a1fe642073d9c6bb9a`, base de trabajo de [PR #7](https://github.com/DamianAcri/event-market-execution-engine/pull/7). Esta referencia fija el estado analizado y no afirma que el PR esté fusionado. El detalle funcional se mantiene en [OFFLINE_STUDY.md](../guides/OFFLINE_STUDY.md).
 
 | Capacidad en esa revisión | Implicación económica |
 |---|---|
@@ -499,7 +499,7 @@ Mantener C++ portable, memoria acotada y perfiles por arquitectura. Priorizar ar
 
 ## Experimentos y orden de implementación propuestos
 
-Los identificadores E1–E5 son propuestas de investigación, no cinco fases obligatorias. El [plan vigente](IMPLEMENTATION_PLAN.md) selecciona E1 como P1 y observación E2 como P2; la ejecución E4 alimenta P3 y la medición E5 acompaña los cambios. E3 es una extensión condicionada a oportunidades observadas o restricciones relevantes. La siguiente tabla conserva qué pretende comprobar cada experimento, sin definir un orden paralelo.
+Los identificadores E1–E5 son propuestas de investigación, no cinco fases obligatorias. El [plan vigente](../project/IMPLEMENTATION_PLAN.md) selecciona E1 como P1 y observación E2 como P2; la ejecución E4 alimenta P3 y la medición E5 acompaña los cambios. E3 es una extensión condicionada a oportunidades observadas o restricciones relevantes. La siguiente tabla conserva qué pretende comprobar cada experimento, sin definir un orden paralelo.
 
 | Experimento | Trabajo | Resultado que decidirá si mejora el proyecto |
 |---|---|---|

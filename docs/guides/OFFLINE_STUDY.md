@@ -6,7 +6,7 @@ It has no order transport or credentials. The replay and simulator use the same
 decoder, market state, constraint metadata and fixed-point types as the engine.
 
 The legacy policy remains reproducible. Policy schema 2 adds exact, bounded
-net-profit sizing for the same two-leg portfolios; see [NET_SIZING.md](NET_SIZING.md)
+net-profit sizing for the same two-leg portfolios; see [NET_SIZING.md](../engineering/NET_SIZING.md)
 for its required budget, fee-bound proof and explicit incomplete-search status.
 
 ```sh
@@ -215,7 +215,7 @@ nor the absence of opportunities in other periods. Public REST requires no keys;
 [authenticated WS data](https://docs.kalshi.com/getting_started/quick_start_market_data)
 is needed to progress toward representative timing/sequence observations.
 
-Work order is maintained in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md):
+Work order is maintained in [IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md):
 P1 improves sizing, P2 owns observed capture/coverage, and P3 extends this simulator
 through response, residual-position and settlement accounting. Netting, passive
 queues and other models are conditional extensions, not prerequisites to P1.

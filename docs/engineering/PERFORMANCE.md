@@ -1,7 +1,7 @@
 # Performance engineering
 
 This document maintains performance methods, results and candidate experiments.
-[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) alone selects current priorities;
+[IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md) alone selects current priorities;
 the techniques below are not an additional work queue. No local timing is a claim
 about exchange latency, execution success or profitability.
 
@@ -15,7 +15,7 @@ charges completed levels once and recomputes only the partial final level from
 that prefix. This avoids rescanning prior depth and preserves fractional fills
 without changing the existing two-leg engine.
 
-[Native CLI baseline](benchmarks/results/20260917-basket-screen/native-cli.json)
+[Native CLI baseline](../../benchmarks/results/20260917-basket-screen/native-cli.json)
 contains eight deterministic workloads: 20/100 baskets, 1/16 price levels and
 quantity caps 1/100. Adjacent baskets share thresholds; half are positive and
 half negative under the conditional model. Every output matches an independent
@@ -29,7 +29,7 @@ unknown, not zero. Reproduce with `benchmarks/basket_screen_benchmark.py`.
 
 ### Public preparation transport — 2026-09-17
 
-[Paired public-read measurements](benchmarks/results/20260917-basket-screen/public-read.json)
+[Paired public-read measurements](../../benchmarks/results/20260917-basket-screen/public-read.json)
 use the same frozen six-URL plan: two series records, two historical-inclusive
 fee schedules and two event records. Each mode has two repetitions, reversing
 mode order in the second repetition, with the same five-starts-per-second limit.
@@ -56,7 +56,7 @@ The first measurement exposed Python 3.9 `HTTPResponse.read1()` leaving a fully
 consumed response open, causing unnecessary reconnects. Explicitly closing the
 response preserves the persistent socket; a real-stdlib in-memory regression
 covers consecutive length-delimited and chunked responses. The
-[earlier defective-pool measurements](benchmarks/results/20260917-basket-screen/public-read-before-response-close.json)
+[earlier defective-pool measurements](../../benchmarks/results/20260917-basket-screen/public-read-before-response-close.json)
 are retained as such, not silently replaced. `benchmarks/public_read_benchmark.py`
 requires an explicit `--network` option; without it, it only emits the frozen plan.
 
@@ -65,13 +65,13 @@ requires an explicit `--network` option; without it, it only emits the frozen pl
 The REST screen's allocation-free three-leg sizing kernel now lives in `eme_core`
 and also serves the streaming observer. All eight retained REST benchmark
 outputs remain byte-identical after extraction; see
-[parity evidence](benchmarks/results/20260917-basket-observation/rest-core-extraction-parity.json).
+[parity evidence](../../benchmarks/results/20260917-basket-observation/rest-core-extraction-parity.json).
 Changed books rebuild their cached acquisition depth once; a precompiled
 market-to-basket index selects the affected calculations. Unchanged public trades
 do not reprice books. Positive quote changes stay in one episode and avoid
 per-update JSONL writes.
 
-[Native callback measurements](benchmarks/results/20260917-basket-observation/native-callbacks.json)
+[Native callback measurements](../../benchmarks/results/20260917-basket-observation/native-callbacks.json)
 use eight levels per side, whole quantities 1–100, one warmup and nine batches
 of 200 callbacks on the recorded Apple M2 Pro Release build:
 
@@ -113,7 +113,7 @@ These are public methods and sources, not a claim to reproduce a firm's private
 trading platform. Our immediate priority is avoiding unnecessary work in the
 existing path while retaining replay and failure semantics.
 
-The [quantitative research supplement](QUANT_RESEARCH.md) adds public accounts from
+The [quantitative research supplement](../research/QUANT_RESEARCH.md) adds public accounts from
 Optiver on research-to-production iteration and Jane Street on incremental
 computation, deterministic fault testing and jitter. It also covers execution
 models, adverse selection, collateral and statistical validation. These methods
@@ -530,7 +530,7 @@ Benchmark source SHA-256: `3b799b905816a7988ee76f928768a2fa76b0a16fb7c19da4ba7fd
 Apple M2 Pro, AppleClang 21, CMake Release/O3, no native tuning, PGO or LTO.
 Six alternating baseline/candidate pairs per budget, 50 measured complete runs
 and three warmups per process. No concurrent compilation/tests during measurement.
-Input: the same 96-record observed REST pilot described in [OFFLINE_STUDY.md](OFFLINE_STUDY.md),
+Input: the same 96-record observed REST pilot described in [OFFLINE_STUDY.md](../guides/OFFLINE_STUDY.md),
 28 relationships, cap 100 contracts, 1 ms symmetric arrival assumption, direct
 account quantum and declared general 0.07 fee coefficient. Neither version finds
 an opportunity, so these measurements describe rejection-heavy replay; they do
@@ -786,7 +786,7 @@ measurements are illustrative and do not establish portability or hardware needs
 The final adapter keeps fixed-memory latency histograms and bounded raw/economic
 writer queues. Sparse economic output incurs a short publication lock, never disk
 I/O on the decision thread. Timers are rearmed only when the earliest outstanding
-simulated deadline changes. [LIVE_PAPER.md](LIVE_PAPER.md) defines the clocks,
+simulated deadline changes. [LIVE_PAPER.md](../guides/LIVE_PAPER.md) defines the clocks,
 percentile rounding and uncalibrated execution assumptions. Re-measure on the
 actual deployment host and on representative active sessions before specializing.
 
@@ -819,7 +819,7 @@ adapter as well as dependency precompilation. Median of per-run p50 study times:
 | Synthetic full study | 179.294 ms | 167.638 ms | 6.50% |
 
 All six output digests are `10353883350594503574`. Raw CSVs and the report are in
-[benchmarks/results/20260917-coverage](benchmarks/results/20260917-coverage).
+[benchmarks/results/20260917-coverage](../../benchmarks/results/20260917-coverage).
 An initial equivalent workload using archived public identifiers also showed a
 small improvement; the committed generator removes that external-input dependency.
 This is one host and workload, not a portable tail-latency guarantee or evidence
@@ -856,7 +856,7 @@ There was one observation per variant; 2.985 / 2.539 seconds are illustrative lo
 times, not a statistically established timing improvement. Full public originals
 remain available on disk. These are discovery-process measurements, not engine
 hot-path memory. Reproduction and raw metrics are in
-[the catalog measurement](benchmarks/results/20260917-market-selection/catalog-memory.json).
+[the catalog measurement](../../benchmarks/results/20260917-market-selection/catalog-memory.json).
 
 The native synthetic screen processed 1,024 markets / 512 independent relations
 in a mean 11.6785 ms across 20 identical-output runs on Apple M2 Pro, AppleClang21,
@@ -866,4 +866,4 @@ was precompiled outside timing; process startup, disk, Python and network are
 excluded. The small-depth fixture uses zero fees and a three-contract cap, so it
 is neither a worst-case cost model nor execution latency. No tail-latency or
 profitability claim follows. Run `eme_market_screen_tests --benchmark`; full
-provenance is in [native-screen.json](benchmarks/results/20260917-market-selection/native-screen.json).
+provenance is in [native-screen.json](../../benchmarks/results/20260917-market-selection/native-screen.json).

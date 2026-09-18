@@ -2,7 +2,7 @@
 
 This defines evidence for the existing two-market implication/complement
 acquisition model. Work order and phase status belong exclusively to
-[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md); this is not a parallel backlog.
+[IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md); this is not a parallel backlog.
 The criteria complement [the research supplement](QUANT_RESEARCH.md). Engineering completion and
 economic evidence are separate: a synthetic positive example, a fast benchmark,
 or a clean replay is not evidence of realized profit.
@@ -13,11 +13,11 @@ The project can validate metadata, bind session artifacts, process normalized
 books and track deterministic **gross candidates** from their best prices.
 Tests independently check cash/payoff examples and repeat candidate lifecycle
 events through the existing journal/decoder/state pipeline with explicit fixture
-controller actions. See [CANDIDATES.md](CANDIDATES.md).
+controller actions. See [CANDIDATES.md](../engineering/CANDIDATES.md).
 
 General structured replay now uses explicit manifest-bound controller plans. The
 first offline depth/cost/funding evaluator and delayed IOC simulator are implemented;
-[OFFLINE_STUDY.md](OFFLINE_STUDY.md) specifies their assumptions and results.
+[OFFLINE_STUDY.md](../guides/OFFLINE_STUDY.md) specifies their assumptions and results.
 A 96-snapshot, 8-market public REST pilot found no gross candidates or trades across
 12 scenarios. This small, asynchronous sample is inconclusive: opportunity frequency,
 achievable returns, capacity and economic latency sensitivity remain unestablished.
@@ -76,7 +76,7 @@ held-out periods and calibration against observed execution.
 ## Where infrastructure work stops being the immediate priority
 
 Structured replay, the first costed evaluator and IOC simulator already exist.
-Follow P1–P3 in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): improve sizing,
+Follow P1–P3 in [IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md): improve sizing,
 observe supply and complete the economic execution loop. Keep correctness and
 portable measurement with each change. Add infrastructure when a measured
 limitation or a specific validity requirement blocks that chain.
@@ -86,7 +86,7 @@ finished: once recording and replay can preserve the needed inputs, transport
 for collection becomes useful. Offline fixtures and simulation need no keys;
 observed venue data is needed to test supply and execution assumptions.
 
-Use the [economic latency experiment](PERFORMANCE.md#economic-latency-experiment)
+Use the [economic latency experiment](../engineering/PERFORMANCE.md#economic-latency-experiment)
 to prioritize later low-level optimizations: compare net result and exposure under
 controlled additional delays at equal inputs and limits. A local microsecond gain
 can be technically real and still have no measurable economic value.

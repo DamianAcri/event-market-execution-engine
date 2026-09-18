@@ -97,4 +97,4 @@ end-to-end test verifies actual simulated fills and a separate one-leg-rejection
 loss. This establishes a specific decision improvement, not market profitability.
 Both policies find zero attempts on the existing short REST pilot; its coverage
 remains insufficient for an economic conclusion. See [PERFORMANCE.md](PERFORMANCE.md)
-for timings and [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for remaining work.
+for timings and [IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md) for remaining work.

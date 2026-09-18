@@ -42,7 +42,7 @@ and fee assumptions are retained in [screen-input.json](screen-input.json);
 compiled CLI, from the repository root:
 
 ```sh
-build/event-engine basket screen research/results/20260917-basket-screen/screen-input.json
+build/event-engine basket screen docs/research/results/20260917-basket-screen/screen-input.json
 ```
 
 This replays fixed snapshot arithmetic; its saved `as_of_ms` intentionally does
@@ -51,7 +51,7 @@ terms PDF remain in the original local run archive; their hashes are retained.
 No credential file or account data was read.
 
 Synthetic native performance measurements are in
-[native-cli.json](../../../benchmarks/results/20260917-basket-screen/native-cli.json).
+[native-cli.json](../../../../benchmarks/results/20260917-basket-screen/native-cli.json).
 They include process startup and are not feed-to-decision latency measurements.
 
 All 44 local CTest entries pass. The loopback TLS transport fixture required a
@@ -68,4 +68,4 @@ declared market windows and expiries. Shared depth, feed age, missing data and
 later confirmation sessions must remain visible. Only if positive independent
 episodes exist should a three-leg completion-risk model and executor be built.
 The existing two-leg paper collector is unchanged. The single task order remains
-in [IMPLEMENTATION_PLAN.md](../../../IMPLEMENTATION_PLAN.md).
+in [IMPLEMENTATION_PLAN.md](../../../project/IMPLEMENTATION_PLAN.md).

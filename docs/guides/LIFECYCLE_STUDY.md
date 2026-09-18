@@ -115,8 +115,8 @@ contradictory labels, first-leg selection, completion budgets, operating cost,
 limited capital, deterministic replay and no future-label influence. Existing
 multi-level and independent core fee/sizing tests remain in place.
 
-[PERFORMANCE.md](PERFORMANCE.md) contains complete-study timing and preservation
-of the previous policy's output. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
+[PERFORMANCE.md](../engineering/PERFORMANCE.md) contains complete-study timing and preservation
+of the previous policy's output. [IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md)
 remains the sole plan: collect/calibrate the observations, compare frozen policies
 under equal limits, then address broader exit and operational behavior where the
 results justify them. Same-price fill fragmentation, impact, queue behavior and

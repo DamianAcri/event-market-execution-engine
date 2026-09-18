@@ -12,7 +12,7 @@ from pathlib import Path
 import struct
 
 
-REPO = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[3]
 
 
 def module(name, path):
@@ -23,7 +23,7 @@ def module(name, path):
 
 
 oracle = module("basket_oracle", REPO / "tests/basket_screen_oracle_tests.py")
-audit = module("capture_audit", REPO / "research/results/20260917-basket-live/audit.py")
+audit = module("capture_audit", REPO / "docs/research/results/20260917-basket-live/audit.py")
 
 
 def require(condition, message):
@@ -142,7 +142,7 @@ def validate(root, path):
             "later_trade_prices_1e4": sorted({int(Fraction(msg[outcome + "_price_dollars"]) * 10000) for msg in later}),
             "later_taker_outcome_counts": dict(Counter(msg["taker_outcome_side"] for msg in later)),
             "trade_through_or_own_fill_inferred": False})
-    paths = [path, Path(__file__), REPO / "research/tools/basket_frontier.cpp", REPO / "tests/basket_screen_oracle_tests.py"]
+    paths = [path, Path(__file__), REPO / "docs/research/tools/basket_frontier.cpp", REPO / "tests/basket_screen_oracle_tests.py"]
     return {"schema_version": 1, "capture": root.name, "original_capture_audit_passed": True,
             "rational_witnesses_checked": checked, "witness_grid_sizes_checked": 100,
             "one_microdollar_corruption_controls_rejected": checked,

@@ -5,7 +5,7 @@ recording, replaying, and validating event-market data. It deliberately separate
 market-data correctness from strategy, connectivity, and order submission.
 
 Updated on 2026-09-15 for merged P1 sizing and P2 read-only transport/controller. Work order is owned by
-[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md); future boundaries below are
+[IMPLEMENTATION_PLAN.md](../project/IMPLEMENTATION_PLAN.md); future boundaries below are
 identified separately from implemented components.
 
 ## Data path
@@ -26,7 +26,7 @@ The current replay reads verified raw records. Future live input feeds the same
 decoder, normalizer and state transitions after retaining the original bytes.
 The optional background recorder queues owned raw records and performs journal
 I/O on one worker. Queue acceptance is not durability; transport/controller
-integration must stop on recording failure. See [READONLY_CAPTURE.md](READONLY_CAPTURE.md).
+integration must stop on recording failure. See [READONLY_CAPTURE.md](../guides/READONLY_CAPTURE.md).
 
 ## Components
 
@@ -49,7 +49,7 @@ integration must stop on recording failure. See [READONLY_CAPTURE.md](READONLY_C
   background recorder moves journal I/O to one worker without sharing mutable
   market state. Session JSON and SHA-256 remain
   at this boundary; gateway JSON remains in the gateway.
-  See [SESSION_FORMAT.md](SESSION_FORMAT.md) and [OFFLINE_STUDY.md](OFFLINE_STUDY.md).
+  See [SESSION_FORMAT.md](../formats/SESSION_FORMAT.md) and [OFFLINE_STUDY.md](../guides/OFFLINE_STUDY.md).
 
 ## Correctness invariants
 
@@ -110,4 +110,4 @@ The choice follows the architecture guide's existing-stack, explicit-contract an
 reuse principles: keep C++20 and use maintained TLS/WS implementations. It adds
 build dependencies and uses a conservative one-market subscription layout; measured
 feed validation remains portable, without native CPU tuning. See
-[READONLY_CAPTURE.md](READONLY_CAPTURE.md) for timeouts, history and validation.
+[READONLY_CAPTURE.md](../guides/READONLY_CAPTURE.md) for timeouts, history and validation.

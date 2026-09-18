@@ -6,6 +6,8 @@ types rather than floating point or untyped integers.
 
 ## Build and test
 
+Run these commands from the repository root.
+
 ```bash
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
@@ -29,7 +31,7 @@ ctest --test-dir build-core --output-on-failure
 
 - Add a focused regression test for every corrected invariant or bug.
 - Treat journal framing/schema changes as compatibility changes and update
-  `JOURNAL_FORMAT.md`.
+  `docs/formats/JOURNAL_FORMAT.md`.
 - Give persisted market and constraint metadata explicit stable IDs and versions.
 - Do not infer semantic contract relationships from titles. Definitions must be
   reviewed, versioned, and carry provenance.

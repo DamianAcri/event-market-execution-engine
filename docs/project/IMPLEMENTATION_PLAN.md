@@ -3,7 +3,7 @@
 Updated: 2026-09-17. This is the **single execution plan** for the project: priorities,
 dependencies, current status and acceptance criteria are maintained here.
 [PROJECT_DIRECTION.md](PROJECT_DIRECTION.md) defines the product objective;
-[ARCHITECTURE.md](ARCHITECTURE.md) defines component boundaries. Research documents
+[ARCHITECTURE.md](../engineering/ARCHITECTURE.md) defines component boundaries. Research documents
 justify or propose methods; a proposal becomes scheduled work only when this plan
 selects it. [ROADMAP.md](ROADMAP.md) is a release index, not a second work queue.
 
@@ -41,11 +41,11 @@ Fixed decisions for the initial strategy:
 
 The initial observation was attempted and is **not accepted as a complete
 window**: host sleep interrupted receipt and the policy expired. See the
-[capture audit](research/results/20260917-basket-live/README.md). The runner now
+[capture audit](../research/results/20260917-basket-live/README.md). The runner now
 detects long scheduling gaps, but the old observer's integrated duration counters
 do not certify uninterrupted coverage. No automatic repeat capture is scheduled.
 
-The [all-size diagnostic](research/results/20260917-economic-frontier/README.md)
+The [all-size diagnostic](../research/results/20260917-economic-frontier/README.md)
 reproduces the original 24,054,100 correlated quantity checks, with no positive
 all-taker margin at sizes 1–100. Hypothetical one-passive-leg quotes can be
 positive, but their best examples have little or no public-trade support; the
@@ -56,7 +56,7 @@ feasibility question, not demonstrated profit or a reason to deploy a maker bot.
 the same conditional baskets and aggressive acquisition as the control.
 This is an explicit research subgate before step 4's executor decision below;
 it does not mark step 3's prospective evidence complete. Its literature mapping
-and limitations are in the [applied review](ECONOMIC_STRATEGY_RESEARCH.md#revisión-aplicada-de-colas-costes-y-tamaños--17-de-septiembre-de-2026).
+and limitations are in the [applied review](../research/ECONOMIC_STRATEGY_RESEARCH.md#revisión-aplicada-de-colas-costes-y-tamaños--17-de-septiembre-de-2026).
 
 | Order | Work selected now | Acceptance / stop condition |
 | --- | --- | --- |
@@ -98,7 +98,7 @@ the economic acceptance of step 3.
 
 The originally planned initial window has now been attempted; its result and the
 superseding next action are recorded above. The
-[continuous observation command](READONLY_CAPTURE.md#continuous-conditional-basket-observation)
+[continuous observation command](../guides/READONLY_CAPTURE.md#continuous-conditional-basket-observation)
 remains available. Its default 30-minute duration is an operational bound, not a
 statistical sufficiency claim or an instruction to repeat it now.
 
@@ -109,7 +109,7 @@ public trades and policy expiry without a new price. Live and replay episode
 records match exactly. The final simultaneous-count correction passes its
 targeted rerun; 31 observer checks and 59 shared-sizing/REST checks also pass
 AddressSanitizer and UndefinedBehaviorSanitizer. Evidence is in
-[validation.json](research/results/20260917-basket-observation/validation.json).
+[validation.json](../research/results/20260917-basket-observation/validation.json).
 Remote portability CI for this branch remains pending.
 
 ## Research decision — 2026-09-17, after the economic capture
@@ -124,7 +124,7 @@ ledger with incremental cumulative costs. A Python rational oracle checks the
 native arithmetic. Persistent connections and bounded independent preparation
 requests are implemented with isolated response/archive ownership. No basket
 executor, continuous opportunity counter or new paper fill model is delivered.
-See [READONLY_CAPTURE.md](READONLY_CAPTURE.md#btc-basket-public-preflight).
+See [READONLY_CAPTURE.md](../guides/READONLY_CAPTURE.md#btc-basket-public-preflight).
 
 **Observed acceptance result:** the 14:09 UTC public snapshot qualified 312
 nearest-enclosure baskets from 636 BTC markets. The frozen budget selected 20
@@ -134,7 +134,7 @@ rational oracle and native offline replay. This single snapshot does not measure
 episode duration or reject the remaining 292 candidates. The initial preparation
 took 8.437 seconds; its HTTP reuse defect was subsequently fixed. Detailed data,
 provenance and limits are retained in the
-[acceptance record](research/results/20260917-basket-screen/README.md).
+[acceptance record](../research/results/20260917-basket-screen/README.md).
 All 44 local CTest entries pass, including the new screen and preparation checks;
 the native basket checks also pass AddressSanitizer/UndefinedBehaviorSanitizer.
 
@@ -153,7 +153,7 @@ window provides partial point evidence only; the current passive feasibility
 subgate above now precedes another operator run. This is a new payoff
 relationship, not merely more of the existing nested pairs. Research rationale,
 primary sources and the failed fresh-price example are in
-[ECONOMIC_STRATEGY_RESEARCH.md](ECONOMIC_STRATEGY_RESEARCH.md).
+[ECONOMIC_STRATEGY_RESEARCH.md](../research/ECONOMIC_STRATEGY_RESEARCH.md).
 Do not run another equivalent two-hour baseline solely because preparation or
 replay is faster. No real/demo order submission is authorized.
 
@@ -212,15 +212,15 @@ status. Integrating completed work does not count as implementing another phase.
 | Implemented | Reviewed metadata, finalized sessions, incremental gross candidates and general structured replay. |
 | Implemented reference | Costed depth, per-order fees, conservative reserves, separate IOC arrivals, shared depletion and partial-position bounds. |
 | Implemented engineering checks | Independent arithmetic/generated/differential cases, CI configuration and portable benchmark tooling. Broader campaigns remain targeted work, not a reason to restart the foundation. |
-| Implemented and locally measured | Exact bounded net-profit sizing, independent exhaustive oracle and versioned replay policy; see [NET_SIZING.md](NET_SIZING.md). |
+| Implemented and locally measured | Exact bounded net-profit sizing, independent exhaustive oracle and versioned replay policy; see [NET_SIZING.md](../engineering/NET_SIZING.md). |
 | Pending | Read-only live capture, representative observations, response/hedge/settlement accounting and calibrated execution. |
 | Pending | Operational order lifecycle, reconciliation and separately authorized execution. |
 
 The first REST pilot (one event, eight markets, about 75 seconds) was inconclusive.
 The later synthetic sizing example establishes a missed smaller-size opportunity,
 not market profitability. Details and reproductions are in
-[OFFLINE_STUDY.md](OFFLINE_STUDY.md) and
-[ECONOMIC_STRATEGY_RESEARCH.md](ECONOMIC_STRATEGY_RESEARCH.md).
+[OFFLINE_STUDY.md](../guides/OFFLINE_STUDY.md) and
+[ECONOMIC_STRATEGY_RESEARCH.md](../research/ECONOMIC_STRATEGY_RESEARCH.md).
 
 ## Delivery order
 
@@ -246,7 +246,7 @@ separate authorization and operational readiness.
 `e7b7644`, with portability and sanitizer CI passing. The documented
 smaller-size opportunity is recovered through replay, generated cases match an
 independent exhaustive fee ledger, and the old policy retains identical output.
-Core sizing and whole-study comparisons are measured in [PERFORMANCE.md](PERFORMANCE.md).
+Core sizing and whole-study comparisons are measured in [PERFORMANCE.md](../engineering/PERFORMANCE.md).
 This closes P1's two-leg quantity-selection scope. Portfolio allocation, uncertain
 fills and operational execution remain in their separately defined phases below.
 
@@ -313,13 +313,13 @@ Local Release validation passes all 35 CTest entries (including 23 TLS scenarios
 Focused feed/study/paper/residual tests pass ASan and UBSan; leak detection is not
 supported by this macOS sanitizer runtime. The old two-hour study is byte-identical,
 and the reproducible benchmark shows a 6.50% median study-time reduction on this
-host; see [PERFORMANCE.md](PERFORMANCE.md). A 30-second authenticated read-only
+host; see [PERFORMANCE.md](../engineering/PERFORMANCE.md). A 30-second authenticated read-only
 preflight finalized 48 initial books on one connection with identical paper/replay
 accounting. It received no deltas or public trades, so real trade-stream sequencing
 and representative economic observations remain unverified. No remote CI or merge
 claim is made by this local validation.
 The research-to-decision mapping and primary sources are in the dated update to
-[ECONOMIC_STRATEGY_RESEARCH.md](ECONOMIC_STRATEGY_RESEARCH.md).
+[ECONOMIC_STRATEGY_RESEARCH.md](../research/ECONOMIC_STRATEGY_RESEARCH.md).
 
 **Current implementation — economic discovery:** `feat/economic-market-selection`
 adds `--profile economic` before the next long capture. It traverses the open
@@ -355,7 +355,7 @@ All 39 local Release CTests pass, including the local TLS transport fixtures;
 the new native screen passes ASan/UBSan, and the gateway-disabled build passes
 11 CTests. This validated discovery and selection plumbing before the prospective
 session described at the top of this plan; profitability remains unproven. Evidence is in
-[public-preparation.json](benchmarks/results/20260917-market-selection/public-preparation.json).
+[public-preparation.json](../../benchmarks/results/20260917-market-selection/public-preparation.json).
 
 **Earlier proposed gate, now secondary to the basket screen above:** after
 capture/replay acceptance and sufficient usable trade/book observations, define
@@ -383,7 +383,7 @@ updates; two legacy captures retain identical transcripts. The operator runner
 now prepares reviewed metadata and records bounded sessions without orders.
 **P2 remains data-dependent, not complete:** the representative multi-event/date
 campaign and economic calibration still require collected observations.
-[READONLY_CAPTURE.md](READONLY_CAPTURE.md) owns the actual interface and limits.
+[READONLY_CAPTURE.md](../guides/READONLY_CAPTURE.md) owns the actual interface and limits.
 
 **Deliverable:** reproducible observed sessions and a report showing where net
 margin exists, at what quantities, and which constraints prevent acquisition.
@@ -430,7 +430,7 @@ Schema 3 compares parallel acquisition
 with bounded sequential completion, explicit leg order, delayed responses,
 partial/failed fills, conservative EOF reservations, exact settlement cash and
 paid capital holding time. Independent synthetic ledgers validate accounting;
-legacy policy output is preserved. See [LIFECYCLE_STUDY.md](LIFECYCLE_STUDY.md).
+legacy policy output is preserved. See [LIFECYCLE_STUDY.md](../guides/LIFECYCLE_STUDY.md).
 Schema 4 adds `hold` versus one bounded sale of confirmed unmatched holdings on
 `feat/residual-position-exits`: shared book depletion across buy/sell directions,
 exact exit fees, FIFO ownership/cost basis, delayed availability of sale proceeds,
@@ -474,7 +474,7 @@ orders advance on recorded local clock events during quiet feeds; sparse output
 is bounded and asynchronous. The finalizer compares economic events and final
 accounting with replay before publishing `paper-summary.json`. The operator owns
 long runs; no order submission or account endpoints are added. See
-[LIVE_PAPER.md](LIVE_PAPER.md). This is an initial fixed simulation scenario,
+[LIVE_PAPER.md](../guides/LIVE_PAPER.md). This is an initial fixed simulation scenario,
 not a calibrated production policy. Representative economic evidence, real fill
 calibration and exchange order/restart/reconciliation remain open. Demo and real
 orders remain outside current authorization.
@@ -531,11 +531,11 @@ and scheduled arrivals when measuring backlog. CI checks portability and behavio
 shared CI hosts do not establish latency rankings. Hardware recommendations follow
 measurements on intended deployment targets, including operating cost.
 
-[PERFORMANCE.md](PERFORMANCE.md) owns benchmark procedures/results.
-[ECONOMIC_VALIDATION.md](ECONOMIC_VALIDATION.md) owns evidence definitions, not
+[PERFORMANCE.md](../engineering/PERFORMANCE.md) owns benchmark procedures/results.
+[ECONOMIC_VALIDATION.md](../research/ECONOMIC_VALIDATION.md) owns evidence definitions, not
 another implementation sequence. Research stays in
-[QUANT_RESEARCH.md](QUANT_RESEARCH.md) and
-[ECONOMIC_STRATEGY_RESEARCH.md](ECONOMIC_STRATEGY_RESEARCH.md).
+[QUANT_RESEARCH.md](../research/QUANT_RESEARCH.md) and
+[ECONOMIC_STRATEGY_RESEARCH.md](../research/ECONOMIC_STRATEGY_RESEARCH.md).
 
 ## Reconciliation of the previous documents
 

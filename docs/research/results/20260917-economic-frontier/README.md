@@ -4,7 +4,7 @@
 gate is a bounded passive-entry feasibility study with trade/queue support and
 delayed hedge costs. Do not implement a basket executor or repeat the same long
 capture merely because a static passive quote looks profitable. The single
-execution plan is [IMPLEMENTATION_PLAN.md](../../../IMPLEMENTATION_PLAN.md).
+execution plan is [IMPLEMENTATION_PLAN.md](../../../project/IMPLEMENTATION_PLAN.md).
 
 This analysis reuses `basket-observe-20260917T145824.308090Z`. Its interrupted
 coverage is documented in the [capture audit](../20260917-basket-live/README.md).
@@ -105,18 +105,24 @@ library names). On macOS select an SDK compatible with the compiler if needed.
 ```sh
 c++ -std=c++20 -O3 -DNDEBUG -pthread \
   -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror \
-  -Iinclude -Isrc -I"$JSON_INCLUDE" research/tools/basket_frontier.cpp \
+  -Iinclude -Isrc -I"$JSON_INCLUDE" docs/research/tools/basket_frontier.cpp \
   "$BUILD_DIR/libeme_session.a" "$BUILD_DIR/libeme_kalshi_gateway.a" \
   "$BUILD_DIR/libeme_core.a" -o /tmp/eme-basket-frontier
 /tmp/eme-basket-frontier "$CAPTURE_DIRECTORY" > /tmp/frontier.json
-cmp research/results/20260917-economic-frontier/frontier.json /tmp/frontier.json
-python3 -B research/tools/validate_frontier.py "$CAPTURE_DIRECTORY" \
-  research/results/20260917-economic-frontier/frontier.json
+cmp docs/research/results/20260917-economic-frontier/frontier.json /tmp/frontier.json
+python3 -B docs/research/tools/validate_frontier.py "$CAPTURE_DIRECTORY" \
+  docs/research/results/20260917-economic-frontier/frontier.json
 ```
 
 The validator requires Python 3.9+ standard library only. The source baseline and
 binary/library hashes are retained in provenance. No account endpoints, API
 settings, private keys or network requests are used. Zero orders are submitted.
+
+Documentation relocation: the archived JSON manifests retain their original
+paths and source hashes from this analysis. Current reproduction commands use
+`docs/research/`; the validator's path resolution was updated for that move, so
+its current source hash and emitted artifact paths differ from the archived
+validation report. The frontier data and C++ diagnostic are unchanged.
 
 ## Boundaries of the conclusion
 
@@ -126,4 +132,4 @@ capital allocation has been established. Point observations may be used for
 diagnosis; the old integrated duration counters must not be used as evidence of
 continuous exposure. All passive findings are exploratory and need future whole
 expiry cohorts for confirmation. The source-to-decision mapping is in
-[the applied research review](../../../ECONOMIC_STRATEGY_RESEARCH.md#revisión-aplicada-de-colas-costes-y-tamaños--17-de-septiembre-de-2026).
+[the applied research review](../../ECONOMIC_STRATEGY_RESEARCH.md#revisión-aplicada-de-colas-costes-y-tamaños--17-de-septiembre-de-2026).

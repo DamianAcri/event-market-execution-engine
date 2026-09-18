@@ -15,7 +15,7 @@ Research includes public methods from quantitative trading firms generally,
 economic and microstructure papers, execution models and inventory control.
 Jane Street and Optiver are examples of relevant sources. Apply a method when its
 assumptions fit the venue and its measured economic benefit justifies its complexity.
-The [quantitative research supplement](QUANT_RESEARCH.md) records evidence,
+The [quantitative research supplement](../research/QUANT_RESEARCH.md) records evidence,
 limitations and proposed experiments, including the September 2026 review.
 
 This makes the project a structural-arbitrage and execution optimizer. It extends
@@ -51,7 +51,7 @@ An early cash release must not be counted twice as profit. Fee accounting must
 preserve per-order rounding state across partial fills. These are requirements
 for evaluation: an offline fee/funding reference is implemented, while eligible
 collateral release and capital-time accounting remain extensions. Source details
-are in [the supplement](QUANT_RESEARCH.md).
+are in [the supplement](../research/QUANT_RESEARCH.md).
 
 ## Intended decisions
 
@@ -85,7 +85,7 @@ The CLI can inspect metadata, pack/verify/import sessions, replay and study them
 The current sizing policy chooses the largest funded size, which can omit a
 smaller profitable trade. The simulator does not yet provide response/hedge/
 settlement accounting. There is no authenticated capture, order transport or
-demonstrated realized profitability. See [OFFLINE_STUDY.md](OFFLINE_STUDY.md)
+demonstrated realized profitability. See [OFFLINE_STUDY.md](../guides/OFFLINE_STUDY.md)
 for the implemented contracts and limitations.
 
 The next work is profit-aware sizing and representative read-only observations,
