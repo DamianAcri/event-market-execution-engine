@@ -1,0 +1,44 @@
+{
+  "schema": "btc-basket-contract-source-manifest-v1",
+  "review_date": "2026-09-17",
+  "raw_sources": [
+    {
+      "url": "https://assets.kalshi.com/contract_terms/BTC.pdf",
+      "archive_path": "/private/tmp/eme-basket-contract-research/BTC.pdf",
+      "bytes": 24445,
+      "sha256": "e7d857369971e75e9db14c5e2d91c29b94eb9a06e83e2acd9777991c4f2a0e2f",
+      "archived_at_from_file_mtime": "2026-09-17T13:51:18.807585+00:00"
+    },
+    {
+      "url": "https://external-api.kalshi.com/trade-api/v2/events/KXBTCD-26SEP1817",
+      "archive_path": "/private/tmp/eme-basket-contract-research/KXBTCD-26SEP1817.json",
+      "bytes": 94414,
+      "sha256": "954d2b34e80947149b34a739c59a081d5afee57ca205a49c3b6f597927ddceba",
+      "archived_at_from_file_mtime": "2026-09-17T13:58:04.308552+00:00"
+    },
+    {
+      "url": "https://external-api.kalshi.com/trade-api/v2/events/KXBTC-26SEP1817",
+      "archive_path": "/private/tmp/eme-basket-contract-research/KXBTC-26SEP1817.json",
+      "bytes": 95993,
+      "sha256": "f026f1e34279c26070a48b4a13b08590dc1f572648bfbad2849b2f9019486542",
+      "archived_at_from_file_mtime": "2026-09-17T13:58:05.220030+00:00"
+    }
+  ],
+  "unarchived_sources": [
+    {
+      "url": "https://www.cftc.gov/filings/orgrules/rules07012525155.pdf",
+      "status": "historical_filing_web_reader_only_direct_download_403",
+      "current_applicability_verified": false
+    },
+    {
+      "url": "https://kalshi.com/regulatory/rulebook",
+      "status": "direct_download_429"
+    },
+    {
+      "url": "https://kalshi-public-docs.s3.amazonaws.com/regulatory/rulebook/Kalshi%20Rulebook%20v1.24.pdf",
+      "status": "download_404"
+    }
+  ],
+  "rulebook_operative_status": "unresolved",
+  "model_classification": "conditional_common_scalar_observation_only"
+}

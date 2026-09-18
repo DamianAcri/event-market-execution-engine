@@ -1,0 +1,1480 @@
+{
+  "activity_markets_examined": 62,
+  "artifact_bytes": 21606499,
+  "books_examined": 220,
+  "catalog": {
+    "complete": true,
+    "completed_at": "2026-09-17T09:29:28.083932Z",
+    "filters": {
+      "mve_filter": "exclude",
+      "status": "open"
+    },
+    "market_count": 127876,
+    "market_pages": 128,
+    "max_market_pages": 500,
+    "page_size": 1000,
+    "resumptions": [
+      {
+        "previous_completed_at": "2026-09-17T09:19:47.415457Z",
+        "previous_failure": "archive_byte_budget_exceeded",
+        "resumed_at": "2026-09-17T09:29:11.595102Z",
+        "retained_market_pages": 117
+      }
+    ],
+    "scope": "open_markets_excluding_multivariate",
+    "series_count": 14129,
+    "series_scope": "unfiltered_series_list",
+    "snapshot_atomic": false,
+    "snapshot_limitation": "Markets may open, close or change during cursor traversal; completion is API cursor exhaustion, not a point-in-time venue snapshot.",
+    "started_at": "2026-09-17T09:16:09.051858Z"
+  },
+  "catalog_reused_after_hash_validation": true,
+  "certified_relationships": 69,
+  "decision": "capture_active_watchlist",
+  "evidence_sha256": {
+    "activity.json": "45fb8729d5161aa4e925d343ba23a0bf677ff548d90f1907ce62955f1a2c37ae",
+    "metadata.json": "622627ec9bbd6cb995ad8850efa57f7f67d53ed4ff1dc1277d11db5631410e3f",
+    "paper-policy.json": "bfd624d1ebe1bd7ad5e45b07798faccb1a0e681147d9ace9c41fae8dd726e543",
+    "provenance.json": "ddf3202e6c6b8d2227b24eaba47b8d857eae4f245f2a233c7f2ec1c8339c5feb",
+    "public/catalog-manifest.json": "71c1337ee1381f553ab2de4fa28a02278faef2f72591027696d92ecf2cddc28f",
+    "selection-decision.json": "9e00026306814f1eb712d2a55bf4dcda695c769cc8d7fa2bf890e31cfe938b64"
+  },
+  "fee_exclusions": [],
+  "fee_verified_until": "2026-09-17T11:46:25.183343+00:00",
+  "fees_by_ticker": {
+    "KXBTCD-26SEP1717-T73999.99": 70000,
+    "KXBTCD-26SEP1717-T74249.99": 70000,
+    "KXBTCD-26SEP1717-T74499.99": 70000,
+    "KXBTCD-26SEP1717-T75249.99": 70000,
+    "KXBTCD-26SEP1717-T75499.99": 70000,
+    "KXBTCD-26SEP1717-T75749.99": 70000,
+    "KXBTCD-26SEP1717-T75999.99": 70000,
+    "KXBTCD-26SEP1717-T76249.99": 70000,
+    "KXBTCD-26SEP1717-T76499.99": 70000,
+    "KXBTCD-26SEP1717-T76749.99": 70000,
+    "KXBTCD-26SEP1817-T73499.99": 70000,
+    "KXBTCD-26SEP1817-T73999.99": 70000,
+    "KXBTCD-26SEP1817-T74499.99": 70000,
+    "KXBTCD-26SEP1817-T78499.99": 70000,
+    "KXBTCD-26SEP1817-T79999.99": 70000,
+    "KXBTCD-26SEP1817-T80499.99": 70000,
+    "KXBTCD-26SEP1817-T80999.99": 70000,
+    "KXETHD-26SEP1717-T2399.99": 70000,
+    "KXETHD-26SEP1717-T2439.99": 70000,
+    "KXETHD-26SEP1717-T2479.99": 70000
+  },
+  "fresh_supported_catalogs_rules_fees_books_and_activity": true,
+  "initial_pair_exclusion_counts": {
+    "no_recent_two_leg_trade_activity": 389
+  },
+  "initial_screen_statuses": {
+    "no_depth": 5932,
+    "no_positive_margin": 458
+  },
+  "initial_solver_complete": true,
+  "metadata_native_verification": "VALID: 20 markets, 69 constraints",
+  "native_engine_sha256": "35803459cfb9170482c4d9e7e5f30fd0d22eb410717bcf4ab8781640ba6a733c",
+  "pair_exclusion_counts": {},
+  "positive_indicative_pairs_selected": 0,
+  "preparation_seconds_excluding_initial_catalog_acquisition": 39.469823,
+  "qualified_groups": 4,
+  "qualified_markets": 220,
+  "refreshed_screen_statuses": {
+    "no_positive_margin": 69
+  },
+  "refreshed_solver_complete": true,
+  "schema_version": 1,
+  "scope_limit": "Only reviewed BTC/ETH threshold families are executable. Other families stay in qualification exclusions. REST snapshots are not synchronous fills; watchlist is frozen for the run and budgets limit discovery depth.",
+  "selected_markets": 20,
+  "selected_observed_nonblock_trades_in_previous_15_minutes": 48,
+  "selected_pair_reasons": [
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 1,
+      "minimum_volume_24h_centicontracts": 306533,
+      "net_margin_micro": -30000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1030000,
+        "funded": true,
+        "gross_margin_micro": -10000,
+        "net_margin_micro": -30000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1065002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T73999.99",
+        "KXBTCD-26SEP1717-T74249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 2,
+      "minimum_volume_24h_centicontracts": 306533,
+      "net_margin_micro": -30000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1030000,
+        "funded": true,
+        "gross_margin_micro": -10000,
+        "net_margin_micro": -30000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1065002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T73999.99",
+        "KXBTCD-26SEP1717-T74499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 10,
+      "minimum_volume_24h_centicontracts": 1015777,
+      "net_margin_micro": -40000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1040000,
+        "funded": true,
+        "gross_margin_micro": -20000,
+        "net_margin_micro": -40000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1075002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74249.99",
+        "KXBTCD-26SEP1717-T74499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 46,
+      "minimum_volume_24h_centicontracts": 565480,
+      "net_margin_micro": -50000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1050000,
+        "funded": true,
+        "gross_margin_micro": -30000,
+        "net_margin_micro": -50000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1085002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73499.99",
+        "KXBTCD-26SEP1817-T73999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 65,
+      "minimum_volume_24h_centicontracts": 224503,
+      "net_margin_micro": -50000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1050000,
+        "funded": true,
+        "gross_margin_micro": -30000,
+        "net_margin_micro": -50000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1085002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T79999.99",
+        "KXBTCD-26SEP1817-T80999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 64,
+      "minimum_volume_24h_centicontracts": 52548,
+      "net_margin_micro": -50000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1050000,
+        "funded": true,
+        "gross_margin_micro": -30000,
+        "net_margin_micro": -50000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1085002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T79999.99",
+        "KXBTCD-26SEP1817-T80499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 66,
+      "minimum_volume_24h_centicontracts": 52548,
+      "net_margin_micro": -50000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1050000,
+        "funded": true,
+        "gross_margin_micro": -30000,
+        "net_margin_micro": -50000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1085002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T80499.99",
+        "KXBTCD-26SEP1817-T80999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 25,
+      "minimum_volume_24h_centicontracts": 1873128,
+      "net_margin_micro": -70000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1070000,
+        "funded": true,
+        "gross_margin_micro": -50000,
+        "net_margin_micro": -70000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1105002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75249.99",
+        "KXBTCD-26SEP1717-T75499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 18,
+      "minimum_volume_24h_centicontracts": 1015777,
+      "net_margin_micro": -70000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1070000,
+        "funded": true,
+        "gross_margin_micro": -50000,
+        "net_margin_micro": -70000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1105002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74499.99",
+        "KXBTCD-26SEP1717-T75249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 3,
+      "minimum_volume_24h_centicontracts": 306533,
+      "net_margin_micro": -70000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1070000,
+        "funded": true,
+        "gross_margin_micro": -50000,
+        "net_margin_micro": -70000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1105002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T73999.99",
+        "KXBTCD-26SEP1717-T75249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 11,
+      "minimum_volume_24h_centicontracts": 1082160,
+      "net_margin_micro": -80000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1080000,
+        "funded": true,
+        "gross_margin_micro": -60000,
+        "net_margin_micro": -80000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1115002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74249.99",
+        "KXBTCD-26SEP1717-T75249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 31,
+      "minimum_volume_24h_centicontracts": 2543092,
+      "net_margin_micro": -90000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1090000,
+        "funded": true,
+        "gross_margin_micro": -70000,
+        "net_margin_micro": -90000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1125002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75499.99",
+        "KXBTCD-26SEP1717-T75749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 52,
+      "minimum_volume_24h_centicontracts": 565480,
+      "net_margin_micro": -100000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1100000,
+        "funded": true,
+        "gross_margin_micro": -80000,
+        "net_margin_micro": -100000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1135002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73999.99",
+        "KXBTCD-26SEP1817-T74499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 19,
+      "minimum_volume_24h_centicontracts": 1015777,
+      "net_margin_micro": -110000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1110000,
+        "funded": true,
+        "gross_margin_micro": -90000,
+        "net_margin_micro": -110000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1145002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74499.99",
+        "KXBTCD-26SEP1717-T75499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 61,
+      "minimum_volume_24h_centicontracts": 670560,
+      "net_margin_micro": -110000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1110000,
+        "funded": true,
+        "gross_margin_micro": -90000,
+        "net_margin_micro": -110000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1145002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T78499.99",
+        "KXBTCD-26SEP1817-T79999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 4,
+      "minimum_volume_24h_centicontracts": 306533,
+      "net_margin_micro": -110000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1110000,
+        "funded": true,
+        "gross_margin_micro": -90000,
+        "net_margin_micro": -110000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1145002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T73999.99",
+        "KXBTCD-26SEP1717-T75499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 36,
+      "minimum_volume_24h_centicontracts": 2684194,
+      "net_margin_micro": -120000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1120000,
+        "funded": true,
+        "gross_margin_micro": -90000,
+        "net_margin_micro": -120000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1145002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75749.99",
+        "KXBTCD-26SEP1717-T75999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 26,
+      "minimum_volume_24h_centicontracts": 1873128,
+      "net_margin_micro": -120000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1120000,
+        "funded": true,
+        "gross_margin_micro": -100000,
+        "net_margin_micro": -120000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1155002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75249.99",
+        "KXBTCD-26SEP1717-T75749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 12,
+      "minimum_volume_24h_centicontracts": 1082160,
+      "net_margin_micro": -120000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1120000,
+        "funded": true,
+        "gross_margin_micro": -100000,
+        "net_margin_micro": -120000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1155002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74249.99",
+        "KXBTCD-26SEP1717-T75499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 47,
+      "minimum_volume_24h_centicontracts": 744609,
+      "net_margin_micro": -120000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1120000,
+        "funded": true,
+        "gross_margin_micro": -100000,
+        "net_margin_micro": -120000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1155002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73499.99",
+        "KXBTCD-26SEP1817-T74499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 63,
+      "minimum_volume_24h_centicontracts": 224503,
+      "net_margin_micro": -120000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1120000,
+        "funded": true,
+        "gross_margin_micro": -100000,
+        "net_margin_micro": -120000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1155002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T78499.99",
+        "KXBTCD-26SEP1817-T80999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 62,
+      "minimum_volume_24h_centicontracts": 52548,
+      "net_margin_micro": -120000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1120000,
+        "funded": true,
+        "gross_margin_micro": -100000,
+        "net_margin_micro": -120000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1155002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T78499.99",
+        "KXBTCD-26SEP1817-T80499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 43,
+      "minimum_volume_24h_centicontracts": 7321473,
+      "net_margin_micro": -160000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1160000,
+        "funded": true,
+        "gross_margin_micro": -120000,
+        "net_margin_micro": -160000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1175002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T76249.99",
+        "KXBTCD-26SEP1717-T76499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 40,
+      "minimum_volume_24h_centicontracts": 6004934,
+      "net_margin_micro": -160000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1160000,
+        "funded": true,
+        "gross_margin_micro": -120000,
+        "net_margin_micro": -160000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1175002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75999.99",
+        "KXBTCD-26SEP1717-T76249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 20,
+      "minimum_volume_24h_centicontracts": 1015777,
+      "net_margin_micro": -160000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1160000,
+        "funded": true,
+        "gross_margin_micro": -140000,
+        "net_margin_micro": -160000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1195002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74499.99",
+        "KXBTCD-26SEP1717-T75749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 5,
+      "minimum_volume_24h_centicontracts": 306533,
+      "net_margin_micro": -160000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1160000,
+        "funded": true,
+        "gross_margin_micro": -140000,
+        "net_margin_micro": -160000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1195002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T73999.99",
+        "KXBTCD-26SEP1717-T75749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 32,
+      "minimum_volume_24h_centicontracts": 2543092,
+      "net_margin_micro": -170000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1170000,
+        "funded": true,
+        "gross_margin_micro": -140000,
+        "net_margin_micro": -170000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1195002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75499.99",
+        "KXBTCD-26SEP1717-T75999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 13,
+      "minimum_volume_24h_centicontracts": 1082160,
+      "net_margin_micro": -170000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1170000,
+        "funded": true,
+        "gross_margin_micro": -150000,
+        "net_margin_micro": -170000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1205002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74249.99",
+        "KXBTCD-26SEP1717-T75749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 45,
+      "minimum_volume_24h_centicontracts": 4999148,
+      "net_margin_micro": -180000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1180000,
+        "funded": true,
+        "gross_margin_micro": -140000,
+        "net_margin_micro": -180000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1195002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T76499.99",
+        "KXBTCD-26SEP1717-T76749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 27,
+      "minimum_volume_24h_centicontracts": 1873128,
+      "net_margin_micro": -200000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1200000,
+        "funded": true,
+        "gross_margin_micro": -170000,
+        "net_margin_micro": -200000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1225002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75249.99",
+        "KXBTCD-26SEP1717-T75999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 37,
+      "minimum_volume_24h_centicontracts": 2684194,
+      "net_margin_micro": -220000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1220000,
+        "funded": true,
+        "gross_margin_micro": -190000,
+        "net_margin_micro": -220000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1245002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75749.99",
+        "KXBTCD-26SEP1717-T76249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 21,
+      "minimum_volume_24h_centicontracts": 1015777,
+      "net_margin_micro": -240000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1240000,
+        "funded": true,
+        "gross_margin_micro": -210000,
+        "net_margin_micro": -240000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1265002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74499.99",
+        "KXBTCD-26SEP1717-T75999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 6,
+      "minimum_volume_24h_centicontracts": 306533,
+      "net_margin_micro": -240000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1240000,
+        "funded": true,
+        "gross_margin_micro": -210000,
+        "net_margin_micro": -240000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1265002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T73999.99",
+        "KXBTCD-26SEP1717-T75999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 14,
+      "minimum_volume_24h_centicontracts": 1082160,
+      "net_margin_micro": -250000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1250000,
+        "funded": true,
+        "gross_margin_micro": -220000,
+        "net_margin_micro": -250000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1275002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74249.99",
+        "KXBTCD-26SEP1717-T75999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 41,
+      "minimum_volume_24h_centicontracts": 6004934,
+      "net_margin_micro": -260000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1260000,
+        "funded": true,
+        "gross_margin_micro": -220000,
+        "net_margin_micro": -260000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1275002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75999.99",
+        "KXBTCD-26SEP1717-T76499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 33,
+      "minimum_volume_24h_centicontracts": 2543092,
+      "net_margin_micro": -270000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1270000,
+        "funded": true,
+        "gross_margin_micro": -240000,
+        "net_margin_micro": -270000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1295002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75499.99",
+        "KXBTCD-26SEP1717-T76249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 44,
+      "minimum_volume_24h_centicontracts": 4999148,
+      "net_margin_micro": -290000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1290000,
+        "funded": true,
+        "gross_margin_micro": -250000,
+        "net_margin_micro": -290000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1305002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T76249.99",
+        "KXBTCD-26SEP1717-T76749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 28,
+      "minimum_volume_24h_centicontracts": 1873128,
+      "net_margin_micro": -300000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1300000,
+        "funded": true,
+        "gross_margin_micro": -270000,
+        "net_margin_micro": -300000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1325002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75249.99",
+        "KXBTCD-26SEP1717-T76249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 38,
+      "minimum_volume_24h_centicontracts": 2684194,
+      "net_margin_micro": -320000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1320000,
+        "funded": true,
+        "gross_margin_micro": -290000,
+        "net_margin_micro": -320000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1345002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75749.99",
+        "KXBTCD-26SEP1717-T76499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 22,
+      "minimum_volume_24h_centicontracts": 1015777,
+      "net_margin_micro": -340000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1340000,
+        "funded": true,
+        "gross_margin_micro": -310000,
+        "net_margin_micro": -340000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1365002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74499.99",
+        "KXBTCD-26SEP1717-T76249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 7,
+      "minimum_volume_24h_centicontracts": 306533,
+      "net_margin_micro": -340000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1340000,
+        "funded": true,
+        "gross_margin_micro": -310000,
+        "net_margin_micro": -340000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1365002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T73999.99",
+        "KXBTCD-26SEP1717-T76249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 15,
+      "minimum_volume_24h_centicontracts": 1082160,
+      "net_margin_micro": -350000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1350000,
+        "funded": true,
+        "gross_margin_micro": -320000,
+        "net_margin_micro": -350000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1375002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74249.99",
+        "KXBTCD-26SEP1717-T76249.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 34,
+      "minimum_volume_24h_centicontracts": 2543092,
+      "net_margin_micro": -370000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1370000,
+        "funded": true,
+        "gross_margin_micro": -340000,
+        "net_margin_micro": -370000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1395002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75499.99",
+        "KXBTCD-26SEP1717-T76499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 42,
+      "minimum_volume_24h_centicontracts": 4999148,
+      "net_margin_micro": -390000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1390000,
+        "funded": true,
+        "gross_margin_micro": -350000,
+        "net_margin_micro": -390000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1405002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75999.99",
+        "KXBTCD-26SEP1717-T76749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 67,
+      "minimum_volume_24h_centicontracts": 971075,
+      "net_margin_micro": -390000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1390000,
+        "funded": true,
+        "gross_margin_micro": -360000,
+        "net_margin_micro": -390000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1415002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXETHD-26SEP1717-T2399.99",
+        "KXETHD-26SEP1717-T2439.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 29,
+      "minimum_volume_24h_centicontracts": 1873128,
+      "net_margin_micro": -400000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1400000,
+        "funded": true,
+        "gross_margin_micro": -370000,
+        "net_margin_micro": -400000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1425002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75249.99",
+        "KXBTCD-26SEP1717-T76499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 69,
+      "minimum_volume_24h_centicontracts": 971075,
+      "net_margin_micro": -410000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1410000,
+        "funded": true,
+        "gross_margin_micro": -380000,
+        "net_margin_micro": -410000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1435002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXETHD-26SEP1717-T2439.99",
+        "KXETHD-26SEP1717-T2479.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 23,
+      "minimum_volume_24h_centicontracts": 1015777,
+      "net_margin_micro": -440000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1440000,
+        "funded": true,
+        "gross_margin_micro": -410000,
+        "net_margin_micro": -440000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1465002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74499.99",
+        "KXBTCD-26SEP1717-T76499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 8,
+      "minimum_volume_24h_centicontracts": 306533,
+      "net_margin_micro": -440000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1440000,
+        "funded": true,
+        "gross_margin_micro": -410000,
+        "net_margin_micro": -440000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1465002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T73999.99",
+        "KXBTCD-26SEP1717-T76499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 39,
+      "minimum_volume_24h_centicontracts": 2684194,
+      "net_margin_micro": -450000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1450000,
+        "funded": true,
+        "gross_margin_micro": -420000,
+        "net_margin_micro": -450000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1475002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75749.99",
+        "KXBTCD-26SEP1717-T76749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 16,
+      "minimum_volume_24h_centicontracts": 1082160,
+      "net_margin_micro": -450000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1450000,
+        "funded": true,
+        "gross_margin_micro": -420000,
+        "net_margin_micro": -450000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1475002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74249.99",
+        "KXBTCD-26SEP1717-T76499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 35,
+      "minimum_volume_24h_centicontracts": 2543092,
+      "net_margin_micro": -500000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1500000,
+        "funded": true,
+        "gross_margin_micro": -470000,
+        "net_margin_micro": -500000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1525002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75499.99",
+        "KXBTCD-26SEP1717-T76749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 30,
+      "minimum_volume_24h_centicontracts": 1873128,
+      "net_margin_micro": -530000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1530000,
+        "funded": true,
+        "gross_margin_micro": -500000,
+        "net_margin_micro": -530000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1555002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T75249.99",
+        "KXBTCD-26SEP1717-T76749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 24,
+      "minimum_volume_24h_centicontracts": 1015777,
+      "net_margin_micro": -570000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1570000,
+        "funded": true,
+        "gross_margin_micro": -540000,
+        "net_margin_micro": -570000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1595002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74499.99",
+        "KXBTCD-26SEP1717-T76749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 9,
+      "minimum_volume_24h_centicontracts": 306533,
+      "net_margin_micro": -570000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1570000,
+        "funded": true,
+        "gross_margin_micro": -540000,
+        "net_margin_micro": -570000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1595002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T73999.99",
+        "KXBTCD-26SEP1717-T76749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 17,
+      "minimum_volume_24h_centicontracts": 1082160,
+      "net_margin_micro": -580000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1580000,
+        "funded": true,
+        "gross_margin_micro": -550000,
+        "net_margin_micro": -580000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1605002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1717-T74249.99",
+        "KXBTCD-26SEP1717-T76749.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-17T21:00:00Z",
+      "constraint_id": 68,
+      "minimum_volume_24h_centicontracts": 1919189,
+      "net_margin_micro": -750000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1750000,
+        "funded": true,
+        "gross_margin_micro": -730000,
+        "net_margin_micro": -750000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1785002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXETHD-26SEP1717-T2399.99",
+        "KXETHD-26SEP1717-T2479.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 57,
+      "minimum_volume_24h_centicontracts": 670560,
+      "net_margin_micro": -820000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1820000,
+        "funded": true,
+        "gross_margin_micro": -800000,
+        "net_margin_micro": -820000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1855002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T74499.99",
+        "KXBTCD-26SEP1817-T78499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 53,
+      "minimum_volume_24h_centicontracts": 565480,
+      "net_margin_micro": -870000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1870000,
+        "funded": true,
+        "gross_margin_micro": -850000,
+        "net_margin_micro": -870000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1905002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73999.99",
+        "KXBTCD-26SEP1817-T78499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 48,
+      "minimum_volume_24h_centicontracts": 670560,
+      "net_margin_micro": -890000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1890000,
+        "funded": true,
+        "gross_margin_micro": -870000,
+        "net_margin_micro": -890000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1925002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73499.99",
+        "KXBTCD-26SEP1817-T78499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 58,
+      "minimum_volume_24h_centicontracts": 940260,
+      "net_margin_micro": -900000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1900000,
+        "funded": true,
+        "gross_margin_micro": -880000,
+        "net_margin_micro": -900000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1935002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T74499.99",
+        "KXBTCD-26SEP1817-T79999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 60,
+      "minimum_volume_24h_centicontracts": 224503,
+      "net_margin_micro": -910000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1910000,
+        "funded": true,
+        "gross_margin_micro": -890000,
+        "net_margin_micro": -910000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1945002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T74499.99",
+        "KXBTCD-26SEP1817-T80999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 59,
+      "minimum_volume_24h_centicontracts": 52548,
+      "net_margin_micro": -910000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1910000,
+        "funded": true,
+        "gross_margin_micro": -890000,
+        "net_margin_micro": -910000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1945002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T74499.99",
+        "KXBTCD-26SEP1817-T80499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 54,
+      "minimum_volume_24h_centicontracts": 565480,
+      "net_margin_micro": -950000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1950000,
+        "funded": true,
+        "gross_margin_micro": -930000,
+        "net_margin_micro": -950000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1985002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73999.99",
+        "KXBTCD-26SEP1817-T79999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 56,
+      "minimum_volume_24h_centicontracts": 224503,
+      "net_margin_micro": -960000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1960000,
+        "funded": true,
+        "gross_margin_micro": -940000,
+        "net_margin_micro": -960000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1995002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73999.99",
+        "KXBTCD-26SEP1817-T80999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 55,
+      "minimum_volume_24h_centicontracts": 52548,
+      "net_margin_micro": -960000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1960000,
+        "funded": true,
+        "gross_margin_micro": -940000,
+        "net_margin_micro": -960000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 1995002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73999.99",
+        "KXBTCD-26SEP1817-T80499.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 49,
+      "minimum_volume_24h_centicontracts": 744609,
+      "net_margin_micro": -970000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1970000,
+        "funded": true,
+        "gross_margin_micro": -950000,
+        "net_margin_micro": -970000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 2005002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73499.99",
+        "KXBTCD-26SEP1817-T79999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 51,
+      "minimum_volume_24h_centicontracts": 224503,
+      "net_margin_micro": -980000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1980000,
+        "funded": true,
+        "gross_margin_micro": -960000,
+        "net_margin_micro": -980000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 2015002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73499.99",
+        "KXBTCD-26SEP1817-T80999.99"
+      ]
+    },
+    {
+      "close_time": "2026-09-18T21:00:00Z",
+      "constraint_id": 50,
+      "minimum_volume_24h_centicontracts": 52548,
+      "net_margin_micro": -980000,
+      "one_contract_diagnostic": {
+        "debit_micro": 1980000,
+        "funded": true,
+        "gross_margin_micro": -960000,
+        "net_margin_micro": -980000,
+        "quantity_centicontracts": 100,
+        "reservation_micro": 2015002
+      },
+      "quote": null,
+      "selection_class": "active_near_margin",
+      "tickers": [
+        "KXBTCD-26SEP1817-T73499.99",
+        "KXBTCD-26SEP1817-T80499.99"
+      ]
+    }
+  ],
+  "selection_frozen_at": "2026-09-17T09:36:25.183343+00:00",
+  "selector_modules_sha256": {
+    "economic_selection.py": "5eda47c978b1b3020212e7a594180593e8015ef4b093b6974ea537cdfbef3672",
+    "market_catalog.py": "9718bc07a69af9c460b96e361f6a138b13baf6a8915202b54e24d6d287d41160",
+    "market_families.py": "31d975c7b5b4e9618a1a7eed16e579888930a6abf7c770780c887263f8f7e849",
+    "research_selection.py": "4fb97e28afb5e849fa483c51bfdc19cd03fdd162a31def01c8f94d88faa5ae23"
+  },
+  "validation": "Public economic preparation only; no authentication, capture, simulated fills or orders"
+}

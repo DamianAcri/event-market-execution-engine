@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-17",
+  "measurement": "Completed public catalog reload, including archive hash verification and parsing; no network.",
+  "sample_count_per_variant": 1,
+  "separate_fresh_process_per_variant": true,
+  "limitations": [
+    "One observation per variant; elapsed times are illustrative, not statistically established speedup.",
+    "ru_maxrss is the process high-water resident set, reported in bytes on macOS.",
+    "Cold discovery preparation only; not a live trading engine benchmark.",
+    "Market API pagination is not an atomic point-in-time snapshot."
+  ],
+  "archive_path": "/private/tmp/eme-economic-catalog-20260917",
+  "original_manifest_sha256": "d159a4de3a558f2d25fc1e8cc2a7d8f8acd3cd4cbd91e618c135a3be0fbd51fd",
+  "market_count": 127876,
+  "series_count": 14129,
+  "market_pages": 128,
+  "complete": true,
+  "scope": "open_markets_excluding_multivariate",
+  "decoded_response_bytes": 288558795,
+  "stored_gzip_response_bytes": 12927444,
+  "projection_result_field": "record_projection (top level): full, or [ticker, event_ticker, volume_24h_fp]",
+  "variants": [
+    {
+      "name": "full",
+      "max_rss_bytes": 1008959488,
+      "elapsed_seconds": 2.9852793749999997,
+      "argv": [
+        "python3",
+        "-"
+      ],
+      "stdin": "import json\nimport resource\nimport sys\nimport time\nsys.path.insert(0, 'scripts')\nfrom market_catalog import acquire_catalog\nstarted=time.monotonic()\ndef no_network(url):\n raise RuntimeError('network must not be used during completed archive reload')\nr=acquire_catalog('/private/tmp/eme-economic-catalog-20260917', public_get=no_network, resume=True)\nprint(json.dumps({'projection':r['record_projection'],'complete':r['coverage']['complete'],'markets':len(r['markets']),'load_seconds':time.monotonic()-started,'max_rss_bytes_macos':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}))\n"
+    },
+    {
+      "name": "identity_activity",
+      "max_rss_bytes": 289095680,
+      "elapsed_seconds": 2.538959334,
+      "argv": [
+        "python3",
+        "-"
+      ],
+      "stdin": "import json\nimport resource\nimport sys\nimport time\nsys.path.insert(0, 'scripts')\nfrom market_catalog import acquire_catalog\nstarted=time.monotonic()\ndef no_network(url):\n raise RuntimeError('network must not be used during completed archive reload')\nr=acquire_catalog('/private/tmp/eme-economic-catalog-20260917', public_get=no_network, resume=True, compact_markets=True)\nprint(json.dumps({'projection':r['record_projection'],'complete':r['coverage']['complete'],'markets':len(r['markets']),'load_seconds':time.monotonic()-started,'max_rss_bytes_macos':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}))\n"
+    }
+  ],
+  "reproduction_working_directory": "Repository root containing scripts/market_catalog.py",
+  "reproduction_note": "Requires the archived public dataset at archive_path; each variant runs in a new Python process. Public responses are preserved in full, compressed losslessly; only returned Python dictionaries are projected."
+}

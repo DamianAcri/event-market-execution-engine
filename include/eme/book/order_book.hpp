@@ -9,6 +9,8 @@
 #include <string_view>
 #include <vector>
 
+namespace eme::market { class MarketState; }
+
 namespace eme::book {
 
 using StreamId = std::uint64_t;
@@ -102,6 +104,12 @@ public:
     }
 
 private:
+    friend class eme::market::MarketState;
+    // Only MarketState can supply a predecessor verified on a shared stream.
+    // Original venue sequence numbers remain attached to each book update.
+    [[nodiscard]] BookUpdateResult apply_delta_after(
+        StreamId stream_id, SequenceNumber predecessor, SequenceNumber sequence,
+        Side side, core::Price price, core::QuantityDelta quantity_delta);
     using Levels = std::map<std::int64_t, std::int64_t>;
 
     [[nodiscard]] Levels& levels_for(Side side) noexcept;

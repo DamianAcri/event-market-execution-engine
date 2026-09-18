@@ -3,7 +3,7 @@
 #include <tuple>
 
 namespace eme::session::detail {
-Policy load_policy(const std::filesystem::path& path, const ReplayInput& input) {
+Policy load_policy(const std::filesystem::path& path, const gateway::kalshi::MetadataSnapshot& metadata) {
     const auto bytes = detail::read_text(path);
     const auto root = detail::parse_strict(bytes);
     const auto version = detail::integer(root, "schema_version");
@@ -45,18 +45,18 @@ Policy load_policy(const std::filesystem::path& path, const ReplayInput& input) 
         if (!root["reject_legs"][leg].is_boolean()) { detail::invalid("reject_legs"); }
         policy.reject[leg] = root["reject_legs"][leg].get<bool>();
     }
-    if (!root["fees"].is_array() || root["fees"].size() > input.session.metadata.markets().size()) { detail::invalid("fees"); }
+    if (!root["fees"].is_array() || root["fees"].size() > metadata.markets().size()) { detail::invalid("fees"); }
     for (const auto& item : root["fees"]) {
         detail::shape(item, {"market_id", "coefficient_ppm", "balance_quantum_micro"});
         const auto id = static_cast<market::MarketId>(detail::integer(item, "market_id", std::numeric_limits<market::MarketId>::max()));
         const core::FeePolicy fee{static_cast<std::uint32_t>(detail::integer(item, "coefficient_ppm", 1'000'000U)),
             static_cast<std::uint32_t>(detail::integer(item, "balance_quantum_micro", 10'000U))};
-        if (!input.session.metadata.markets().find(id) ||
+        if (!metadata.markets().find(id) ||
             (fee.balance_quantum_micro != 100U && fee.balance_quantum_micro != 10'000U) ||
             !policy.fees.emplace(id, fee).second) { detail::invalid("fee market/quantum"); }
     }
-    for (const auto id : input.session.metadata.constraints().sorted_ids()) {
-        for (const auto market : input.session.metadata.constraints().find(id)->dependent_markets) {
+    for (const auto id : metadata.constraints().sorted_ids()) {
+        for (const auto market : metadata.constraints().find(id)->dependent_markets) {
             if (!policy.fees.contains(market)) { detail::invalid("missing market fee policy"); }
         }
     }
@@ -77,12 +77,12 @@ Policy load_policy(const std::filesystem::path& path, const ReplayInput& input) 
         life.completion_loss_limit = static_cast<std::int64_t>(detail::integer(config, "completion_loss_limit_micro_usd", cash_limit));
         life.maximum_completion_orders = detail::integer(config, "maximum_completion_orders", 4U);
         if (life.maximum_completion_orders == 0U) { detail::invalid("completion order budget"); }
-        if (!config["settlements"].is_array() || config["settlements"].size() > input.session.metadata.markets().size()) { detail::invalid("settlements"); }
+        if (!config["settlements"].is_array() || config["settlements"].size() > metadata.markets().size()) { detail::invalid("settlements"); }
         std::map<market::MarketId, bool> outcomes;
         for (const auto& value : config["settlements"]) {
             detail::shape(value, {"market_id", "yes_wins", "time_ns", "provenance"});
             const auto id = static_cast<market::MarketId>(detail::integer(value, "market_id", std::numeric_limits<market::MarketId>::max()));
-            if (!input.session.metadata.markets().find(id) || !value["yes_wins"].is_boolean()) { detail::invalid("settlement market/outcome"); }
+            if (!metadata.markets().find(id) || !value["yes_wins"].is_boolean()) { detail::invalid("settlement market/outcome"); }
             const auto yes = value["yes_wins"].get<bool>();
             if (!outcomes.emplace(id, yes).second) { detail::invalid("duplicate settlement"); }
             (void)detail::string(value, "provenance");
@@ -90,8 +90,8 @@ Policy load_policy(const std::filesystem::path& path, const ReplayInput& input) 
         }
         // Labels may be incomplete, but supplied outcomes cannot contradict the
         // reviewed relationship that underwrites the portfolio's payout floor.
-        for (const auto id : input.session.metadata.constraints().sorted_ids()) {
-            const auto& definition = *input.session.metadata.constraints().find(id);
+        for (const auto id : metadata.constraints().sorted_ids()) {
+            const auto& definition = *metadata.constraints().find(id);
             const auto possible = std::any_of(definition.valid_worlds.begin(), definition.valid_worlds.end(), [&](const auto& world) {
                 return std::all_of(world.assignments.begin(), world.assignments.end(), [&](const auto& assignment) {
                     const auto found = outcomes.find(assignment.market_id);

@@ -23,7 +23,8 @@ using ProcessingResult = std::variant<
 
 class OrderBookProcessor final {
 public:
-    explicit OrderBookProcessor(const MarketRegistry& markets) : markets_{markets} {}
+    explicit OrderBookProcessor(const MarketRegistry& markets,
+        market::SequenceScope scope = market::SequenceScope::per_book) : markets_{markets}, state_{scope} {}
     OrderBookProcessor(MarketRegistry&&) = delete;
 
     [[nodiscard]] bool open_connection(market::ConnectionGeneration generation) {

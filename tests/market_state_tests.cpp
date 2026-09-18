@@ -189,5 +189,27 @@ int main() {
     test_connection_lifecycle(test);
     test_generation_recovery(test);
     test_fail_closed_faults(test);
+
+    {
+        eme::market::MarketState shared{eme::market::SequenceScope::shared_stream};
+        test.expect(shared.open_connection(1U), "shared stream connection");
+        test.expect(book_result(shared.apply(snapshot(7U, 1U, 2U, 10U)), eme::book::BookUpdateResult::applied), "shared first book");
+        test.expect(book_result(shared.apply(snapshot(8U, 1U, 2U, 11U)), eme::book::BookUpdateResult::applied), "shared second book");
+        std::int64_t expected_a = 0, expected_b = 0;
+        for (std::uint64_t sequence = 12U; sequence < 212U; ++sequence) {
+            const auto id = sequence % 3U == 0U ? 7U : 8U;
+            (id == 7U ? expected_a : expected_b) += 5;
+            test.expect(book_result(shared.apply(delta(id, 1U, 2U, sequence, 5)), eme::book::BookUpdateResult::applied), "generated interleaved sequence");
+        }
+        test.expect(shared.find_book(7U)->quantity_at(eme::book::Side::bid, eme::test::price(4500)).raw() == expected_a &&
+                    shared.find_book(8U)->quantity_at(eme::book::Side::bid, eme::test::price(4500)).raw() == expected_b,
+                    "independent per-market quantity oracle");
+        test.expect(book_result(shared.apply(snapshot(9U, 1U, 2U, 213U)), eme::book::BookUpdateResult::sequence_gap), "snapshot cannot hide missing shared message");
+        test.expect(!shared.connected() && shared.valid_book_count() == 0U, "shared gap closes and invalidates all books");
+        test.expect(shared.open_connection(2U) && shared.begin_recovery(7U), "shared stream recovery");
+        test.expect(book_result(shared.apply(snapshot(7U, 2U, 2U, 1U)), eme::book::BookUpdateResult::applied), "reused stream sequence resets in new generation");
+        test.expect(book_result(shared.apply(delta(8U, 2U, 2U, 2U, 5)), eme::book::BookUpdateResult::requires_snapshot), "delta cannot revive a stale book");
+        test.expect(shared.valid_book_count() == 0U, "failed shared recovery invalidates earlier recovered book");
+    }
     return test.result();
 }

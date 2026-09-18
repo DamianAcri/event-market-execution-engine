@@ -14,6 +14,7 @@ bool MarketState::open_connection(const ConnectionGeneration generation) {
         invalidate_all();
     }
     connection_generation_ = generation;
+    stream_sequences_.clear();
     connected_ = true;
     return true;
 }
@@ -40,10 +41,14 @@ MarketApplyResult MarketState::apply(const BookSnapshot& snapshot) {
     if (!accepts(snapshot.connection_generation)) {
         return MarketStateError::connection_mismatch;
     }
+    if (scope_ == SequenceScope::shared_stream && !accepts_sequence(snapshot.stream_id, snapshot.sequence)) {
+        return finish_shared(snapshot.stream_id, snapshot.sequence, book::BookUpdateResult::sequence_gap);
+    }
     const auto [found, inserted] = books_.try_emplace(snapshot.market_id);
     static_cast<void>(inserted);
-    return found->second.apply_snapshot(
+    const auto result = found->second.apply_snapshot(
         snapshot.stream_id, snapshot.sequence, snapshot.bids, snapshot.asks);
+    return scope_ == SequenceScope::shared_stream ? finish_shared(snapshot.stream_id, snapshot.sequence, result) : result;
 }
 
 MarketApplyResult MarketState::apply(const BookDelta& delta) {
@@ -52,10 +57,33 @@ MarketApplyResult MarketState::apply(const BookDelta& delta) {
     }
     const auto found = books_.find(delta.market_id);
     if (found == books_.end()) {
-        return book::BookUpdateResult::requires_snapshot;
+        return scope_ == SequenceScope::shared_stream
+            ? finish_shared(delta.stream_id, delta.sequence, book::BookUpdateResult::requires_snapshot)
+            : MarketApplyResult{book::BookUpdateResult::requires_snapshot};
+    }
+    if (scope_ == SequenceScope::shared_stream) {
+        const auto previous = stream_sequences_.find(delta.stream_id);
+        if (previous == stream_sequences_.end() || !accepts_sequence(delta.stream_id, delta.sequence)) {
+            return finish_shared(delta.stream_id, delta.sequence, book::BookUpdateResult::sequence_gap);
+        }
+        return finish_shared(delta.stream_id, delta.sequence, found->second.apply_delta_after(
+            delta.stream_id, previous->second, delta.sequence, delta.side, delta.price, delta.quantity_delta));
     }
     return found->second.apply_delta(
         delta.stream_id, delta.sequence, delta.side, delta.price, delta.quantity_delta);
+}
+
+bool MarketState::accepts_sequence(const book::StreamId stream, const book::SequenceNumber sequence) const noexcept {
+    const auto previous = stream_sequences_.find(stream);
+    return previous == stream_sequences_.end() ||
+        (sequence > previous->second && sequence - previous->second == 1U);
+}
+
+MarketApplyResult MarketState::finish_shared(const book::StreamId stream,
+    const book::SequenceNumber sequence, const book::BookUpdateResult result) {
+    if (result == book::BookUpdateResult::applied) { stream_sequences_[stream] = sequence; }
+    else { (void)close_connection(*connection_generation_); }
+    return result;
 }
 
 MarketApplyResult MarketState::apply(const NormalizedMarketEvent& event) {

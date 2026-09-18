@@ -1,6 +1,10 @@
 #include "eme/transport/readonly_capture.hpp"
 #include "eme/session/readonly_feed.hpp"
 #include "session/study_json.hpp"
+#include "session/async_jsonl.hpp"
+#include "eme/session/execution_study.hpp"
+#include "eme/session/basket_observation.hpp"
+#include "paper_metrics.hpp"
 
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
@@ -73,10 +77,11 @@ struct Connection final {
 class Runner final {
 public:
     Runner(const CaptureConfig& config, const gateway::kalshi::MetadataSnapshot& metadata)
-        : config_{config}, metadata_{metadata}, feed_{metadata.markets(), config.markets},
+        : config_{config}, metadata_{metadata}, feed_{metadata.markets(), config.markets, config.public_trades
+            ? session::FeedProtocol::book_and_trades_v1 : session::FeedProtocol::shared_subscription_v1},
           context_{ssl::context::tls_client}, key_{load_key(config.private_key)},
-          duration_{io_}, health_{io_}, retry_{io_}, signals_{io_, SIGINT, SIGTERM} {
-        if (config.duration.count() <= 0 || config.duration > std::chrono::hours{24} ||
+          duration_{io_}, health_{io_}, retry_{io_}, decision_timer_{io_}, signals_{io_, SIGINT, SIGTERM} {
+        if ((!config.paper_policy.empty() && !config.basket_policy.empty()) || config.duration.count() <= 0 || config.duration > std::chrono::hours{24} ||
             config.handshake_timeout.count() <= 0 || config.idle_timeout.count() <= 0 ||
             config.handshake_timeout > std::chrono::minutes{1} || config.idle_timeout > std::chrono::minutes{10} ||
             config.retry_delay.count() <= 0 || config.retry_delay > std::chrono::seconds{30} || config.maximum_connections == 0U || config.maximum_connections > 1000U ||
@@ -93,6 +98,19 @@ public:
         auto created = session::create_async_capture(config.directory, metadata, config.queue);
         if (std::holds_alternative<session::SessionError>(created)) { session::detail::invalid("capture directory/writer"); }
         writer_ = std::get<std::unique_ptr<session::AsyncCaptureWriter>>(std::move(created));
+        if (!config.paper_policy.empty()) {
+            const auto policy = session::detail::read_text(config.paper_policy);
+            if (session::detail::write_new_file(config.directory / "paper-policy.json", policy)) { session::detail::invalid("paper policy copy"); }
+            decision_output_ = std::make_unique<session::detail::AsyncJsonl>(config.directory / "paper.jsonl");
+            simulation_ = session::make_execution_simulation(metadata_, config.directory / "paper-policy.json", decision_output_->stream(), true);
+            simulation_->start(true);
+        } else if (!config.basket_policy.empty()) {
+            const auto policy = session::detail::read_text(config.basket_policy);
+            if (session::detail::write_new_file(config.directory / "basket-policy.json", policy)) { session::detail::invalid("basket policy copy"); }
+            decision_output_ = std::make_unique<session::detail::AsyncJsonl>(config.directory / "basket.jsonl");
+            baskets_ = session::make_basket_observation(metadata_, config.directory / "basket-policy.json", decision_output_->stream());
+            baskets_->start(true);
+        }
     }
     CaptureResult run() {
         duration_.expires_after(config_.duration);
@@ -102,40 +120,205 @@ public:
         connect();
         io_.run();
         if (storage_failed_) { return {false, updates_, generation_, "recorder_failure"}; }
+        if (observer() && !analysis_failed_) {
+            observer()->finish(last_time_, feed_.state());
+            checkpoint();
+            decision_timing();
+            session::ReplayPlan provisional;
+            provisional.source_kind = config_.synthetic ? "synthetic" : "observed_ws";
+            if (baskets_) { baskets_->report(provisional); }
+            else { simulation_->report(provisional); }
+        }
+        if (decision_output_ && !decision_output_->finish()) { analysis_failed_ = true; }
         const auto finalized = writer_->finish();
         if (!std::holds_alternative<session::SessionManifest>(finalized)) { return {false, updates_, generation_, "finalization_failure"}; }
         const auto fingerprint = session::detail::fingerprint_file(config_.directory / session::manifest_filename);
         if (!std::holds_alternative<session::ArtifactFingerprint>(fingerprint)) { return {false, updates_, generation_, "manifest_read_failure"}; }
-        const auto plan = Json{{"schema_version", 2U}, {"source_kind", config_.synthetic ? "synthetic" : "observed_ws"},
-            {"provenance", config_.synthetic ? "local TLS/WebSocket fixture" : "Kalshi read-only WS capture; one market per subscription"},
+        const auto plan = Json{{"schema_version", config_.public_trades ? 4U : 3U}, {"source_kind", config_.synthetic ? "synthetic" : "observed_ws"},
+            {"provenance", config_.synthetic ? "local TLS/WebSocket fixture" : "Kalshi read-only WS capture; shared subscription sequence"},
             {"manifest_sha256", std::get<session::ArtifactFingerprint>(fingerprint).sha256},
             {"use_yes_price", true}, {"markets", config_.markets}}.dump();
         if (session::detail::write_new_file(config_.directory / "replay.json", plan)) { return {false, updates_, generation_, "plan_write_failure"}; }
         auto input = session::load_replay(config_.directory, config_.directory / "replay.json");
         if (!std::holds_alternative<session::ReplayInput>(input)) { return {false, updates_, generation_, "plan_validation_failure"}; }
-        session::ReplayObserver observer;
-        const auto verified = session::replay(std::get<session::ReplayInput>(input), observer);
-        if (!std::holds_alternative<session::ReplaySummary>(verified)) { return {false, updates_, generation_, "controller_replay_failure"}; }
-        return {true, updates_, generation_, reason_};
+        if (!observer()) {
+            session::ReplayObserver observer;
+            const auto verified = session::replay(std::get<session::ReplayInput>(input), observer);
+            if (!std::holds_alternative<session::ReplaySummary>(verified)) { return {false, updates_, generation_, "controller_replay_failure"}; }
+        }
+        if (analysis_failed_) { return {true, updates_, generation_, std::string{analysis_failure()}}; }
+        if (simulation_ && !verify_paper(std::get<session::ReplayInput>(input))) {
+            return {true, updates_, generation_, "paper_replay_mismatch"};
+        }
+        if (baskets_ && !verify_baskets(std::get<session::ReplayInput>(input))) {
+            return {true, updates_, generation_, "basket_replay_mismatch"};
+        }
+        return {true, updates_, generation_, reason_, public_trades_};
     }
 private:
+    session::ReplayObserver* observer() const {
+        if (baskets_) { return baskets_.get(); }
+        return simulation_.get();
+    }
+    std::string_view analysis_failure() const {
+        return baskets_ ? "basket_observation_failure" : "paper_simulation_failure";
+    }
+    void checkpoint() {
+        if (baskets_) { baskets_->checkpoint(last_time_); }
+        else { simulation_->checkpoint(last_time_); }
+    }
     bool current(const std::shared_ptr<Connection>& connection) const { return !done_ && connection_ == connection; }
-    bool record(const std::string_view channel, std::string payload) {
+    bool record(const std::string_view channel, std::string payload, const Clock::time_point started = Clock::now()) {
         journal::RawMarketRecord record;
         record.metadata_version = metadata_.markets().metadata_version();
         record.connection_generation = generation_;
-        record.received_at = market::ReceiveTime{std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now().time_since_epoch())};
+        record.received_at = market::ReceiveTime{std::chrono::duration_cast<std::chrono::nanoseconds>(started.time_since_epoch())};
         record.observed_at = journal::WallTime{std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch())};
         record.channel = channel;
         record.payload = std::move(payload);
-        const auto update = feed_.accept(record);
-        if (writer_->try_append(std::move(record)) != session::CaptureAppendResult::queued) {
-            storage_failed_ = true;
+        last_time_ = record.received_at.time_since_epoch().count();
+        const auto observed_wall_ns = record.observed_at.time_since_epoch().count();
+        try {
+            if (observer() && !analysis_failed_) { observer()->before(last_time_, feed_.state()); }
+            const auto before_book = Clock::now();
+            const auto update = feed_.accept(record);
+            const auto after_book = Clock::now();
+            if (writer_->try_append(std::move(record)) != session::CaptureAppendResult::queued) {
+                storage_failed_ = true;
+                feed_.abort();
+                return false;
+            }
+            if (update.event == session::FeedEvent::market) { ++updates_; }
+            if (update.event == session::FeedEvent::public_trade) { ++public_trades_; }
+            if (observer() && !analysis_failed_) {
+                const auto before_decision = Clock::now();
+                observer()->after({records_, last_time_, update.market_id, update.event == session::FeedEvent::market, update.trade, observed_wall_ns}, {}, feed_.state());
+                const auto ended = Clock::now();
+                if (update.event == session::FeedEvent::market) {
+                    book_latency_.observe(std::chrono::duration_cast<std::chrono::nanoseconds>(after_book - before_book).count());
+                    decision_latency_.observe(std::chrono::duration_cast<std::chrono::nanoseconds>(ended - before_decision).count());
+                    processing_latency_.observe(std::chrono::duration_cast<std::chrono::nanoseconds>(ended - started).count());
+                }
+                if (!decision_output_->healthy()) { session::detail::invalid("paper writer failed"); }
+                schedule_decision();
+            }
+            ++records_;
+            return update.event != session::FeedEvent::invalidated && update.event != session::FeedEvent::invalid_history;
+        } catch (...) {
+            analysis_failed_ = true;
             feed_.abort();
             return false;
         }
-        if (update.event == session::FeedEvent::market) { ++updates_; }
-        return update.event != session::FeedEvent::invalidated && update.event != session::FeedEvent::invalid_history;
+    }
+    void schedule_decision() {
+        const auto next = baskets_ ? baskets_->next_event_time() : simulation_->next_event_time();
+        if (next == scheduled_decision_) { return; }
+        decision_timer_.cancel();
+        scheduled_decision_ = next;
+        if (!next) { return; }
+        if (*next == std::numeric_limits<std::int64_t>::max()) { session::detail::invalid("paper timer overflow"); }
+        // before() processes strictly earlier simulated events; +1 preserves
+        // the existing rule that equal-timestamp observations precede arrivals.
+        decision_timer_.expires_at(Clock::time_point{std::chrono::duration_cast<Clock::duration>(std::chrono::nanoseconds{*next + 1})});
+        decision_timer_.async_wait([this, due = *next](Error ec) {
+            if (ec || done_) { return; }
+            scheduled_decision_.reset();
+            timer_lateness_.observe(std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now().time_since_epoch()).count() - due);
+            if (!record(baskets_ ? "basket.clock.v1" : "paper.clock.v1", "{}")) { stop(analysis_failure()); }
+        });
+    }
+    void decision_timing() {
+        decision_output_->stream() << Json{{"type", baskets_ ? "basket_timing" : "paper_timing"}, {"book_update", book_latency_.json()},
+            {"decision_callback", decision_latency_.json()}, {"receive_callback_to_decisions", processing_latency_.json()},
+            {"timer_lateness", timer_lateness_.json()}, {"network_order_latency_measured", false}}.dump() << '\n';
+    }
+    bool verify_paper(const session::ReplayInput& input) {
+        // This pass happens only AFTER the live simulation and capture end.
+        // No per-tick replay transcript: compare the compact economic trace.
+        const auto replay_path = config_.directory / "paper-replay.jsonl";
+        std::ofstream replay_output{replay_path, std::ios::binary};
+        auto reference = session::make_execution_simulation(metadata_, config_.directory / "paper-policy.json", replay_output);
+        reference->start();
+        if (!std::holds_alternative<session::ReplaySummary>(session::replay(input, *reference))) { return false; }
+        reference->report(input.plan);
+        replay_output.close();
+        if (!replay_output) { return false; }
+        std::ifstream live{config_.directory / "paper.jsonl"}, offline{replay_path};
+        const auto next = [](std::istream& file) -> std::optional<Json> {
+            std::string line;
+            while (std::getline(file, line)) {
+                auto value = Json::parse(line);
+                const auto type = value.at("type");
+                if (type == "paper_status" || type == "paper_timing" || type == "study_start") { continue; }
+                if (type == "study_complete") { value.erase("manifest_sha256"); value.erase("plan_sha256"); }
+                return value;
+            }
+            return std::nullopt;
+        };
+        Json summary;
+        for (;;) {
+            const auto a = next(live), b = next(offline);
+            if (a != b) { return false; }
+            if (!a) { break; }
+            if (a->at("type") == "study_complete") { summary = *a; }
+        }
+        if (live.bad() || offline.bad() || summary.is_null()) { return false; }
+        summary["mode"] = "live_paper_no_orders_sent";
+        summary["live_replay_equal"] = true;
+        summary["manifest_sha256"] = input.plan.manifest_sha256;
+        summary["plan_sha256"] = input.plan.plan_sha256;
+        summary["stop_reason"] = reason_;
+        summary["book_update"] = book_latency_.json();
+        summary["decision_callback"] = decision_latency_.json();
+        summary["receive_callback_to_decisions"] = processing_latency_.json();
+        summary["timer_lateness"] = timer_lateness_.json();
+        const auto fingerprint = session::detail::fingerprint_file(config_.directory / "paper.jsonl");
+        if (!std::holds_alternative<session::ArtifactFingerprint>(fingerprint)) { return false; }
+        summary["live_trace_sha256"] = std::get<session::ArtifactFingerprint>(fingerprint).sha256;
+        return !session::detail::write_new_file(config_.directory / "paper-summary.json", summary.dump(2));
+    }
+    bool verify_baskets(const session::ReplayInput& input) {
+        const auto replay_path = config_.directory / "basket-replay.jsonl";
+        std::ofstream replay_output{replay_path, std::ios::binary};
+        auto reference = session::make_basket_observation(metadata_, config_.directory / "basket-policy.json", replay_output);
+        reference->start();
+        if (!std::holds_alternative<session::ReplaySummary>(session::replay(input, *reference))) { return false; }
+        reference->report(input.plan);
+        replay_output.close();
+        if (!replay_output) { return false; }
+        std::ifstream live{config_.directory / "basket.jsonl"}, offline{replay_path};
+        const auto next = [](std::istream& file) -> std::optional<Json> {
+            std::string line;
+            while (std::getline(file, line)) {
+                auto value = Json::parse(line);
+                const auto type = value.at("type");
+                if (type == "basket_status" || type == "basket_timing" || type == "basket_start") { continue; }
+                if (type == "basket_complete") { value.erase("manifest_sha256"); value.erase("plan_sha256"); }
+                return value;
+            }
+            return std::nullopt;
+        };
+        Json summary;
+        for (;;) {
+            const auto a = next(live), b = next(offline);
+            if (a != b) { return false; }
+            if (!a) { break; }
+            if (a->at("type") == "basket_complete") { summary = *a; }
+        }
+        if (live.bad() || offline.bad() || summary.is_null()) { return false; }
+        summary["mode"] = "live_conditional_observation_no_orders";
+        summary["live_replay_equal"] = true;
+        summary["manifest_sha256"] = input.plan.manifest_sha256;
+        summary["plan_sha256"] = input.plan.plan_sha256;
+        summary["stop_reason"] = reason_;
+        summary["book_update"] = book_latency_.json();
+        summary["decision_callback"] = decision_latency_.json();
+        summary["receive_callback_to_decisions"] = processing_latency_.json();
+        summary["timer_lateness"] = timer_lateness_.json();
+        const auto fingerprint = session::detail::fingerprint_file(config_.directory / "basket.jsonl");
+        if (!std::holds_alternative<session::ArtifactFingerprint>(fingerprint)) { return false; }
+        summary["live_trace_sha256"] = std::get<session::ArtifactFingerprint>(fingerprint).sha256;
+        return !session::detail::write_new_file(config_.directory / "basket-summary.json", summary.dump(2));
     }
     void release_connection() {
         if (!connection_) { return; }
@@ -152,11 +335,11 @@ private:
         done_ = true;
         reason_ = reason;
         release_connection();
-        duration_.cancel(); health_.cancel(); retry_.cancel(); signals_.cancel();
+        duration_.cancel(); health_.cancel(); retry_.cancel(); decision_timer_.cancel(); signals_.cancel();
     }
     void failed(const std::string_view reason, const bool fatal = false) {
         if (done_) { return; }
-        if (fatal || storage_failed_ || generation_ >= config_.maximum_connections) { stop(reason); return; }
+        if (fatal || storage_failed_ || analysis_failed_ || generation_ >= config_.maximum_connections) { stop(reason); return; }
         if (!feed_.closed()) { (void)record("ws.close.v1", Json{{"reason", reason}}.dump()); }
         release_connection();
         if (storage_failed_) { stop("recorder_failure"); return; }
@@ -169,10 +352,14 @@ private:
         health_.async_wait([this](Error ec) {
             if (ec || done_) { return; }
             if (writer_->status() != session::CaptureAppendResult::queued) { storage_failed_ = true; stop("recorder_failure"); return; }
+            if (observer() && (!decision_output_->healthy() || analysis_failed_)) { analysis_failed_ = true; stop(analysis_failure()); return; }
+            if (observer() && Clock::now() - last_status_ >= std::chrono::seconds{60}) {
+                checkpoint(); decision_timing(); last_status_ = Clock::now();
+            }
             if (connection_ && connection_->opened) {
                 const auto now = Clock::now();
                 if (now - connection_->last_receive >= config_.idle_timeout) { failed("idle_timeout"); }
-                else if (feed_.state().valid_book_count() < config_.markets.size() && now - connection_->opened_at >= config_.handshake_timeout) {
+                else if (!feed_.ready() && now - connection_->opened_at >= config_.handshake_timeout) {
                     failed("snapshot_timeout");
                 }
             }
@@ -259,11 +446,12 @@ private:
         connection->socket.async_read(connection->buffer, [this, connection](Error ec, std::size_t) {
             if (!current(connection)) { return; }
             if (ec) { failed(ec == ws::error::closed ? "peer_close" : "read_failure"); return; }
-            connection->last_receive = Clock::now();
+            const auto received = Clock::now();
+            connection->last_receive = received;
             if (!connection->socket.got_text()) { failed("binary_message"); return; }
             auto bytes = beast::buffers_to_string(connection->buffer.data());
             connection->buffer.consume(connection->buffer.size());
-            if (!record("ws.receive.v1", std::move(bytes))) { failed("feed_invalidated"); return; }
+            if (!record("ws.receive.v1", std::move(bytes), received)) { failed("feed_invalidated"); return; }
             read(connection);
         });
     }
@@ -273,10 +461,20 @@ private:
     net::io_context io_;
     ssl::context context_;
     Key key_;
-    net::steady_timer duration_, health_, retry_;
+    net::steady_timer duration_, health_, retry_, decision_timer_;
     net::signal_set signals_;
     std::unique_ptr<session::AsyncCaptureWriter> writer_;
     std::shared_ptr<Connection> connection_;
+    std::unique_ptr<session::detail::AsyncJsonl> decision_output_;
+    std::unique_ptr<session::ExecutionSimulation> simulation_;
+    std::unique_ptr<session::BasketObservation> baskets_;
+    std::optional<std::int64_t> scheduled_decision_;
+    std::int64_t last_time_{};
+    std::uint64_t records_{};
+    Clock::time_point last_status_{Clock::now()};
+    PaperLatency book_latency_, decision_latency_, processing_latency_, timer_lateness_;
+    std::uint64_t public_trades_{};
+    bool analysis_failed_{};
     std::uint64_t generation_{}, updates_{};
     bool done_{}, storage_failed_{};
     std::string reason_;

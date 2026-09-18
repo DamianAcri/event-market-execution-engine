@@ -1,0 +1,321 @@
+{
+  "artifact_sha256": {
+    "research/results/20260917-economic-frontier/frontier.json": "ef52a3e5b15911a7af61afa9d29bb4341cac0a69f52106f3716ade876f2e350e",
+    "research/tools/basket_frontier.cpp": "03394c3dc773b0344a3c2f970cb09539d68ca9393e3e2eceaf08ccbbbb9e7525",
+    "research/tools/validate_frontier.py": "d41ed7aecfca497923798464fa348478b02436c7ad49eae45968b61fe2aded8f",
+    "tests/basket_screen_oracle_tests.py": "26c6c7a49cfade8742f2adce397425655ac5bdb0b6eaf3157f087396f1b704f2"
+  },
+  "capture": "basket-observe-20260917T145824.308090Z",
+  "one_microdollar_corruption_controls_rejected": 58,
+  "orders_sent": 0,
+  "original_capture_audit_passed": true,
+  "original_observer_counts_match": true,
+  "public_trade_context": [
+    {
+      "basket_id": 3,
+      "join_price_1e4": 6000,
+      "later_taker_outcome_counts": {
+        "no": 6,
+        "yes": 17
+      },
+      "later_trade_prices_1e4": [
+        5100,
+        5200,
+        5400,
+        5500,
+        5600,
+        5700,
+        5800,
+        5900,
+        6000,
+        6200
+      ],
+      "market_id": 24,
+      "market_public_trades_entire_capture": 25,
+      "market_public_trades_later_same_connection": 23,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "yes",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 364800
+    },
+    {
+      "basket_id": 5,
+      "join_price_1e4": 4500,
+      "later_taker_outcome_counts": {
+        "no": 3,
+        "yes": 13
+      },
+      "later_trade_prices_1e4": [
+        4200,
+        4300,
+        4400,
+        4500,
+        4600,
+        4800,
+        4900
+      ],
+      "market_id": 24,
+      "market_public_trades_entire_capture": 25,
+      "market_public_trades_later_same_connection": 16,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 581900
+    },
+    {
+      "basket_id": 9,
+      "join_price_1e4": 8700,
+      "later_taker_outcome_counts": {
+        "yes": 1
+      },
+      "later_trade_prices_1e4": [
+        8800
+      ],
+      "market_id": 6,
+      "market_public_trades_entire_capture": 1,
+      "market_public_trades_later_same_connection": 1,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 100000
+    },
+    {
+      "basket_id": 9,
+      "join_price_1e4": 8700,
+      "later_taker_outcome_counts": {
+        "yes": 1
+      },
+      "later_trade_prices_1e4": [
+        8800
+      ],
+      "market_id": 6,
+      "market_public_trades_entire_capture": 1,
+      "market_public_trades_later_same_connection": 1,
+      "mode": "one_passive_taker_fee_stress",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 100000
+    },
+    {
+      "basket_id": 10,
+      "join_price_1e4": 8300,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 15,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 500000
+    },
+    {
+      "basket_id": 10,
+      "join_price_1e4": 8300,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 15,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_taker_fee_stress",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 500000
+    },
+    {
+      "basket_id": 12,
+      "join_price_1e4": 9700,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 11,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 700000
+    },
+    {
+      "basket_id": 12,
+      "join_price_1e4": 9700,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 11,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_taker_fee_stress",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 700000
+    },
+    {
+      "basket_id": 14,
+      "join_price_1e4": 1900,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 43,
+      "market_public_trades_entire_capture": 1,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "yes",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 239800
+    },
+    {
+      "basket_id": 15,
+      "join_price_1e4": 9000,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 7,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 600200
+    },
+    {
+      "basket_id": 15,
+      "join_price_1e4": 9000,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 7,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_taker_fee_stress",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 600200
+    },
+    {
+      "basket_id": 16,
+      "join_price_1e4": 9500,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 20,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 647500
+    },
+    {
+      "basket_id": 17,
+      "join_price_1e4": 9700,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 9,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 20200
+    },
+    {
+      "basket_id": 17,
+      "join_price_1e4": 9700,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 9,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_taker_fee_stress",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 20200
+    },
+    {
+      "basket_id": 18,
+      "join_price_1e4": 9100,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 13,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 620000
+    },
+    {
+      "basket_id": 18,
+      "join_price_1e4": 9200,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 13,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_taker_fee_stress",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 620000
+    },
+    {
+      "basket_id": 19,
+      "join_price_1e4": 9800,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 10,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 200
+    },
+    {
+      "basket_id": 19,
+      "join_price_1e4": 9800,
+      "later_taker_outcome_counts": {},
+      "later_trade_prices_1e4": [],
+      "market_id": 10,
+      "market_public_trades_entire_capture": 0,
+      "market_public_trades_later_same_connection": 0,
+      "mode": "one_passive_taker_fee_stress",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 200
+    },
+    {
+      "basket_id": 20,
+      "join_price_1e4": 1200,
+      "later_taker_outcome_counts": {
+        "yes": 2
+      },
+      "later_trade_prices_1e4": [
+        9400
+      ],
+      "market_id": 12,
+      "market_public_trades_entire_capture": 2,
+      "market_public_trades_later_same_connection": 2,
+      "mode": "one_passive_zero_fee_hypothesis",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 29900
+    },
+    {
+      "basket_id": 20,
+      "join_price_1e4": 1200,
+      "later_taker_outcome_counts": {
+        "yes": 2
+      },
+      "later_trade_prices_1e4": [
+        9400
+      ],
+      "market_id": 12,
+      "market_public_trades_entire_capture": 2,
+      "market_public_trades_later_same_connection": 2,
+      "mode": "one_passive_taker_fee_stress",
+      "passive_outcome": "no",
+      "trade_through_or_own_fill_inferred": false,
+      "visible_queue_centicontracts": 29900
+    }
+  ],
+  "rational_witnesses_checked": 58,
+  "realized_pnl_micro": null,
+  "schema_version": 1,
+  "simulated_fills": false,
+  "witness_grid_sizes_checked": 100
+}

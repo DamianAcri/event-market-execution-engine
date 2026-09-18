@@ -3,6 +3,7 @@
 #include "eme/gateway/kalshi/orderbook_processor.hpp"
 #include "eme/opportunity/candidate_tracker.hpp"
 #include "eme/session/capture_session.hpp"
+#include "eme/market/public_trade.hpp"
 
 #include <iosfwd>
 #include <span>
@@ -25,6 +26,8 @@ struct ReplayPlan final {
     std::vector<ReplayControl> controls;
     bool ws_controller{};
     std::vector<market::MarketId> markets;
+    bool shared_subscription{};
+    bool public_trades{};
 };
 struct ReplayInput final {
     std::filesystem::path directory;
@@ -47,6 +50,10 @@ struct ReplayFrame final {
     std::int64_t time_ns{};
     std::optional<market::MarketId> market_id;
     bool applied{}; // true only for successfully applied market data
+    std::optional<market::PublicTrade> trade{};
+    // Recorded local wall clock, for explicit policy-validity windows only.
+    // Never treated as an exchange timestamp or network-latency measurement.
+    std::optional<std::int64_t> observed_wall_ns{};
 };
 class ReplayObserver {
 public:
@@ -64,6 +71,7 @@ struct ReplaySummary final {
     std::uint64_t candidate_events{};
     std::uint64_t rejected_updates{};
     std::int64_t last_time_ns{};
+    std::uint64_t public_trades{};
 };
 
 // Streaming replay. Input files must remain unchanged after load_replay.

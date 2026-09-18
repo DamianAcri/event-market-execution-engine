@@ -1,0 +1,1060 @@
+{
+  "acceptance": {
+    "capture_completed_at": "2026-09-17T15:42:04.519194+00:00",
+    "capture_started_at": "2026-09-17T14:58:30.131334+00:00",
+    "finalized": true,
+    "live_replay_equal": true,
+    "planned_window_complete": false,
+    "policy_expired": true,
+    "reason": "policy_window_expired_before_observation_finished",
+    "source_unchanged": true,
+    "usable": false
+  },
+  "artifact_sha256": {
+    "collector-output.json": "b1b92efcbcd26d743ff4f047a431436ef3e406ff7744bd424e000c4c61a520d9",
+    "observation-plan.json": "b38b55e725403aed3b8ce92e6c469bf9ec6e4d8de8d968f143ee2410761b6476",
+    "observation-policy.json": "8db05b456ef895d7a332f256ebfbc73db79d09dc29af95be9f5c09675f2da2ab",
+    "preparation/status.json": "a455b19c25563b903377cf0b39a6940a92ad7adc08f29460d732b2739dae5cd4",
+    "result.json": "bad1e78ab72ae405603bf349ca787b3d10f9f3bc24ae55b700520da2b4aa7d5f",
+    "session/basket-summary.json": "24e3e182fe8ce6b69fa2e96699ab67a2928e616897ebf880531466c23c9a6097",
+    "session/manifest.json": "7ae830aef588277ed6135d8422581897003384eefcb256f6ece2fc246fa355dd",
+    "session/market.journal": "dac7d89024cc6387956054f8cba1d273b51e7b493b0e4239260bbb1e06f31ad0",
+    "session/metadata.json": "427fd64bc63610ed4e322e4b3a866f5504a64c68c1d27d5adf56bb1508ec8366"
+  },
+  "audit_source_sha256": "d8dd81a560a97be42a75dc704a05bef264b42118c1d64f5d2bc2cbf08fbe2553",
+  "best_one_contract_witnesses": [
+    {
+      "basket_id": 1,
+      "book_update_skew_ns": 337973750,
+      "debit_micro": 2040000,
+      "generation": 1,
+      "gross_margin_micro": 10000,
+      "leg_prices_1e4": [
+        4100,
+        7100,
+        8700
+      ],
+      "maximum_book_update_age_ns": 337973750,
+      "modeled_fees_micro": 50000,
+      "net_margin_micro": -40000,
+      "offset_ns": 292780866417,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 117417,
+      "quantity_centicontracts": 100,
+      "record": 93079
+    },
+    {
+      "basket_id": 2,
+      "book_update_skew_ns": 865416209,
+      "debit_micro": 2060000,
+      "generation": 1,
+      "gross_margin_micro": -10000,
+      "leg_prices_1e4": [
+        5100,
+        6400,
+        8600
+      ],
+      "maximum_book_update_age_ns": 865416209,
+      "modeled_fees_micro": 50000,
+      "net_margin_micro": -60000,
+      "offset_ns": 1499798209,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 93417,
+      "quantity_centicontracts": 100,
+      "record": 493
+    },
+    {
+      "basket_id": 3,
+      "book_update_skew_ns": 46563334,
+      "debit_micro": 2030000,
+      "generation": 1,
+      "gross_margin_micro": 20000,
+      "leg_prices_1e4": [
+        5000,
+        6300,
+        8500
+      ],
+      "maximum_book_update_age_ns": 46563334,
+      "modeled_fees_micro": 50000,
+      "net_margin_micro": -30000,
+      "offset_ns": 212845751834,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 75625,
+      "quantity_centicontracts": 100,
+      "record": 61220
+    },
+    {
+      "basket_id": 4,
+      "book_update_skew_ns": 16982977083,
+      "debit_micro": 2060000,
+      "generation": 1,
+      "gross_margin_micro": -10000,
+      "leg_prices_1e4": [
+        3500,
+        7700,
+        8900
+      ],
+      "maximum_book_update_age_ns": 16982977083,
+      "modeled_fees_micro": 50000,
+      "net_margin_micro": -60000,
+      "offset_ns": 21317610792,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 65375,
+      "quantity_centicontracts": 100,
+      "record": 7049
+    },
+    {
+      "basket_id": 5,
+      "book_update_skew_ns": 311863250,
+      "debit_micro": 2050000,
+      "generation": 1,
+      "gross_margin_micro": 0,
+      "leg_prices_1e4": [
+        7400,
+        3800,
+        8800
+      ],
+      "maximum_book_update_age_ns": 311863250,
+      "modeled_fees_micro": 50000,
+      "net_margin_micro": -50000,
+      "offset_ns": 34646920125,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 16673875,
+      "quantity_centicontracts": 100,
+      "record": 11954
+    },
+    {
+      "basket_id": 6,
+      "book_update_skew_ns": 279405708,
+      "debit_micro": 2060000,
+      "generation": 1,
+      "gross_margin_micro": -10000,
+      "leg_prices_1e4": [
+        6200,
+        5300,
+        8600
+      ],
+      "maximum_book_update_age_ns": 279405708,
+      "modeled_fees_micro": 50000,
+      "net_margin_micro": -60000,
+      "offset_ns": 304848186875,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 143833,
+      "quantity_centicontracts": 100,
+      "record": 96490
+    },
+    {
+      "basket_id": 7,
+      "book_update_skew_ns": 171578834,
+      "debit_micro": 2050000,
+      "generation": 1,
+      "gross_margin_micro": 0,
+      "leg_prices_1e4": [
+        7700,
+        3500,
+        8800
+      ],
+      "maximum_book_update_age_ns": 171578834,
+      "modeled_fees_micro": 50000,
+      "net_margin_micro": -50000,
+      "offset_ns": 225585599459,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 150459,
+      "quantity_centicontracts": 100,
+      "record": 66818
+    },
+    {
+      "basket_id": 8,
+      "book_update_skew_ns": 109329667,
+      "debit_micro": 2060000,
+      "generation": 1,
+      "gross_margin_micro": -20000,
+      "leg_prices_1e4": [
+        8400,
+        2700,
+        9100
+      ],
+      "maximum_book_update_age_ns": 109329667,
+      "modeled_fees_micro": 40000,
+      "net_margin_micro": -60000,
+      "offset_ns": 158629408917,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 55375,
+      "quantity_centicontracts": 100,
+      "record": 41154
+    },
+    {
+      "basket_id": 9,
+      "book_update_skew_ns": 6369125,
+      "debit_micro": 2040000,
+      "generation": 1,
+      "gross_margin_micro": 10000,
+      "leg_prices_1e4": [
+        2900,
+        8000,
+        9000
+      ],
+      "maximum_book_update_age_ns": 6369125,
+      "modeled_fees_micro": 50000,
+      "net_margin_micro": -40000,
+      "offset_ns": 148309344917,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 65833,
+      "quantity_centicontracts": 100,
+      "record": 37336
+    },
+    {
+      "basket_id": 10,
+      "book_update_skew_ns": 442897958,
+      "debit_micro": 2060000,
+      "generation": 1,
+      "gross_margin_micro": -10000,
+      "leg_prices_1e4": [
+        7700,
+        3600,
+        8800
+      ],
+      "maximum_book_update_age_ns": 442897958,
+      "modeled_fees_micro": 50000,
+      "net_margin_micro": -60000,
+      "offset_ns": 3617349042,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 173083,
+      "quantity_centicontracts": 100,
+      "record": 1119
+    },
+    {
+      "basket_id": 11,
+      "book_update_skew_ns": 13490792,
+      "debit_micro": 2040000,
+      "generation": 1,
+      "gross_margin_micro": -10000,
+      "leg_prices_1e4": [
+        1500,
+        9100,
+        9500
+      ],
+      "maximum_book_update_age_ns": 13490792,
+      "modeled_fees_micro": 30000,
+      "net_margin_micro": -40000,
+      "offset_ns": 4674347459,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 44459,
+      "quantity_centicontracts": 100,
+      "record": 2065
+    },
+    {
+      "basket_id": 13,
+      "book_update_skew_ns": 3991583,
+      "debit_micro": 2050000,
+      "generation": 1,
+      "gross_margin_micro": -20000,
+      "leg_prices_1e4": [
+        9000,
+        1700,
+        9500
+      ],
+      "maximum_book_update_age_ns": 3991583,
+      "modeled_fees_micro": 30000,
+      "net_margin_micro": -50000,
+      "offset_ns": 22301023417,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 66333,
+      "quantity_centicontracts": 100,
+      "record": 7994
+    },
+    {
+      "basket_id": 14,
+      "book_update_skew_ns": 20669038750,
+      "debit_micro": 2040000,
+      "generation": 1,
+      "gross_margin_micro": 0,
+      "leg_prices_1e4": [
+        2400,
+        8500,
+        9100
+      ],
+      "maximum_book_update_age_ns": 20669038750,
+      "modeled_fees_micro": 40000,
+      "net_margin_micro": -40000,
+      "offset_ns": 21303604375,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 69458,
+      "quantity_centicontracts": 100,
+      "record": 7013
+    },
+    {
+      "basket_id": 15,
+      "book_update_skew_ns": 2483119459,
+      "debit_micro": 2040000,
+      "generation": 1,
+      "gross_margin_micro": -10000,
+      "leg_prices_1e4": [
+        1600,
+        9000,
+        9500
+      ],
+      "maximum_book_update_age_ns": 2483119459,
+      "modeled_fees_micro": 30000,
+      "net_margin_micro": -40000,
+      "offset_ns": 219270010459,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 65292,
+      "quantity_centicontracts": 100,
+      "record": 64218
+    },
+    {
+      "basket_id": 16,
+      "book_update_skew_ns": 58080708,
+      "debit_micro": 2050000,
+      "generation": 1,
+      "gross_margin_micro": -20000,
+      "leg_prices_1e4": [
+        900,
+        9500,
+        9800
+      ],
+      "maximum_book_update_age_ns": 58080708,
+      "modeled_fees_micro": 30000,
+      "net_margin_micro": -50000,
+      "offset_ns": 229292933417,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 112292,
+      "quantity_centicontracts": 100,
+      "record": 69235
+    },
+    {
+      "basket_id": 17,
+      "book_update_skew_ns": 338169042,
+      "debit_micro": 2050000,
+      "generation": 1,
+      "gross_margin_micro": -20000,
+      "leg_prices_1e4": [
+        600,
+        9700,
+        9900
+      ],
+      "maximum_book_update_age_ns": 338169042,
+      "modeled_fees_micro": 30000,
+      "net_margin_micro": -50000,
+      "offset_ns": 253606237792,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 13132708,
+      "quantity_centicontracts": 100,
+      "record": 80270
+    },
+    {
+      "basket_id": 18,
+      "book_update_skew_ns": 344350375,
+      "debit_micro": 2030000,
+      "generation": 1,
+      "gross_margin_micro": 0,
+      "leg_prices_1e4": [
+        8900,
+        1700,
+        9400
+      ],
+      "maximum_book_update_age_ns": 344350375,
+      "modeled_fees_micro": 30000,
+      "net_margin_micro": -30000,
+      "offset_ns": 343965179584,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 61500,
+      "quantity_centicontracts": 100,
+      "record": 107258
+    },
+    {
+      "basket_id": 20,
+      "book_update_skew_ns": 289609208,
+      "debit_micro": 2040000,
+      "generation": 1,
+      "gross_margin_micro": -10000,
+      "leg_prices_1e4": [
+        9400,
+        1000,
+        9700
+      ],
+      "maximum_book_update_age_ns": 289609208,
+      "modeled_fees_micro": 30000,
+      "net_margin_micro": -40000,
+      "offset_ns": 322533154625,
+      "payout_floor_micro": 2000000,
+      "previous_record_gap_ns": 137458,
+      "quantity_centicontracts": 100,
+      "record": 100830
+    }
+  ],
+  "capture_basename": "basket-observe-20260917T145824.308090Z",
+  "economic_interpretation_limits": [
+    "Point-in-time conditional quotes, not fills or realized profit.",
+    "Best one-contract witnesses are not maxima of gross margin across all sizes.",
+    "Reevaluations and sizes are correlated calculations, not independent opportunities.",
+    "Receive envelopes include startup snapshots and do not certify synchronized basket coverage.",
+    "Old duration counters carry states until late closure; do not use them as valid exposure.",
+    "Zero positive quotes applies only to the selected model, observed messages and tested sizes."
+  ],
+  "journal_audit": {
+    "all_record_crc32_verified": true,
+    "channel_counts": {
+      "ws.attempt.v1": 6,
+      "ws.close.v1": 6,
+      "ws.open.v1": 5,
+      "ws.receive.v1": 140259,
+      "ws.send.v1": 10
+    },
+    "elapsed_monotonic_ns": 2610913827084,
+    "gap_cause_deducible_from_journal_alone": false,
+    "generations": [
+      {
+        "channel_counts": {
+          "ws.attempt.v1": 1,
+          "ws.close.v1": 1,
+          "ws.open.v1": 1,
+          "ws.receive.v1": 107293,
+          "ws.send.v1": 2
+        },
+        "generation": 1,
+        "last_receive_to_close_ns": 305865232083,
+        "maximum_inter_receive_gap_ns": 490975833,
+        "receive_count": 107293,
+        "receive_envelope_ns": 343529341209,
+        "receive_first_offset_ns": 515069750,
+        "receive_last_offset_ns": 344044410959
+      },
+      {
+        "channel_counts": {
+          "ws.attempt.v1": 1,
+          "ws.close.v1": 1,
+          "ws.open.v1": 1,
+          "ws.receive.v1": 8768,
+          "ws.send.v1": 2
+        },
+        "generation": 2,
+        "last_receive_to_close_ns": 298874975625,
+        "maximum_inter_receive_gap_ns": 474237500,
+        "receive_count": 8768,
+        "receive_envelope_ns": 44540105625,
+        "receive_first_offset_ns": 652492907959,
+        "receive_last_offset_ns": 697033013584
+      },
+      {
+        "channel_counts": {
+          "ws.attempt.v1": 1,
+          "ws.close.v1": 1,
+          "ws.open.v1": 1,
+          "ws.receive.v1": 11272,
+          "ws.send.v1": 2
+        },
+        "generation": 3,
+        "last_receive_to_close_ns": 298958023375,
+        "maximum_inter_receive_gap_ns": 294239625,
+        "receive_count": 11272,
+        "receive_envelope_ns": 44528199042,
+        "receive_first_offset_ns": 998419590625,
+        "receive_last_offset_ns": 1042947789667
+      },
+      {
+        "channel_counts": {
+          "ws.attempt.v1": 1,
+          "ws.close.v1": 1,
+          "ws.open.v1": 1,
+          "ws.receive.v1": 12623,
+          "ws.send.v1": 2
+        },
+        "generation": 4,
+        "last_receive_to_close_ns": 251696697083,
+        "maximum_inter_receive_gap_ns": 270035458,
+        "receive_count": 12623,
+        "receive_envelope_ns": 42215910875,
+        "receive_first_offset_ns": 1346408333417,
+        "receive_last_offset_ns": 1388624244292
+      },
+      {
+        "channel_counts": {
+          "ws.attempt.v1": 1,
+          "ws.close.v1": 1,
+          "ws.open.v1": 1,
+          "ws.receive.v1": 303,
+          "ws.send.v1": 2
+        },
+        "generation": 5,
+        "last_receive_to_close_ns": 30010902875,
+        "maximum_inter_receive_gap_ns": 115273083,
+        "receive_count": 303,
+        "receive_envelope_ns": 514927792,
+        "receive_first_offset_ns": 1648884304292,
+        "receive_last_offset_ns": 1649399232084
+      },
+      {
+        "channel_counts": {
+          "ws.attempt.v1": 1,
+          "ws.close.v1": 1
+        },
+        "generation": 6,
+        "last_receive_to_close_ns": null,
+        "maximum_inter_receive_gap_ns": 0,
+        "receive_count": 0,
+        "receive_envelope_ns": 0,
+        "receive_first_offset_ns": null,
+        "receive_last_offset_ns": null
+      }
+    ],
+    "receive_envelope_is_continuous_synchronized_basket_eligibility": false,
+    "record_count": 140286,
+    "record_gap_threshold_ns": 30000000000,
+    "record_gaps_above_threshold": [
+      {
+        "before_record": 107298,
+        "channel": "ws.close.v1",
+        "generation": 1,
+        "monotonic_gap_ns": 305865232083,
+        "previous_channel": "ws.receive.v1",
+        "previous_generation": 1,
+        "wall_gap_ns": 305854360000
+      },
+      {
+        "before_record": 116071,
+        "channel": "ws.close.v1",
+        "generation": 2,
+        "monotonic_gap_ns": 298874975625,
+        "previous_channel": "ws.receive.v1",
+        "previous_generation": 2,
+        "wall_gap_ns": 298870548000
+      },
+      {
+        "before_record": 127348,
+        "channel": "ws.close.v1",
+        "generation": 3,
+        "monotonic_gap_ns": 298958023375,
+        "previous_channel": "ws.receive.v1",
+        "previous_generation": 3,
+        "wall_gap_ns": 298953609000
+      },
+      {
+        "before_record": 139976,
+        "channel": "ws.close.v1",
+        "generation": 4,
+        "monotonic_gap_ns": 251696697083,
+        "previous_channel": "ws.receive.v1",
+        "previous_generation": 4,
+        "wall_gap_ns": 251695059000
+      },
+      {
+        "before_record": 140284,
+        "channel": "ws.close.v1",
+        "generation": 5,
+        "monotonic_gap_ns": 30010902875,
+        "previous_channel": "ws.receive.v1",
+        "previous_generation": 5,
+        "wall_gap_ns": 30011423000
+      },
+      {
+        "before_record": 140285,
+        "channel": "ws.attempt.v1",
+        "generation": 6,
+        "monotonic_gap_ns": 931502946500,
+        "previous_channel": "ws.close.v1",
+        "previous_generation": 5,
+        "wall_gap_ns": 931496780000
+      }
+    ],
+    "sum_receive_envelopes_ns": 475328484543
+  },
+  "manifest_and_result_hash_bindings_verified": true,
+  "planned_duration_seconds": 1800,
+  "policy_validity_unix_ms": [
+    1789657109308,
+    1789659509308
+  ],
+  "reported_basket_diagnostics": [
+    {
+      "basket_id": 1,
+      "evaluated_quantities": 2596300,
+      "reported_eligible_ns": 1659895823166,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659895823166,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738657402043
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 25963,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 2,
+      "evaluated_quantities": 871800,
+      "reported_eligible_ns": 1659548664417,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659548664417,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 739004560792
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 8718,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 3,
+      "evaluated_quantities": 3125900,
+      "reported_eligible_ns": 1659897656126,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659897656126,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738655569083
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 31259,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 4,
+      "evaluated_quantities": 556700,
+      "reported_eligible_ns": 1659547937333,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659547937333,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 739005287876
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 5567,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 5,
+      "evaluated_quantities": 3216800,
+      "reported_eligible_ns": 1660125904251,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1660125904251,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738427320958
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 32168,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 6,
+      "evaluated_quantities": 990600,
+      "reported_eligible_ns": 1659549526167,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659549526167,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 739003699042
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 9906,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 7,
+      "evaluated_quantities": 2485600,
+      "reported_eligible_ns": 1660126828709,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1660126828709,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738426396500
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 24856,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 8,
+      "evaluated_quantities": 798200,
+      "reported_eligible_ns": 1659551713458,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659551713458,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 739001511751
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 7982,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 9,
+      "evaluated_quantities": 2207400,
+      "reported_eligible_ns": 1659894638709,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659894638709,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738658586500
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 22074,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 10,
+      "evaluated_quantities": 933700,
+      "reported_eligible_ns": 1659550333334,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659550333334,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 739002891875
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 9337,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 11,
+      "evaluated_quantities": 1048500,
+      "reported_eligible_ns": 1659887553376,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659887553376,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738665671833
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 10485,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 12,
+      "evaluated_quantities": 0,
+      "reported_eligible_ns": 1659775535500,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 1659775535500,
+        "no_positive_margin": 0,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738777689709
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 867,
+        "no_positive_margin": 0,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 13,
+      "evaluated_quantities": 1674300,
+      "reported_eligible_ns": 1660127706209,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1660127706209,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738425519000
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 16743,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 14,
+      "evaluated_quantities": 395100,
+      "reported_eligible_ns": 1659547277083,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659547277083,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 739005948126
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 3951,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 15,
+      "evaluated_quantities": 1705200,
+      "reported_eligible_ns": 1659893549167,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659893549167,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738659676042
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 17052,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 16,
+      "evaluated_quantities": 377400,
+      "reported_eligible_ns": 1659545660167,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659545660167,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 739007565042
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 3774,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 17,
+      "evaluated_quantities": 75100,
+      "reported_eligible_ns": 1659777733626,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 1544772734342,
+        "no_positive_margin": 115004999284,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738775491583
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 2622,
+        "no_positive_margin": 751,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 18,
+      "evaluated_quantities": 601000,
+      "reported_eligible_ns": 1659552664000,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659552664000,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 739000561209
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 6010,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 19,
+      "evaluated_quantities": 0,
+      "reported_eligible_ns": 1659776281460,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 1659776281460,
+        "no_positive_margin": 0,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738776943749
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 1065,
+        "no_positive_margin": 0,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    },
+    {
+      "basket_id": 20,
+      "evaluated_quantities": 394500,
+      "reported_eligible_ns": 1659553567001,
+      "reported_status_duration_ns": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 1659553567001,
+        "policy_expired": 212360601875,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 738999658208
+      },
+      "status_counts": {
+        "crossed_book": 0,
+        "insufficient_cash": 0,
+        "no_depth": 0,
+        "no_positive_margin": 3945,
+        "policy_expired": 1,
+        "positive_conditional_quote": 0,
+        "stream_or_book_unavailable": 25
+      }
+    }
+  ],
+  "reported_durations_are_not_verified_continuous_coverage": true,
+  "schema_version": 1,
+  "selection_counts": {
+    "budget_exclusions_by_reason": {
+      "basket_budget": 106
+    },
+    "catalog_markets": 636,
+    "conditional_candidates": 126,
+    "exclusions_by_reason": {
+      "closes_before_capture_end": 374,
+      "unsupported_range_payoff": 6
+    },
+    "selected_baskets": 20,
+    "selected_markets": 46
+  },
+  "summary_counts": {
+    "basket_evaluations": 245295,
+    "book_updates": 140104,
+    "episode_events": 0,
+    "evaluated_quantities": 24054100,
+    "maximum_simultaneous_positive_baskets": 0,
+    "model_classification": "conditional_common_scalar_observation_only",
+    "orders_sent": 0,
+    "production_certificate": false,
+    "public_trades": 145,
+    "realized_pnl_micro": null,
+    "records": 140286,
+    "simulated_fills": false
+  }
+}

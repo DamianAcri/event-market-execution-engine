@@ -8,7 +8,7 @@
 using namespace eme;
 int main(int argc, char**) {
     constexpr std::uint64_t samples = 10'000U;
-    const unsigned runs = argc > 1 ? 1U : 8U;
+    const unsigned runs = argc > 1 ? 2U : 16U;
     gateway::kalshi::MarketRegistry markets{1U};
     (void)markets.register_market(1U, "A");
     const std::array<market::MarketId, 1> selected{1U};
@@ -21,9 +21,11 @@ int main(int argc, char**) {
             ",\"msg\":{\"market_ticker\":\"A\",\"side\":\"yes\",\"price_dollars\":\"0.5000\",\"delta_fp\":\"0.01\"}}";
         records.push_back(std::move(record));
     }
-    std::cout << "run,records,p50_ns,p99_ns,total_ns,final_quantity,final_sequence\n";
+    std::cout << "protocol,run,records,p50_ns,p99_ns,total_ns,final_quantity,final_sequence\n";
     for (unsigned run = 0U; run < runs; ++run) {
-        session::ReadOnlyFeed feed{markets, selected};
+        const bool shared = run % 2U != 0U;
+        session::ReadOnlyFeed feed{markets, selected, shared
+            ? session::FeedProtocol::shared_subscription_v1 : session::FeedProtocol::per_market_v1};
         journal::RawMarketRecord control;
         control.metadata_version = control.connection_generation = 1U;
         const auto apply = [&](std::string channel, std::string payload) {
@@ -48,7 +50,7 @@ int main(int argc, char**) {
         const auto* book = feed.state().find_book(1U);
         const auto quantity = book->quantity_at(book::Side::bid, *core::Price::from_raw(5000)).raw();
         if (quantity != 10'100 || book->last_sequence() != 10'001U) { return 1; }
-        std::cout << run << ',' << samples << ',' << elapsed[samples / 2U] << ',' << elapsed[samples * 99U / 100U] << ','
+        std::cout << (shared ? "shared" : "legacy") << ',' << run << ',' << samples << ',' << elapsed[samples / 2U] << ',' << elapsed[samples * 99U / 100U] << ','
                   << total << ',' << quantity << ',' << *book->last_sequence() << '\n';
     }
 }

@@ -23,6 +23,7 @@ configure_file(
 add_library(eme_core
     src/core/execution_cost.cpp
     src/core/net_sizing.cpp
+    src/core/basket_sizing.cpp
     src/book/order_book.cpp
     src/constraint/payoff.cpp
     src/journal/journal_codec.cpp
@@ -93,6 +94,7 @@ if(EME_BUILD_KALSHI_GATEWAY)
         src/session/session_files.cpp
         src/session/replay.cpp
         src/session/execution_study.cpp
+        src/session/basket_observation.cpp
         src/session/study_policy.cpp
         src/session/import_capture.cpp
     )
@@ -110,7 +112,8 @@ if(EME_BUILD_CLI)
         ${PROJECT_BINARY_DIR}/generated
     )
     if(EME_BUILD_KALSHI_GATEWAY)
-        target_sources(event-engine PRIVATE src/cli/session_commands.cpp)
+        target_sources(event-engine PRIVATE src/cli/session_commands.cpp src/cli/market_screen.cpp src/cli/basket_screen.cpp)
+        target_link_libraries(event-engine PRIVATE nlohmann_json::nlohmann_json)
         target_link_libraries(event-engine PRIVATE eme_session)
         target_compile_definitions(event-engine PRIVATE EME_CLI_KALSHI=1)
     else()
@@ -157,6 +160,13 @@ if(EME_BUILD_BENCHMARKS)
         add_test(NAME eme_benchmark_smoke COMMAND eme_benchmarks --smoke)
     endif()
     if(EME_BUILD_KALSHI_GATEWAY)
+        add_executable(eme_basket_observation_benchmark benchmarks/basket_observation_benchmark.cpp)
+        target_include_directories(eme_basket_observation_benchmark PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_basket_observation_benchmark PRIVATE eme_session nlohmann_json::nlohmann_json)
+        eme_enable_warnings(eme_basket_observation_benchmark)
+        if(BUILD_TESTING)
+            add_test(NAME eme_basket_observation_benchmark_smoke COMMAND eme_basket_observation_benchmark --smoke)
+        endif()
         add_executable(eme_feed_benchmarks benchmarks/feed_benchmarks.cpp)
         target_link_libraries(eme_feed_benchmarks PRIVATE eme_session)
         eme_enable_warnings(eme_feed_benchmarks)
@@ -239,12 +249,38 @@ if(BUILD_TESTING)
         )
         eme_add_test(eme_metadata_snapshot_tests tests/metadata_snapshot_tests.cpp eme_kalshi_gateway)
         target_link_libraries(eme_metadata_snapshot_tests PRIVATE nlohmann_json::nlohmann_json)
+        eme_add_test(eme_market_screen_tests tests/market_screen_tests.cpp eme_session)
+        target_sources(eme_market_screen_tests PRIVATE src/cli/market_screen.cpp)
+        target_include_directories(eme_market_screen_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_market_screen_tests PRIVATE nlohmann_json::nlohmann_json)
+
+        eme_add_test(eme_basket_screen_tests tests/basket_screen_tests.cpp eme_session)
+        target_sources(eme_basket_screen_tests PRIVATE src/cli/basket_screen.cpp)
+        target_include_directories(eme_basket_screen_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_basket_screen_tests PRIVATE nlohmann_json::nlohmann_json)
+        eme_add_test(eme_basket_observation_tests tests/basket_observation_tests.cpp eme_session)
+        target_include_directories(eme_basket_observation_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_basket_observation_tests PRIVATE nlohmann_json::nlohmann_json)
+        find_package(Python3 COMPONENTS Interpreter QUIET)
+        if(Python3_Interpreter_FOUND)
+            if(EME_BUILD_CLI)
+                add_test(NAME eme_basket_screen_oracle_tests COMMAND ${Python3_EXECUTABLE} -B
+                    ${PROJECT_SOURCE_DIR}/tests/basket_screen_oracle_tests.py --engine $<TARGET_FILE:event-engine>)
+            endif()
+            foreach(basket_python_test basket_families public_pool basket_research basket_observe)
+                add_test(NAME eme_${basket_python_test}_tests COMMAND ${Python3_EXECUTABLE} -B
+                    ${PROJECT_SOURCE_DIR}/tests/${basket_python_test}_tests.py)
+            endforeach()
+        endif()
         eme_add_test(eme_session_tests tests/session_tests.cpp eme_session)
         eme_add_test(eme_readonly_feed_tests tests/readonly_feed_tests.cpp eme_session)
         eme_add_test(eme_async_capture_tests tests/async_capture_tests.cpp eme_session)
         set_tests_properties(eme_async_capture_tests PROPERTIES TIMEOUT 30)
         eme_add_test(eme_candidate_replay_tests tests/candidate_replay_tests.cpp eme_session)
         eme_add_test(eme_study_tests tests/study_tests.cpp eme_session)
+        eme_add_test(eme_paper_tests tests/paper_tests.cpp eme_session)
+        target_include_directories(eme_paper_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_paper_tests PRIVATE nlohmann_json::nlohmann_json)
         target_include_directories(eme_study_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
         target_link_libraries(eme_study_tests PRIVATE nlohmann_json::nlohmann_json)
         eme_add_test(eme_residual_study_tests tests/residual_study_tests.cpp eme_session)
@@ -323,5 +359,13 @@ if(EME_BUILD_LIVE_CAPTURE)
             --openssl ${EME_OPENSSL_EXECUTABLE}
             --metadata ${PROJECT_SOURCE_DIR}/examples/metadata.snapshot.json)
         set_tests_properties(eme_capture_transport_tests PROPERTIES TIMEOUT 90)
+        add_test(NAME eme_capture_runner_tests COMMAND ${Python3_EXECUTABLE} -B
+            ${PROJECT_SOURCE_DIR}/tests/capture_runner_tests.py)
+        foreach(selection_test market_catalog market_families)
+            add_test(NAME eme_${selection_test}_tests COMMAND ${Python3_EXECUTABLE} -B
+                ${PROJECT_SOURCE_DIR}/tests/${selection_test}_tests.py)
+        endforeach()
+        add_test(NAME eme_economic_selection_tests COMMAND ${Python3_EXECUTABLE} -B
+            ${PROJECT_SOURCE_DIR}/tests/economic_selection_tests.py --engine $<TARGET_FILE:event-engine>)
     endif()
 endif()

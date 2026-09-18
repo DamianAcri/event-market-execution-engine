@@ -16,8 +16,11 @@ enum class MarketStateError : std::uint8_t {
 
 using MarketApplyResult = std::variant<book::BookUpdateResult, MarketStateError>;
 
+enum class SequenceScope : std::uint8_t { per_book, shared_stream };
+
 class MarketState final {
 public:
+    explicit MarketState(SequenceScope scope = SequenceScope::per_book) : scope_{scope} {}
     [[nodiscard]] bool open_connection(ConnectionGeneration generation);
     [[nodiscard]] bool close_connection(ConnectionGeneration generation) noexcept;
     [[nodiscard]] bool begin_recovery(MarketId market_id) noexcept;
@@ -37,10 +40,15 @@ public:
 private:
     [[nodiscard]] bool accepts(ConnectionGeneration generation) const noexcept;
     void invalidate_all() noexcept;
+    [[nodiscard]] bool accepts_sequence(book::StreamId stream, book::SequenceNumber sequence) const noexcept;
+    [[nodiscard]] MarketApplyResult finish_shared(
+        book::StreamId stream, book::SequenceNumber sequence, book::BookUpdateResult result);
 
     std::optional<ConnectionGeneration> connection_generation_;
     bool connected_{false};
     std::unordered_map<MarketId, book::OrderBook> books_;
+    SequenceScope scope_;
+    std::unordered_map<book::StreamId, book::SequenceNumber> stream_sequences_;
 };
 
 }  // namespace eme::market
