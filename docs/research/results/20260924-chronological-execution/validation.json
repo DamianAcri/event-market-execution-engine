@@ -1,0 +1,36 @@
+{
+  "rational_per_level_checks": 66,
+  "attempts_audited": 27,
+  "no_overlap_and_ack_timing_verified": true,
+  "cash_and_holdings_verified": true,
+  "continuous_control_equals_original_replay": true,
+  "trace_sha256": "b196cbff43a1b8add3a92deea6cf6c01226b3fa4cc33ba8d3513ae0aa98f7dfb",
+  "orders_sent": 0,
+  "fee_policy_is_the_same_declared_hypothesis": true,
+  "native_checks": 23,
+  "python_runner_tests": 4,
+  "unchanged_observer_python_regressions": 27,
+  "native_observation_regression_checks": 31,
+  "native_passive_regression_checks": 32,
+  "asan_ubsan_native_checks": 86,
+  "build_flags": "Apple clang C++20 -O2 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror",
+  "binary_sha256": "a7ead979c71f2ad7b98502be3a9f0cefb0df5e4173cdf99cf2b0a5474105d1c9",
+  "platform": "macOS arm64",
+  "benchmark": {
+    "control_seconds": [
+      13.484139125,
+      12.655251291999999
+    ],
+    "execution_seconds": [
+      12.928841375,
+      13.009999749999999
+    ],
+    "child_peak_rss_bytes_macos": 5029888,
+    "same_compiler_objects_and_flags": true,
+    "processing_time_is_exchange_latency": false,
+    "repeated_execution_byte_identical": true
+  },
+  "cross_platform_ci": "pending",
+  "source_capture_unchanged": true,
+  "fee_and_order_latency_calibrated": false
+}

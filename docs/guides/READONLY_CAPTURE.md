@@ -136,6 +136,134 @@ This preflight does not measure opportunity duration, market-hours or P&L. A
 prospective streaming cohort and separate completion-risk analysis remain the
 next evidence steps when justified by the selected family.
 
+## Chronological aggressive basket study
+
+Build the `eme-basket-execution` target and analyze an existing basket capture:
+
+```sh
+python3 scripts/basket_execution_study.py captures/your-capture --binary build/eme-basket-execution --output analysis/new-study
+```
+
+The output directory must not exist. This command reads local finalized data;
+it does not load credentials, open the network, record a new window or send
+orders. It freezes a policy/manifest/binary binding before replay and retains
+`policy.json`, `plan.json`, `trace.jsonl` and `report.json`.
+
+The continuous native quote observer calls a typed callback on a new positive
+episode. The study does not read a saved future episode trace or choose its
+later peak. Left-censored initial positives are recorded but skipped for entry.
+Each scenario admits one active basket and sizes it against its remaining cash
+and shadow depth. If several baskets open on the same update, largest net margin
+wins, with basket ID as a deterministic tie-break. Busy onsets are counted rather
+than queued for a later retrospectively chosen entry.
+
+The fixed sensitivity grid is 1/10/50/100/250 ms for **each** of order arrival
+and acknowledgment. Purchases arrive at d, 3d and 5d after detection; completed
+acquisition is confirmed at 6d. These are assumptions on the received-data clock,
+not measurements of exchange execution. Before each buy, the total projected
+cost must preserve at least the declared margin, and conservative gross funding
+must fit. IOC limits use the current last required price. The budget guard is a
+send-time estimate: changing within-limit depth or fill fragmentation can still
+breach it, so actual costs and breach counts are retained.
+
+A partial purchase or failed continuation guard triggers one IOC sale attempt
+per acquired leg, in original leg order, with the same delays. Sales pay the
+specified fees and cross the available bid depth. Remaining inventory halts new
+entries; missing observations never supply future fills. Complete basket payout
+is kept separate from spendable cash. The exact cash identity is checked after
+every modeled event. The report's `conditional_net_micro` combines available cash
+and the complete baskets' conditional payoff floor, less starting capital, only
+when there is no unresolved attempt. It is not realized profit. A separate stress
+bound assumes residual inventory has zero value and pending buy reservations are
+fully spent; unknown positions are never quietly marked profitable.
+
+Both buying NO and selling YES consume the same physical bid level; buying YES
+and selling NO consume the same ask level. Each scenario's cumulative physical
+level deductions persist across historical updates, preventing repeated use of
+unchanged depth. This is a deliberately conservative availability convention,
+not a calibrated market-impact or replenishment model. Scenarios have independent
+ledgers and must never be added together.
+
+The report embeds the continuous observation control even when execution is
+busy. Gap/expiry/EOF handling, partial sells, locking capital, physical-depth
+reuse, price limits, acknowledgments and a within-limit budget breach have native
+regression tests. The saved chronological audit independently checks per-fill
+rational fees, no overlapping entries, confirmation timing, cash and holdings.
+
+## Passive-entry feasibility probe
+
+`scripts/passive_probe.py` records the same read-only basket feed and **then**
+runs `eme-passive-probe` on the finalized journal. Recording includes public
+trades and books; passive fills are calculated offline after collection, not
+streamed during it. Neither component submits orders. The native probe has no
+network or credential interface.
+
+```sh
+python3 scripts/passive_probe.py --probe build/eme-passive-probe --engine build/event-engine --binary build/eme-capture --output captures --seconds 1800 --max-mib 256
+```
+
+`--prepare-only` performs public qualification and native policy validation
+without loading credentials. `--analyze-existing CAPTURE_DIRECTORY` studies an
+old basket capture; unregistered hypotheses are explicitly exploratory. It adds
+analysis artifacts and refuses to replace any existing passive output. Preserve
+an original capture when rerunning comparisons. A capture directory must be a
+real directory, not a symlink, consistent with native session validation.
+
+The operator's installed macOS launcher is `~/.local/bin/kalshi-passive`; it adds
+`caffeinate -i`, versioned binaries and a permanent output directory. Keep the
+lid open. Default recording is 30 minutes with a **soft** 256 MiB storage limit
+checked every five seconds; termination/finalization can overshoot it. Preparation
+also takes time, and the subsequent analysis has a 600-second timeout.
+
+Policy and executable hashes freeze before capture. The initial defaults below
+are declared hypotheses and operational bounds, **not calibrated estimates or
+research-proven optima**:
+
+- Retain the existing qualified cohort: at most 20 conditional BTC baskets and
+  64 markets. One entry at a time; size search 1–100 whole contracts, USD 1,000
+  fictional capital per independent scenario, no credit before settlement.
+- Join the best bid in one leg only when the quoted spread is at most 5 cents,
+  a contra-side public trade was received in the preceding 60 seconds, and the
+  three-leg margin after stated fees exceeds or equals 1 cent. On an eligible
+  update, select the largest total margin among that market's dependent baskets.
+  This is a bounded research policy, not an optimal market allocator.
+- Entry delay 100 ms, resting time 5 s, cancellation delay 100 ms. Full fills
+  trigger hedging immediately; partial fills hedge after the rest/cancel period.
+  Hedge the two remaining legs sequentially with 1, 10 or 100 ms per-leg delays,
+  using book states already available at each modeled arrival time.
+- Two queue assumptions: only trades reduce priority, or unmatched cancellations
+  also reduce priority after a 250 ms reconciliation window. Depth reductions
+  **never generate fills**. Both trade/delta arrival orders are reconciled.
+- Exact-price, non-block public trades only. Aggregate depth does not reveal
+  identity or true priority. Exchange/local clock error is assumed bounded by
+  250 ms; trades ambiguous around activation or outside the bound cannot fill.
+  Offset diagnostics are reported, but they are not order/network latency.
+- Maker coefficient 0.07 is an unverified stress hypothesis; taker fees use the
+  reviewed cohort policy. Rounding and funding reuse the existing C++ kernel.
+- Any residual inventory halts further entries. Gaps over 15 seconds, wall-clock
+  discontinuities, connection changes, invalid books, policy expiry and EOF
+  censor exposure instead of filling it with stale or future prices. A detected
+  continuity gap stops modeling the rest of the capture.
+
+Outputs in the printed capture directory:
+
+- `session/market.journal`: original book/trade messages, replayable and checked.
+- `passive-plan.json`, `passive-policy.json`: preregistration, hashes, assumptions.
+- `passive.jsonl`: entries, hypothetical fills, hedges and censoring reasons.
+- `passive-report.json`: six **separate, non-additive** scenarios, spent/locked
+  cash, residual quantities, conditional payoff margins and coverage flags.
+
+The passive report counter `aggressive_positive_states` only covers states
+where a new passive attempt can be admitted. For continuous all-taker quote
+coverage use `session/basket-summary.json` and its episode trace; a zero in the
+passive counter does not mean the capture had no positive all-taker quotes.
+
+The conditional floor still lacks exceptional-settlement certification. Modeled
+fills, queue priority, clock error and market impact are uncalibrated; realized
+PnL stays null. Zero eligible entries is a valid result. Do not change parameters
+until a previously negative capture appears profitable and call that validation.
+Reserve untouched future expiries/days for confirmation.
+
 ## Continuous conditional basket observation
 
 `scripts/basket_observe.py` prepares a fresh frozen BTC cohort, registers its

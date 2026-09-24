@@ -542,6 +542,114 @@ La revisión respalda continuar por búsqueda, tamaño y ejecución con priorida
 
 La ejecución nueva de esta revisión consiste en los cinco estudios sintéticos de cantidad, no en una prueba de rentabilidad ni un nuevo benchmark de velocidad. El paquete local `calci-economic-research-20260915` conserva `reproduce_sizing.py`, entradas, sesión verificada, cinco políticas, cinco salidas JSONL, `results.json` y manifiesto con hashes del ejecutable y archivos. El script recibe un ejecutable existente y un directorio nuevo; no modifica código ni contacta con la plataforma. El documento se guarda también en ese paquete.
 
+## Implementación del estudio pasivo — 24 de septiembre de 2026
+
+La revisión de colas se traduce en `PassiveQueue` y `eme-passive-probe`: trades
+públicos al precio exacto, prioridad por delante, cancelaciones separadas de
+operaciones y dos escenarios de cola. No es una calibración del modelo de
+Huang–Lehalle–Rosenbaum ni una réplica de una estrategia propietaria.[^queue][^queuevalue]
+El protocolo oficial define lado agresor, cantidad, hora e indicador de bloque;
+el feed agregado no identifica la prioridad de una orden nuestra.[^publictrades]
+
+La selección aplicada exige actividad anterior, spread acotado, margen neto y
+fondos completos. Se reutilizan replay, profundidad y comisiones nativas; las
+coberturas retrasadas consumen profundidad y pueden dejar inventario o margen
+negativo. La consulta es incremental por dependencias, con presupuestos de
+intentos, identidades de trades y trazas. No se infiere beneficio de una mejora
+del tiempo de CPU ni se suman escenarios alternativos.
+
+Los parámetros concretos están en la
+[guía operativa](../guides/READONLY_CAPTURE.md#passive-entry-feasibility-probe),
+fijados antes de una nueva captura. El reloj de mercado de la captura antigua
+aparece 1–53 ms por delante del local en los 145 trades; eso no es una latencia
+negativa medible. Se declara un límite hipotético de error de reloj de 250 ms y
+se excluyen trades ambiguos alrededor de la activación. Esta corrección de
+medición no verifica sincronización ni ajusta el modelo para obtener beneficio.
+Con la política documentada no hay entradas elegibles en el tramo utilizable.
+El informe conserva la interrupción, el resultado nulo y las hipótesis sin
+resolver; futuras fechas completas deben quedar fuera del ajuste.
+
+## Ejecución agresiva sobre la nueva captura — 24 de septiembre de 2026
+
+El [informe reproducible](results/20260924-aggressive-execution/report.json) y su
+[plan fijado antes de calcular los escenarios](results/20260924-aggressive-execution/plan.json)
+analizan ocho episodios positivos del observador continuo. Es una exploración
+posterior a conocer la captura, no una preregistración previa a recogerla. Se
+congelan cantidades y límites al abrir cada episodio: ninguna compra usa el pico
+posterior ni optimiza su tamaño con precios futuros. El probe reutiliza libros,
+validación de sesiones y comisiones nativas; un oráculo racional independiente
+comprueba 309 costes de ejecuciones por nivel. Diez comprobaciones sintéticas,
+también con ASan/UBSan, cubren precios futuros, profundidad parcial, límites,
+desconexión, saltos de reloj y fin de datos.
+
+| Retraso supuesto por pata (llegadas d, 2d, 3d) | Cruzar profundidad disponible: completas con margen positivo | Límites iniciales: completas con margen positivo | Límites iniciales: exposición parcial |
+|---|---:|---:|---:|
+| 0 ms, control ideal | 8/8 | 8/8 | 0/8 |
+| 1 ms | 8/8 | 8/8 | 0/8 |
+| 10 ms | 8/8 | 8/8 | 0/8 |
+| 50 ms | 4/8 | 4/8 | 2/8 |
+| 100 ms | 4/8 | 4/8 | 3/8 |
+| 250 ms | 3/8 | 3/8 | 3/8 |
+
+A 250 ms, el cuarto caso completo con límites tiene margen negativo: un precio
+límite por pata no congela su precio medio ni las comisiones por fragmentación.
+En el episodio 7, el margen inicial de $0.42 pasa a -$2.08 cruzando precios tras
+250 ms por pata; con límites quedan dos patas compradas, $76.67 desembolsados y
+la tercera sin completar. No se supone que ese inventario pueda deshacerse sin
+coste. Los importes son diferencias frente al pago mínimo condicional, no P&L
+liquidado. Las ocho contrafactuales comparten liquidez, pueden solaparse y no se
+suman como ingresos. Un retraso supuesto tampoco es una medición de red/órdenes.
+
+La literatura sobre competencia por liquidez y latencia motiva precisamente
+medir supervivencia y riesgo de completar patas, no atribuir el margen visible
+al robot.[^race][^speedscale] Este resultado favorece estudiar una ejecución
+agresiva controlada antes de invertir en otra optimización de CPU: aún faltan
+impacto propio, carreras, política cronológica, riesgo residual y evaluación en
+fechas no utilizadas para diseñarla. No valida una estrategia de una firma ni
+convierte el mejor supuesto de la tabla en una recomendación de despliegue.
+
+## Estudio cronológico con compras y salidas — 24 de septiembre de 2026
+
+El siguiente paso del plan está implementado en `basket_execution.cpp`, usando
+el observador continuo mediante un callback tipado; no consume episodios futuros
+ni repite un clasificador de oportunidades. La lógica de prioridad, confirmación,
+capital y costes reutiliza las fronteras nativas del motor. El enfoque sigue la
+separación entre margen visible, adquisición conjunta y riesgo de completar
+patas descrita en la investigación; no atribuye parámetros propios a una firma.
+
+Se evalúa toda la misma captura con una cesta activa por escenario, USD 1.000,
+comisiones declaradas, descuentos persistentes de liquidez propia y venta de
+patas incompletas. La ida de una orden y su respuesta cuestan d por separado:
+las llegadas secuenciales son d, 3d y 5d. No se ha medido que estos retrasos sean
+alcanzables. La política se fija antes de este cálculo, pero **después** de haber
+analizado la captura: sigue siendo exploratoria.
+
+| d por llegada y por respuesta | Cestas completas | Resultado condicional con costes de salida |
+|---|---:|---:|
+| 1 ms | 6 | +1,70 USD |
+| 10 ms | 6 | +1,69 USD |
+| 50 ms | 2 | +0,52 USD |
+| 100 ms | 2 | +0,05 USD |
+| 250 ms | 0 | −4,15 USD |
+
+[Informe y supuestos](results/20260924-chronological-execution/report.json).
+Los resultados incluyen el coste de cerrar exposiciones fallidas, no costes de
+operación o financiación. En el escenario de 100 ms, el margen de las cestas
+completas es $0.54, pero las salidas consumen $0.49. Ninguno deja exposición
+residual en esta muestra; las pruebas sí cubren ese fallo y fuerzan parada.
+No se suman escenarios ni se extrapola el resultado de 13 minutos. Los pagos
+siguen condicionados a las reglas certificadas parcialmente; las ejecuciones
+se infieren de profundidad observada, no se observan órdenes propias ganando
+carreras. Las deducciones de volumen son conservadoras, pero no calibran impacto.
+
+La implicación seleccionada es evaluar la política congelada en otros
+vencimientos y acotar el retraso ejecutable, antes de atribuir ingresos a más
+velocidad. La evidencia no autoriza elegir 1 ms por ser el mejor resultado, ni
+cambiar cantidades/esperas hasta que los escenarios lentos ganen en esta muestra.
+El control continuo mantiene exactamente los ocho episodios originales mientras
+cada ejecución tiene su propia contabilidad: se corrige así la confusión entre
+un contador de admisión condicionado y la cobertura total de oportunidades.
+
 ## Fuentes
 
 Fuentes de la revisión base consultadas el 14–15 de septiembre de 2026; las añadidas en la actualización se consultaron el 17. Las secciones fijan el alcance utilizado; acceso al texto completo no implica reproducción de sus resultados.
@@ -581,3 +689,5 @@ Fuentes de la revisión base consultadas el 14–15 de septiembre de 2026; las a
 [^hrtmodel]: Iain Dunning, Hudson River Trading. [In Trading, Machine Learning Benchmarks Don't Track What You Care About](https://www.hudsonrivertrading.com/hrtbeat/trading-machine-learning/). Artículo oficial, 2022; evaluación y baja relación señal/ruido.
 [^hrtpages]: Guillaume Morin, Hudson River Trading. [Low Latency Optimization: Understanding Huge Pages](https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-1/). Artículo oficial, 2022; ejemplo de memoria específico, no recomendación universal.
 [^race]: Matteo Aquilina, Eric Budish y Peter O'Neill. [Quantifying the High-Frequency Trading Arms Race](https://academic.oup.com/qje/article/137/1/493/6368348). QJE 137(1), 2022; mensajes de intentos fallidos frente a feed de libro. Resultados de renta variable, no velocidades ni beneficios de Kalshi.
+
+[^publictrades]: Kalshi. [Public trades WebSocket](https://docs.kalshi.com/websockets/public-trades) y [order direction](https://docs.kalshi.com/getting_started/order_direction), consultados el 24 de septiembre de 2026.

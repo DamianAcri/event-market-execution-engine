@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "kind": "chronological_basket_execution",
+  "basket_policy_sha256": "e833bf44cf0bd059c682634d3834f0a9ffda544389e2d9d17a4d1b381dc98e94",
+  "arrival_and_response_ms": [
+    1,
+    10,
+    50,
+    100,
+    250
+  ],
+  "minimum_margin_micro": 10000,
+  "max_attempts": 1000
+}

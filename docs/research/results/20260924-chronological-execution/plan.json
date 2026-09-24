@@ -1,0 +1,22 @@
+{
+  "registered_at": "2026-09-24T18:57:35.277887+00:00",
+  "exploratory_on_previously_analyzed_capture": true,
+  "policy_sha256": "559639ea75c05085dc010c1740b305451ac54e678d4ae561414914556804ae02",
+  "binary_sha256": "a7ead979c71f2ad7b98502be3a9f0cefb0df5e4173cdf99cf2b0a5474105d1c9",
+  "runner_sha256": "8dc6dd4c7ab6cd0db7e0cf21c3ca529f441316c3f847c1ef5ab4e6aa34bd9e91",
+  "capture_manifest_sha256": "1e61ce8c0f70035f81175549c88e726174f2a536edc37fa6b486803e08c619dd",
+  "orders_sent": 0,
+  "delay_is_measured_exchange_latency": false,
+  "rules": [
+    "Entry on new positive episode from continuous native control; no later peak selection.",
+    "One active basket per scenario; completed basket capital remains locked.",
+    "Native size search uses remaining capital and own consumed physical liquidity.",
+    "Same one-way arrival and acknowledgment delays; complete sequential arrivals are d, 3d, 5d.",
+    "Recheck total projected basket cost before each buy; IOC limit is current last required price.",
+    "Guard is a decision-time estimate, not a guarantee against later within-limit depth changes.",
+    "On partial buy or failed guard, attempt one IOC sale per acquired leg, then halt if residual remains.",
+    "Consumed physical level quantities persist across subsequent feed updates; no reset/reuse.",
+    "No settlement credits, market impact calibration or actual fill claim."
+  ],
+  "analysis_timeout_seconds": 600
+}

@@ -133,7 +133,7 @@ def observe(root, engine, binary, settings, transport, *, seconds=1800, max_mib=
             process_factory=subprocess.Popen, monitor_runner=monitor,
             hash_reader=source_hashes, free_reader=lambda p: shutil.disk_usage(p).free,
             monotonic=time.monotonic, wall_time=time.time,
-            progress=lambda message: None):
+            progress=lambda message: None, register_analysis=None):
     """Prepare, preregister and optionally run one fresh observation window.
 
     Credentials are loaded only after all public preparation, clock, source,
@@ -210,11 +210,12 @@ def observe(root, engine, binary, settings, transport, *, seconds=1800, max_mib=
             'native_engine_sha256': engine_hash, 'collector_sha256': binary_hash,
             'source_modules_sha256': initial_sources}
         write_json(root / 'observation-plan.json', plan)
+        analysis_paths = tuple(register_analysis(root, policy_path, plan)) if register_analysis else ()
         progress('Preparacion lista: ' + str(len(qualification['baskets'])) +
                  ' combinaciones, ' + str(len(qualification['markets'])) +
                  ' mercados. Seleccion fijada antes de observar los resultados.')
         frozen_paths = (qualification_path, metadata_path, policy_path,
-                        preparation / 'provenance.json', root / 'observation-plan.json')
+                        preparation / 'provenance.json', root / 'observation-plan.json') + analysis_paths
         frozen_hashes = {str(path): digest(path) for path in frozen_paths}
 
         def artifacts_stable():

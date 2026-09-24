@@ -1,0 +1,4154 @@
+{
+  "schema_version": 1,
+  "created_before_probe_at": "2026-09-24T18:32:42.639874+00:00",
+  "manifest_sha256": "1e61ce8c0f70035f81175549c88e726174f2a536edc37fa6b486803e08c619dd",
+  "basket_policy_sha256": "e833bf44cf0bd059c682634d3834f0a9ffda544389e2d9d17a4d1b381dc98e94",
+  "episode_trace_sha256": "b4fe02f48d575ff422b3ed2249d758fcafb8037a4a36685b627ba5de0f47dcda",
+  "probe_sha256": "ed0a9370f61d9e9ea3f1155e996b3dbc837af97de2919e7f13fb479d37fe1620",
+  "probe_source_sha256": "97050c73377bd1aa8a11858c3eefc992d551d62c3db9d69bd7518a977fb32082",
+  "audit_source_sha256": "5f2204378106d006182a68f920f08168335278917b8acd91a31386455b23b6df",
+  "exploratory_after_observing_capture": true,
+  "orders_sent": 0,
+  "delay_is_measured_network_latency": false,
+  "timing": "First leg arrives after d; next legs at 2d and 3d. Equal time samples first processed frame at that timestamp.",
+  "execution": "Native observed depth; stop submitting further legs on invalid book or first partial fill; no unwind.",
+  "limitations": [
+    "Selected observed episodes, not an independent forward strategy trial.",
+    "No venue-atomic snapshot, hidden liquidity, race or market impact model.",
+    "One assumed fill per price level; fee fragmentation uncalibrated.",
+    "Episodes share liquidity; independent counterfactuals cannot be summed as earnings.",
+    "Payoff floor conditional on existing settlement rules; not realized PnL."
+  ],
+  "cases": [
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        18,
+        19,
+        20
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        21,
+        22,
+        23
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        24,
+        25,
+        26
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        27,
+        28,
+        29
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        30,
+        31,
+        32
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        33,
+        34,
+        35
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        36,
+        37,
+        38
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        39,
+        40,
+        41
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        42,
+        43,
+        44
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        45,
+        46,
+        47
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        51,
+        52,
+        53
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        54,
+        55,
+        56
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        57,
+        58,
+        59
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        60,
+        61,
+        62
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        63,
+        64,
+        65
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        66,
+        67,
+        68
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        69,
+        70,
+        71
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        72,
+        73,
+        74
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        75,
+        76,
+        77
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        78,
+        79,
+        80
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        81,
+        82,
+        83
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        84,
+        85,
+        86
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        87,
+        88,
+        89
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        90,
+        91,
+        92
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        93,
+        94,
+        95
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        96,
+        97,
+        98
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        99,
+        100,
+        101
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        102,
+        103,
+        104
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        105,
+        106,
+        107
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        108,
+        109,
+        110
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        111,
+        112,
+        113
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        114,
+        115,
+        116
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        117,
+        118,
+        119
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        120,
+        121,
+        122
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        123,
+        124,
+        125
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        126,
+        127,
+        128
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        129,
+        130,
+        131
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        132,
+        133,
+        134
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        135,
+        136,
+        137
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        138,
+        139,
+        140
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        141,
+        142,
+        143
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        144,
+        145,
+        146
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        147,
+        148,
+        149
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        150,
+        151,
+        152
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        153,
+        154,
+        155
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        156,
+        157,
+        158
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        159,
+        160,
+        161
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        162,
+        163,
+        164
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        165,
+        166,
+        167
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        168,
+        169,
+        170
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        171,
+        172,
+        173
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        174,
+        175,
+        176
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        177,
+        178,
+        179
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        180,
+        181,
+        182
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        183,
+        184,
+        185
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        186,
+        187,
+        188
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        189,
+        190,
+        191
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        192,
+        193,
+        194
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        195,
+        196,
+        197
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        198,
+        199,
+        200
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        201,
+        202,
+        203
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        204,
+        205,
+        206
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        207,
+        208,
+        209
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        210,
+        211,
+        212
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        213,
+        214,
+        215
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        216,
+        217,
+        218
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        219,
+        220,
+        221
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        222,
+        223,
+        224
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        225,
+        226,
+        227
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        228,
+        229,
+        230
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        231,
+        232,
+        233
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        234,
+        235,
+        236
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        237,
+        238,
+        239
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        240,
+        241,
+        242
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        243,
+        244,
+        245
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        246,
+        247,
+        248
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        249,
+        250,
+        251
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        252,
+        253,
+        254
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        255,
+        256,
+        257
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        258,
+        259,
+        260
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        261,
+        262,
+        263
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        264,
+        265,
+        266
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        267,
+        268,
+        269
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        270,
+        271,
+        272
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        273,
+        274,
+        275
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        276,
+        277,
+        278
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        279,
+        280,
+        281
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        282,
+        283,
+        284
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        285,
+        286,
+        287
+      ]
+    }
+  ],
+  "queries": [
+    {
+      "id": 0,
+      "time_ns": 7366749165477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 1,
+      "time_ns": 7366749165477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 2,
+      "time_ns": 7366749165477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 3,
+      "time_ns": 7366749165477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 4,
+      "time_ns": 7366749165477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 5,
+      "time_ns": 7366749165477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 6,
+      "time_ns": 7366749166477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 7,
+      "time_ns": 7366749167477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 8,
+      "time_ns": 7366749168477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 9,
+      "time_ns": 7366749166477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 10,
+      "time_ns": 7366749167477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 11,
+      "time_ns": 7366749168477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 12,
+      "time_ns": 7366749175477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 13,
+      "time_ns": 7366749185477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 14,
+      "time_ns": 7366749195477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 15,
+      "time_ns": 7366749175477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 16,
+      "time_ns": 7366749185477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 17,
+      "time_ns": 7366749195477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 18,
+      "time_ns": 7366749215477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 19,
+      "time_ns": 7366749265477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 20,
+      "time_ns": 7366749315477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 21,
+      "time_ns": 7366749215477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 22,
+      "time_ns": 7366749265477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 23,
+      "time_ns": 7366749315477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 24,
+      "time_ns": 7366749265477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 25,
+      "time_ns": 7366749365477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 26,
+      "time_ns": 7366749465477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 27,
+      "time_ns": 7366749265477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 28,
+      "time_ns": 7366749365477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 29,
+      "time_ns": 7366749465477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 30,
+      "time_ns": 7366749415477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 31,
+      "time_ns": 7366749665477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 32,
+      "time_ns": 7366749915477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 33,
+      "time_ns": 7366749415477750,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 34,
+      "time_ns": 7366749665477750,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 35,
+      "time_ns": 7366749915477750,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 36,
+      "time_ns": 7366751456309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 37,
+      "time_ns": 7366751456309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 38,
+      "time_ns": 7366751456309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 39,
+      "time_ns": 7366751456309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 40,
+      "time_ns": 7366751456309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 41,
+      "time_ns": 7366751456309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 42,
+      "time_ns": 7366751457309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 43,
+      "time_ns": 7366751458309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 44,
+      "time_ns": 7366751459309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 45,
+      "time_ns": 7366751457309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 46,
+      "time_ns": 7366751458309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 47,
+      "time_ns": 7366751459309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 48,
+      "time_ns": 7366751466309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 49,
+      "time_ns": 7366751476309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 50,
+      "time_ns": 7366751486309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 51,
+      "time_ns": 7366751466309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 52,
+      "time_ns": 7366751476309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 53,
+      "time_ns": 7366751486309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 54,
+      "time_ns": 7366751506309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 55,
+      "time_ns": 7366751556309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 56,
+      "time_ns": 7366751606309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 57,
+      "time_ns": 7366751506309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 58,
+      "time_ns": 7366751556309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 59,
+      "time_ns": 7366751606309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 60,
+      "time_ns": 7366751556309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 61,
+      "time_ns": 7366751656309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 62,
+      "time_ns": 7366751756309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 63,
+      "time_ns": 7366751556309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 64,
+      "time_ns": 7366751656309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 65,
+      "time_ns": 7366751756309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 66,
+      "time_ns": 7366751706309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 67,
+      "time_ns": 7366751956309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 68,
+      "time_ns": 7366752206309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 69,
+      "time_ns": 7366751706309375,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 70,
+      "time_ns": 7366751956309375,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 71,
+      "time_ns": 7366752206309375,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 10000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 72,
+      "time_ns": 7366751530599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 73,
+      "time_ns": 7366751530599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 74,
+      "time_ns": 7366751530599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 75,
+      "time_ns": 7366751530599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 76,
+      "time_ns": 7366751530599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 77,
+      "time_ns": 7366751530599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 78,
+      "time_ns": 7366751531599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 79,
+      "time_ns": 7366751532599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 80,
+      "time_ns": 7366751533599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 81,
+      "time_ns": 7366751531599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 82,
+      "time_ns": 7366751532599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 83,
+      "time_ns": 7366751533599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 84,
+      "time_ns": 7366751540599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 85,
+      "time_ns": 7366751550599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 86,
+      "time_ns": 7366751560599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 87,
+      "time_ns": 7366751540599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 88,
+      "time_ns": 7366751550599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 89,
+      "time_ns": 7366751560599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 90,
+      "time_ns": 7366751580599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 91,
+      "time_ns": 7366751630599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 92,
+      "time_ns": 7366751680599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 93,
+      "time_ns": 7366751580599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 94,
+      "time_ns": 7366751630599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 95,
+      "time_ns": 7366751680599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 96,
+      "time_ns": 7366751630599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 97,
+      "time_ns": 7366751730599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 98,
+      "time_ns": 7366751830599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 99,
+      "time_ns": 7366751630599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 100,
+      "time_ns": 7366751730599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 101,
+      "time_ns": 7366751830599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 102,
+      "time_ns": 7366751780599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 103,
+      "time_ns": 7366752030599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 1200,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 104,
+      "time_ns": 7366752280599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 105,
+      "time_ns": 7366751780599666,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 106,
+      "time_ns": 7366752030599666,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 107,
+      "time_ns": 7366752280599666,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 2000,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 108,
+      "time_ns": 7366803080131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 109,
+      "time_ns": 7366803080131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 110,
+      "time_ns": 7366803080131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 111,
+      "time_ns": 7366803080131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 112,
+      "time_ns": 7366803080131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 113,
+      "time_ns": 7366803080131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 114,
+      "time_ns": 7366803081131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 115,
+      "time_ns": 7366803082131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 116,
+      "time_ns": 7366803083131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 117,
+      "time_ns": 7366803081131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 118,
+      "time_ns": 7366803082131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 119,
+      "time_ns": 7366803083131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 120,
+      "time_ns": 7366803090131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 121,
+      "time_ns": 7366803100131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 122,
+      "time_ns": 7366803110131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 123,
+      "time_ns": 7366803090131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 124,
+      "time_ns": 7366803100131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 125,
+      "time_ns": 7366803110131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 126,
+      "time_ns": 7366803130131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 127,
+      "time_ns": 7366803180131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 128,
+      "time_ns": 7366803230131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 129,
+      "time_ns": 7366803130131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 130,
+      "time_ns": 7366803180131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 131,
+      "time_ns": 7366803230131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 132,
+      "time_ns": 7366803180131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 133,
+      "time_ns": 7366803280131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 134,
+      "time_ns": 7366803380131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 135,
+      "time_ns": 7366803180131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 136,
+      "time_ns": 7366803280131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 137,
+      "time_ns": 7366803380131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 138,
+      "time_ns": 7366803330131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 139,
+      "time_ns": 7366803580131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 140,
+      "time_ns": 7366803830131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 141,
+      "time_ns": 7366803330131333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 142,
+      "time_ns": 7366803580131333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 143,
+      "time_ns": 7366803830131333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 500,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 144,
+      "time_ns": 7366803244877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9500,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 145,
+      "time_ns": 7366803244877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 146,
+      "time_ns": 7366803244877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 147,
+      "time_ns": 7366803244877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 148,
+      "time_ns": 7366803244877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 149,
+      "time_ns": 7366803244877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 150,
+      "time_ns": 7366803245877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9500,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 151,
+      "time_ns": 7366803246877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 152,
+      "time_ns": 7366803247877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 153,
+      "time_ns": 7366803245877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 154,
+      "time_ns": 7366803246877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 155,
+      "time_ns": 7366803247877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 156,
+      "time_ns": 7366803254877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9500,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 157,
+      "time_ns": 7366803264877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 158,
+      "time_ns": 7366803274877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 159,
+      "time_ns": 7366803254877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 160,
+      "time_ns": 7366803264877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 161,
+      "time_ns": 7366803274877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 162,
+      "time_ns": 7366803294877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9500,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 163,
+      "time_ns": 7366803344877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 164,
+      "time_ns": 7366803394877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 165,
+      "time_ns": 7366803294877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 166,
+      "time_ns": 7366803344877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 167,
+      "time_ns": 7366803394877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 168,
+      "time_ns": 7366803344877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9500,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 169,
+      "time_ns": 7366803444877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 170,
+      "time_ns": 7366803544877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 171,
+      "time_ns": 7366803344877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 172,
+      "time_ns": 7366803444877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 173,
+      "time_ns": 7366803544877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 174,
+      "time_ns": 7366803494877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9500,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 175,
+      "time_ns": 7366803744877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 176,
+      "time_ns": 7366803994877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 177,
+      "time_ns": 7366803494877250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 178,
+      "time_ns": 7366803744877250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 179,
+      "time_ns": 7366803994877250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 900,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 180,
+      "time_ns": 7366803422849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 181,
+      "time_ns": 7366803422849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 182,
+      "time_ns": 7366803422849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 183,
+      "time_ns": 7366803422849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 184,
+      "time_ns": 7366803422849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 185,
+      "time_ns": 7366803422849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 186,
+      "time_ns": 7366803423849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 187,
+      "time_ns": 7366803424849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 188,
+      "time_ns": 7366803425849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 189,
+      "time_ns": 7366803423849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 190,
+      "time_ns": 7366803424849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 191,
+      "time_ns": 7366803425849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 192,
+      "time_ns": 7366803432849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 193,
+      "time_ns": 7366803442849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 194,
+      "time_ns": 7366803452849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 195,
+      "time_ns": 7366803432849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 196,
+      "time_ns": 7366803442849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 197,
+      "time_ns": 7366803452849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 198,
+      "time_ns": 7366803472849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 199,
+      "time_ns": 7366803522849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 200,
+      "time_ns": 7366803572849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 201,
+      "time_ns": 7366803472849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 202,
+      "time_ns": 7366803522849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 203,
+      "time_ns": 7366803572849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 204,
+      "time_ns": 7366803522849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 205,
+      "time_ns": 7366803622849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 206,
+      "time_ns": 7366803722849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 207,
+      "time_ns": 7366803522849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 208,
+      "time_ns": 7366803622849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 209,
+      "time_ns": 7366803722849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 210,
+      "time_ns": 7366803672849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 211,
+      "time_ns": 7366803922849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 212,
+      "time_ns": 7366804172849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 213,
+      "time_ns": 7366803672849250,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 214,
+      "time_ns": 7366803922849250,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 215,
+      "time_ns": 7366804172849250,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 1200,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 216,
+      "time_ns": 7366803748712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 217,
+      "time_ns": 7366803748712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 218,
+      "time_ns": 7366803748712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 219,
+      "time_ns": 7366803748712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 220,
+      "time_ns": 7366803748712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 221,
+      "time_ns": 7366803748712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 222,
+      "time_ns": 7366803749712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 223,
+      "time_ns": 7366803750712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 224,
+      "time_ns": 7366803751712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 225,
+      "time_ns": 7366803749712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 226,
+      "time_ns": 7366803750712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 227,
+      "time_ns": 7366803751712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 228,
+      "time_ns": 7366803758712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 229,
+      "time_ns": 7366803768712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 230,
+      "time_ns": 7366803778712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 231,
+      "time_ns": 7366803758712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 232,
+      "time_ns": 7366803768712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 233,
+      "time_ns": 7366803778712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 234,
+      "time_ns": 7366803798712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 235,
+      "time_ns": 7366803848712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 236,
+      "time_ns": 7366803898712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 237,
+      "time_ns": 7366803798712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 238,
+      "time_ns": 7366803848712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 239,
+      "time_ns": 7366803898712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 240,
+      "time_ns": 7366803848712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 241,
+      "time_ns": 7366803948712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 242,
+      "time_ns": 7366804048712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 243,
+      "time_ns": 7366803848712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 244,
+      "time_ns": 7366803948712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 245,
+      "time_ns": 7366804048712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 246,
+      "time_ns": 7366803998712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 247,
+      "time_ns": 7366804248712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 1000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 248,
+      "time_ns": 7366804498712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 9400,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 249,
+      "time_ns": 7366803998712333,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 250,
+      "time_ns": 7366804248712333,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 251,
+      "time_ns": 7366804498712333,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 7300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 252,
+      "time_ns": 7366955907306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9700,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 253,
+      "time_ns": 7366955907306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 254,
+      "time_ns": 7366955907306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 255,
+      "time_ns": 7366955907306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 256,
+      "time_ns": 7366955907306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 257,
+      "time_ns": 7366955907306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 258,
+      "time_ns": 7366955908306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9700,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 259,
+      "time_ns": 7366955909306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 260,
+      "time_ns": 7366955910306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 261,
+      "time_ns": 7366955908306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 262,
+      "time_ns": 7366955909306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 263,
+      "time_ns": 7366955910306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 264,
+      "time_ns": 7366955917306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9700,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 265,
+      "time_ns": 7366955927306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 266,
+      "time_ns": 7366955937306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 267,
+      "time_ns": 7366955917306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 268,
+      "time_ns": 7366955927306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 269,
+      "time_ns": 7366955937306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 270,
+      "time_ns": 7366955957306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9700,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 271,
+      "time_ns": 7366956007306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 272,
+      "time_ns": 7366956057306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 273,
+      "time_ns": 7366955957306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 274,
+      "time_ns": 7366956007306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 275,
+      "time_ns": 7366956057306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 276,
+      "time_ns": 7366956007306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9700,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 277,
+      "time_ns": 7366956107306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 278,
+      "time_ns": 7366956207306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 279,
+      "time_ns": 7366956007306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 280,
+      "time_ns": 7366956107306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 281,
+      "time_ns": 7366956207306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 282,
+      "time_ns": 7366956157306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9700,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 283,
+      "time_ns": 7366956407306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 284,
+      "time_ns": 7366956657306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 9600,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 285,
+      "time_ns": 7366956157306041,
+      "market_id": 23,
+      "outcome": "yes",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 286,
+      "time_ns": 7366956407306041,
+      "market_id": 24,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    },
+    {
+      "id": 287,
+      "time_ns": 7366956657306041,
+      "market_id": 3,
+      "outcome": "no",
+      "quantity_centicontracts": 9300,
+      "limit_price_1e4": 10000,
+      "coefficient_ppm": 70000,
+      "balance_quantum_micro": 10000
+    }
+  ]
+}

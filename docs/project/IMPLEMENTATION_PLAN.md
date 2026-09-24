@@ -1,6 +1,6 @@
 # Implementation plan
 
-Updated: 2026-09-17. This is the **single execution plan** for the project: priorities,
+Updated: 2026-09-24. This is the **single execution plan** for the project: priorities,
 dependencies, current status and acceptance criteria are maintained here.
 [PROJECT_DIRECTION.md](PROJECT_DIRECTION.md) defines the product objective;
 [ARCHITECTURE.md](../engineering/ARCHITECTURE.md) defines component boundaries. Research documents
@@ -37,7 +37,69 @@ Fixed decisions for the initial strategy:
 - Low latency is part of each measured decision. New hardware, concurrency or
   model complexity requires evidence that it improves the relevant result.
 
-## Current decision — 2026-09-17, after interrupted observation and size research
+## Current decision — 2026-09-24, after prospective passive capture
+
+The new capture finalized at the 256 MiB storage guard after 800 seconds, before
+its planned 30 minutes. It has one continuous connection, 784,280 book updates
+and 3,480 public trades across 50 markets. Native live/replay traces match;
+`usable=false` denotes the incomplete planned window, not corrupted records.
+The preregistered passive policy admitted 34 attempts: conservative queue paths
+never filled; favorable cancellation paths completed two baskets for $76.37
+against a conditional $76 floor. This is a negative floor margin, not realized
+P&L. All three hedge-delay paths gave the same result.
+
+The continuous observer separately found eight positive all-taker quote episodes
+in one basket, totaling 2.863 seconds. The passive report's
+`aggressive_positive_states` counter is scoped to passive admission states; its
+zero is **not** an unconditional aggressive control. The eight episodes occurred
+while a passive attempt was pending. Use the continuous observer for coverage.
+
+A bounded [execution audit](../research/results/20260924-aggressive-execution/report.json)
+uses each episode's **opening** size/limits, never the later peak. With sequential
+leg arrivals at d, 2d and 3d, all eight independent hypothetical executions retain
+positive floor margin for d=1 or 10 ms. At d=50/100 ms, crossing available depth
+leaves four positive and four negative. Initial limit prices instead leave four
+complete positive baskets, plus respectively two/three partial exposures; the
+remaining cases acquire nothing. At d=250 ms, only three complete cases retain
+positive floor margin in either mode. Even per-leg limits can permit a negative
+basket margin when depth moves within those limits.
+
+**Implemented and evaluated locally:** the chronological aggressive execution
+study now shares typed episode-onset notifications with the continuous native
+observer. It processes the whole capture with USD 1,000 per scenario, one active
+basket, funded sizing, capital locked until settlement, and persistent deductions
+for its own consumed physical liquidity. It rechecks projected total cost before
+each IOC buy, waits for modeled acknowledgment, and attempts paid sequential
+sales after a partial buy or failed guard. Residual exposure halts new entries;
+unobserved orders remain censored. This is an offline study, not an order adapter.
+
+[Results](../research/results/20260924-chronological-execution/report.json), including
+unwind costs: conditional net USD +1.70, +1.69, +0.52, +0.05, and -4.15 at assumed
+arrival **and** response delays of respectively 1, 10, 50, 100 and 250 ms.
+Sequential buy arrivals are now d, 3d, 5d, rather than the prior audit's d, 2d, 3d.
+The fast paths complete six baskets, the 50/100 ms paths complete two, and the
+250 ms path completes none and loses simulated cash on exits. No residual
+inventory remains in these particular paths. The observation control's original
+eight episodes and complete report are unchanged byte-for-value.
+
+These figures are conditional model equity, not revenue, realized P&L or an
+annualizable return. They exclude operating/funding costs, and do not establish
+exchange latency, winning liquidity races, actual fill fragmentation or settlement
+exception certification. The same single event/capture has informed the design;
+it is not a holdout. Persistent volume deductions avoid reuse without pretending
+to reconstruct the true counterfactual market response. A projected cost guard
+can still be breached by a within-limit depth change; this is tested and reported.
+
+**Next gate:** freeze this candidate execution policy before evaluating untouched
+expiry cohorts, and establish a defensible range for end-to-end execution delay.
+Do not optimize these five delays or other parameters against this same capture.
+A read-only connection can measure feed/transport behavior but cannot certify
+order latency or fill probability. Economic acceptance remains open. Resolve the
+capture storage budget explicitly before another operator window; no automatic
+long capture or actual order submission is scheduled. Broad CPU/hardware work
+requires a measured economic bottleneck, not simply the positive fastest model.
+
+## Previous decision — 2026-09-17, after interrupted observation and size research
 
 The initial observation was attempted and is **not accepted as a complete
 window**: host sleep interrupted receipt and the policy expired. See the
@@ -52,7 +114,7 @@ positive, but their best examples have little or no public-trade support; the
 largest assumes a 12-cent fill while the ask is 98 cents. This is an execution
 feasibility question, not demonstrated profit or a reason to deploy a maker bot.
 
-**Next deliverable: a bounded offline passive-entry feasibility probe**, using
+**Implemented locally on 2026-09-24: a bounded offline passive-entry feasibility probe**, using
 the same conditional baskets and aggressive acquisition as the control.
 This is an explicit research subgate before step 4's executor decision below;
 it does not mark step 3's prospective evidence complete. Its literature mapping
@@ -61,9 +123,25 @@ and limitations are in the [applied review](../research/ECONOMIC_STRATEGY_RESEAR
 | Order | Work selected now | Acceptance / stop condition |
 | --- | --- | --- |
 | A — completed locally | Exhaust whole sizes with the original depth, fee and funding model; retain negative outcomes and compare one passive leg under two declared fee hypotheses. | Native parity and independent rational witnesses pass. No fill or PnL is imputed. Artifacts and source hashes are retained. |
-| B — next implementation | Align public trades, book changes and candidate entry states within contiguous connection segments. Retain displayed queue ahead, depth of the two hedge legs, partial quantities and censoring; prevent look-ahead. | Synthetic cases distinguish trades from cancellations and invalidate on gaps/reconnects. No book reduction alone creates a fill. Cancellation ahead/behind and ambiguous message ordering are explicit scenarios, not claimed observations. A real-data report may correctly say execution is unidentified. |
-| C — before another operator run | Specify one passive-entry policy and an aggressive control, verified public maker-fee terms or explicitly unresolved fees, conditional delayed hedge-cost scenarios and residual inventory limits. Predeclare cohort selection and future expiry splits. | No independent Bernoulli-fill shortcut, no shared-liquidity double counting, no claimed network/order latency from CPU timings. Delay grids are sensitivity assumptions until measured. If available trades cannot support the model, report what data is missing before asking for more collection. |
+| B — implemented locally | Align public trades, book changes and candidate entry states within contiguous connection segments. Retain displayed queue ahead, depth of the two hedge legs, partial quantities and censoring; prevent look-ahead. | Synthetic cases distinguish trades from cancellations and invalidate on gaps/reconnects. No book reduction alone creates a fill. Cancellation ahead/behind and ambiguous message ordering are explicit scenarios, not claimed observations. A real-data report may correctly say execution is unidentified. |
+| C — implemented with explicit unresolved assumptions | Specify one passive-entry policy and an aggressive control, verified public maker-fee terms or explicitly unresolved fees, conditional delayed hedge-cost scenarios and residual inventory limits. Predeclare cohort selection and future expiry splits. | No independent Bernoulli-fill shortcut, no shared-liquidity double counting, no claimed network/order latency from CPU timings. Delay grids are sensitivity assumptions until measured. If available trades cannot support the model, report what data is missing before asking for more collection. |
 | D — prospective confirmation, not started | The user runs a declared read-only window that collects the required trades/books and continuity diagnostics, with later whole expiries reserved for confirmation. | Report coverage and distinct supported episodes, including zero/negative cohorts. A fixed duration alone is not sufficient. Stop or revise this scoped hypothesis if positive results rely on unobserved fills or optimistic-only assumptions. |
+
+The [passive runner](../guides/READONLY_CAPTURE.md#passive-entry-feasibility-probe)
+now freezes one entry policy, records trades/books, and automatically analyzes
+queue, partial-fill, delayed hedge and capital scenarios **after** capture. It
+shares native replay and exact fee/sizing functions. It does not add a live maker
+executor. The maker fee and clock bound remain explicit unverified hypotheses;
+future windows are exploratory until independently confirmed.
+
+Replaying the old interrupted window with this policy examines 14,758,200
+correlated candidate sizes and admits **zero entries**. It analyzes 124 public
+trades before continuity failure (145 exist in the full file); no actual or
+modeled fills/profit result. The policy was not fitted to reverse this outcome.
+The next operator action is one bounded fresh recording, followed automatically
+by the report, with the lid open. Thirty minutes is an operational budget, not
+statistical sufficiency. Validation and the exact report are retained in
+[results/20260924-passive-probe](../research/results/20260924-passive-probe/validation.json).
 
 The existing operational cohort cap is not a research-derived optimum. Any new
 market ranking must use prior information and retain a control/exclusion report;
