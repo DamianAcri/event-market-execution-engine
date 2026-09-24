@@ -1,6 +1,6 @@
 # Implementation plan
 
-Updated: 2026-09-17. This is the **single execution plan** for the project: priorities,
+Updated: 2026-09-24. This is the **single execution plan** for the project: priorities,
 dependencies, current status and acceptance criteria are maintained here.
 [PROJECT_DIRECTION.md](PROJECT_DIRECTION.md) defines the product objective;
 [ARCHITECTURE.md](../engineering/ARCHITECTURE.md) defines component boundaries. Research documents
@@ -52,7 +52,7 @@ positive, but their best examples have little or no public-trade support; the
 largest assumes a 12-cent fill while the ask is 98 cents. This is an execution
 feasibility question, not demonstrated profit or a reason to deploy a maker bot.
 
-**Next deliverable: a bounded offline passive-entry feasibility probe**, using
+**Implemented locally on 2026-09-24: a bounded offline passive-entry feasibility probe**, using
 the same conditional baskets and aggressive acquisition as the control.
 This is an explicit research subgate before step 4's executor decision below;
 it does not mark step 3's prospective evidence complete. Its literature mapping
@@ -61,9 +61,25 @@ and limitations are in the [applied review](../research/ECONOMIC_STRATEGY_RESEAR
 | Order | Work selected now | Acceptance / stop condition |
 | --- | --- | --- |
 | A — completed locally | Exhaust whole sizes with the original depth, fee and funding model; retain negative outcomes and compare one passive leg under two declared fee hypotheses. | Native parity and independent rational witnesses pass. No fill or PnL is imputed. Artifacts and source hashes are retained. |
-| B — next implementation | Align public trades, book changes and candidate entry states within contiguous connection segments. Retain displayed queue ahead, depth of the two hedge legs, partial quantities and censoring; prevent look-ahead. | Synthetic cases distinguish trades from cancellations and invalidate on gaps/reconnects. No book reduction alone creates a fill. Cancellation ahead/behind and ambiguous message ordering are explicit scenarios, not claimed observations. A real-data report may correctly say execution is unidentified. |
-| C — before another operator run | Specify one passive-entry policy and an aggressive control, verified public maker-fee terms or explicitly unresolved fees, conditional delayed hedge-cost scenarios and residual inventory limits. Predeclare cohort selection and future expiry splits. | No independent Bernoulli-fill shortcut, no shared-liquidity double counting, no claimed network/order latency from CPU timings. Delay grids are sensitivity assumptions until measured. If available trades cannot support the model, report what data is missing before asking for more collection. |
+| B — implemented locally | Align public trades, book changes and candidate entry states within contiguous connection segments. Retain displayed queue ahead, depth of the two hedge legs, partial quantities and censoring; prevent look-ahead. | Synthetic cases distinguish trades from cancellations and invalidate on gaps/reconnects. No book reduction alone creates a fill. Cancellation ahead/behind and ambiguous message ordering are explicit scenarios, not claimed observations. A real-data report may correctly say execution is unidentified. |
+| C — implemented with explicit unresolved assumptions | Specify one passive-entry policy and an aggressive control, verified public maker-fee terms or explicitly unresolved fees, conditional delayed hedge-cost scenarios and residual inventory limits. Predeclare cohort selection and future expiry splits. | No independent Bernoulli-fill shortcut, no shared-liquidity double counting, no claimed network/order latency from CPU timings. Delay grids are sensitivity assumptions until measured. If available trades cannot support the model, report what data is missing before asking for more collection. |
 | D — prospective confirmation, not started | The user runs a declared read-only window that collects the required trades/books and continuity diagnostics, with later whole expiries reserved for confirmation. | Report coverage and distinct supported episodes, including zero/negative cohorts. A fixed duration alone is not sufficient. Stop or revise this scoped hypothesis if positive results rely on unobserved fills or optimistic-only assumptions. |
+
+The [passive runner](../guides/READONLY_CAPTURE.md#passive-entry-feasibility-probe)
+now freezes one entry policy, records trades/books, and automatically analyzes
+queue, partial-fill, delayed hedge and capital scenarios **after** capture. It
+shares native replay and exact fee/sizing functions. It does not add a live maker
+executor. The maker fee and clock bound remain explicit unverified hypotheses;
+future windows are exploratory until independently confirmed.
+
+Replaying the old interrupted window with this policy examines 14,758,200
+correlated candidate sizes and admits **zero entries**. It analyzes 124 public
+trades before continuity failure (145 exist in the full file); no actual or
+modeled fills/profit result. The policy was not fitted to reverse this outcome.
+The next operator action is one bounded fresh recording, followed automatically
+by the report, with the lid open. Thirty minutes is an operational budget, not
+statistical sufficiency. Validation and the exact report are retained in
+[results/20260924-passive-probe](../research/results/20260924-passive-probe/validation.json).
 
 The existing operational cohort cap is not a research-derived optimum. Any new
 market ranking must use prior information and retain a control/exclusion report;

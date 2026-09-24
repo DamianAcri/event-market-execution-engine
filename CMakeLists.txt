@@ -95,6 +95,7 @@ if(EME_BUILD_KALSHI_GATEWAY)
         src/session/replay.cpp
         src/session/execution_study.cpp
         src/session/basket_observation.cpp
+        src/session/passive_probe.cpp
         src/session/study_policy.cpp
         src/session/import_capture.cpp
     )
@@ -116,6 +117,10 @@ if(EME_BUILD_CLI)
         target_link_libraries(event-engine PRIVATE nlohmann_json::nlohmann_json)
         target_link_libraries(event-engine PRIVATE eme_session)
         target_compile_definitions(event-engine PRIVATE EME_CLI_KALSHI=1)
+        add_executable(eme-passive-probe src/cli/passive_main.cpp)
+        target_include_directories(eme-passive-probe PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme-passive-probe PRIVATE eme_session nlohmann_json::nlohmann_json)
+        eme_enable_warnings(eme-passive-probe)
     else()
         target_link_libraries(event-engine PRIVATE eme_core)
     endif()
@@ -259,6 +264,9 @@ if(BUILD_TESTING)
         target_include_directories(eme_basket_screen_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
         target_link_libraries(eme_basket_screen_tests PRIVATE nlohmann_json::nlohmann_json)
         eme_add_test(eme_basket_observation_tests tests/basket_observation_tests.cpp eme_session)
+        eme_add_test(eme_passive_probe_tests tests/passive_probe_tests.cpp eme_session)
+        target_include_directories(eme_passive_probe_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        target_link_libraries(eme_passive_probe_tests PRIVATE nlohmann_json::nlohmann_json)
         target_include_directories(eme_basket_observation_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
         target_link_libraries(eme_basket_observation_tests PRIVATE nlohmann_json::nlohmann_json)
         find_package(Python3 COMPONENTS Interpreter QUIET)
@@ -267,7 +275,7 @@ if(BUILD_TESTING)
                 add_test(NAME eme_basket_screen_oracle_tests COMMAND ${Python3_EXECUTABLE} -B
                     ${PROJECT_SOURCE_DIR}/tests/basket_screen_oracle_tests.py --engine $<TARGET_FILE:event-engine>)
             endif()
-            foreach(basket_python_test basket_families public_pool basket_research basket_observe)
+            foreach(basket_python_test basket_families public_pool basket_research basket_observe passive_runner)
                 add_test(NAME eme_${basket_python_test}_tests COMMAND ${Python3_EXECUTABLE} -B
                     ${PROJECT_SOURCE_DIR}/tests/${basket_python_test}_tests.py)
             endforeach()

@@ -136,6 +136,75 @@ This preflight does not measure opportunity duration, market-hours or P&L. A
 prospective streaming cohort and separate completion-risk analysis remain the
 next evidence steps when justified by the selected family.
 
+## Passive-entry feasibility probe
+
+`scripts/passive_probe.py` records the same read-only basket feed and **then**
+runs `eme-passive-probe` on the finalized journal. Recording includes public
+trades and books; passive fills are calculated offline after collection, not
+streamed during it. Neither component submits orders. The native probe has no
+network or credential interface.
+
+```sh
+python3 scripts/passive_probe.py --probe build/eme-passive-probe --engine build/event-engine --binary build/eme-capture --output captures --seconds 1800 --max-mib 256
+```
+
+`--prepare-only` performs public qualification and native policy validation
+without loading credentials. `--analyze-existing CAPTURE_DIRECTORY` studies an
+old basket capture; unregistered hypotheses are explicitly exploratory. It adds
+analysis artifacts and refuses to replace any existing passive output. Preserve
+an original capture when rerunning comparisons. A capture directory must be a
+real directory, not a symlink, consistent with native session validation.
+
+The operator's installed macOS launcher is `~/.local/bin/kalshi-passive`; it adds
+`caffeinate -i`, versioned binaries and a permanent output directory. Keep the
+lid open. Default recording is 30 minutes with a **soft** 256 MiB storage limit
+checked every five seconds; termination/finalization can overshoot it. Preparation
+also takes time, and the subsequent analysis has a 600-second timeout.
+
+Policy and executable hashes freeze before capture. The initial defaults below
+are declared hypotheses and operational bounds, **not calibrated estimates or
+research-proven optima**:
+
+- Retain the existing qualified cohort: at most 20 conditional BTC baskets and
+  64 markets. One entry at a time; size search 1–100 whole contracts, USD 1,000
+  fictional capital per independent scenario, no credit before settlement.
+- Join the best bid in one leg only when the quoted spread is at most 5 cents,
+  a contra-side public trade was received in the preceding 60 seconds, and the
+  three-leg margin after stated fees exceeds or equals 1 cent. On an eligible
+  update, select the largest total margin among that market's dependent baskets.
+  This is a bounded research policy, not an optimal market allocator.
+- Entry delay 100 ms, resting time 5 s, cancellation delay 100 ms. Full fills
+  trigger hedging immediately; partial fills hedge after the rest/cancel period.
+  Hedge the two remaining legs sequentially with 1, 10 or 100 ms per-leg delays,
+  using book states already available at each modeled arrival time.
+- Two queue assumptions: only trades reduce priority, or unmatched cancellations
+  also reduce priority after a 250 ms reconciliation window. Depth reductions
+  **never generate fills**. Both trade/delta arrival orders are reconciled.
+- Exact-price, non-block public trades only. Aggregate depth does not reveal
+  identity or true priority. Exchange/local clock error is assumed bounded by
+  250 ms; trades ambiguous around activation or outside the bound cannot fill.
+  Offset diagnostics are reported, but they are not order/network latency.
+- Maker coefficient 0.07 is an unverified stress hypothesis; taker fees use the
+  reviewed cohort policy. Rounding and funding reuse the existing C++ kernel.
+- Any residual inventory halts further entries. Gaps over 15 seconds, wall-clock
+  discontinuities, connection changes, invalid books, policy expiry and EOF
+  censor exposure instead of filling it with stale or future prices. A detected
+  continuity gap stops modeling the rest of the capture.
+
+Outputs in the printed capture directory:
+
+- `session/market.journal`: original book/trade messages, replayable and checked.
+- `passive-plan.json`, `passive-policy.json`: preregistration, hashes, assumptions.
+- `passive.jsonl`: entries, hypothetical fills, hedges and censoring reasons.
+- `passive-report.json`: six **separate, non-additive** scenarios, spent/locked
+  cash, residual quantities, conditional payoff margins and coverage flags.
+
+The conditional floor still lacks exceptional-settlement certification. Modeled
+fills, queue priority, clock error and market impact are uncalibrated; realized
+PnL stays null. Zero eligible entries is a valid result. Do not change parameters
+until a previously negative capture appears profitable and call that validation.
+Reserve untouched future expiries/days for confirmation.
+
 ## Continuous conditional basket observation
 
 `scripts/basket_observe.py` prepares a fresh frozen BTC cohort, registers its

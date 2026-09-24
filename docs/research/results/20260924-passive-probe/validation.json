@@ -1,0 +1,25 @@
+{
+  "date": "2026-09-24",
+  "platform": "macOS-26.5-arm64-arm-64bit",
+  "build": "Apple clang C++20 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror; existing pinned JSON 3.12.0; no system package installation",
+  "native_checks": 32,
+  "python_passive_runner_tests": 5,
+  "python_existing_observer_regression_tests": 27,
+  "asan_ubsan_full_native_dependency_graph_checks": 32,
+  "offline_replay_repeat_seconds": [
+    3.008795541,
+    2.997423416
+  ],
+  "repeat_trace_byte_identical": true,
+  "trace_sha256": "e0d5999859d5e80feaeb1db50f61cd84e32a44feeee665dd465b48eb640bf7f6",
+  "native_probe_sha256": "780defe09efb8b547f4f55cb422b8d6d10569060d50c2b49dc61c95f49a223d0",
+  "child_max_rss_bytes_on_macos": 5619712,
+  "performance_is_live_order_latency": false,
+  "measured_on_single_host_only": true,
+  "original_capture_unchanged": true,
+  "registered_before_old_capture": false,
+  "local_manual_build_only": "CMake registration added; Windows/Linux not run for this change.",
+  "orders_sent": 0,
+  "actual_fills_observed": false,
+  "cross_venue_clock_bound_verified": false
+}

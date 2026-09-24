@@ -542,6 +542,33 @@ La revisión respalda continuar por búsqueda, tamaño y ejecución con priorida
 
 La ejecución nueva de esta revisión consiste en los cinco estudios sintéticos de cantidad, no en una prueba de rentabilidad ni un nuevo benchmark de velocidad. El paquete local `calci-economic-research-20260915` conserva `reproduce_sizing.py`, entradas, sesión verificada, cinco políticas, cinco salidas JSONL, `results.json` y manifiesto con hashes del ejecutable y archivos. El script recibe un ejecutable existente y un directorio nuevo; no modifica código ni contacta con la plataforma. El documento se guarda también en ese paquete.
 
+## Implementación del estudio pasivo — 24 de septiembre de 2026
+
+La revisión de colas se traduce en `PassiveQueue` y `eme-passive-probe`: trades
+públicos al precio exacto, prioridad por delante, cancelaciones separadas de
+operaciones y dos escenarios de cola. No es una calibración del modelo de
+Huang–Lehalle–Rosenbaum ni una réplica de una estrategia propietaria.[^queue][^queuevalue]
+El protocolo oficial define lado agresor, cantidad, hora e indicador de bloque;
+el feed agregado no identifica la prioridad de una orden nuestra.[^publictrades]
+
+La selección aplicada exige actividad anterior, spread acotado, margen neto y
+fondos completos. Se reutilizan replay, profundidad y comisiones nativas; las
+coberturas retrasadas consumen profundidad y pueden dejar inventario o margen
+negativo. La consulta es incremental por dependencias, con presupuestos de
+intentos, identidades de trades y trazas. No se infiere beneficio de una mejora
+del tiempo de CPU ni se suman escenarios alternativos.
+
+Los parámetros concretos están en la
+[guía operativa](../guides/READONLY_CAPTURE.md#passive-entry-feasibility-probe),
+fijados antes de una nueva captura. El reloj de mercado de la captura antigua
+aparece 1–53 ms por delante del local en los 145 trades; eso no es una latencia
+negativa medible. Se declara un límite hipotético de error de reloj de 250 ms y
+se excluyen trades ambiguos alrededor de la activación. Esta corrección de
+medición no verifica sincronización ni ajusta el modelo para obtener beneficio.
+Con la política documentada no hay entradas elegibles en el tramo utilizable.
+El informe conserva la interrupción, el resultado nulo y las hipótesis sin
+resolver; futuras fechas completas deben quedar fuera del ajuste.
+
 ## Fuentes
 
 Fuentes de la revisión base consultadas el 14–15 de septiembre de 2026; las añadidas en la actualización se consultaron el 17. Las secciones fijan el alcance utilizado; acceso al texto completo no implica reproducción de sus resultados.
@@ -581,3 +608,5 @@ Fuentes de la revisión base consultadas el 14–15 de septiembre de 2026; las a
 [^hrtmodel]: Iain Dunning, Hudson River Trading. [In Trading, Machine Learning Benchmarks Don't Track What You Care About](https://www.hudsonrivertrading.com/hrtbeat/trading-machine-learning/). Artículo oficial, 2022; evaluación y baja relación señal/ruido.
 [^hrtpages]: Guillaume Morin, Hudson River Trading. [Low Latency Optimization: Understanding Huge Pages](https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-1/). Artículo oficial, 2022; ejemplo de memoria específico, no recomendación universal.
 [^race]: Matteo Aquilina, Eric Budish y Peter O'Neill. [Quantifying the High-Frequency Trading Arms Race](https://academic.oup.com/qje/article/137/1/493/6368348). QJE 137(1), 2022; mensajes de intentos fallidos frente a feed de libro. Resultados de renta variable, no velocidades ni beneficios de Kalshi.
+
+[^publictrades]: Kalshi. [Public trades WebSocket](https://docs.kalshi.com/websockets/public-trades) y [order direction](https://docs.kalshi.com/getting_started/order_direction), consultados el 24 de septiembre de 2026.

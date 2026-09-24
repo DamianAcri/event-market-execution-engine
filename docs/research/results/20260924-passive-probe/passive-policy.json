@@ -1,0 +1,21 @@
+{
+  "assumed_clock_error_ms": 250,
+  "basket_policy_sha256": "8db05b456ef895d7a332f256ebfbc73db79d09dc29af95be9f5c09675f2da2ab",
+  "cancel_delay_ms": 100,
+  "entry_delay_ms": 100,
+  "hedge_delays_ms": [
+    1,
+    10,
+    100
+  ],
+  "kind": "passive_basket_probe",
+  "maker_coefficient_ppm": 70000,
+  "max_attempts": 1000,
+  "max_gap_ms": 15000,
+  "max_spread_1e4": 500,
+  "minimum_margin_micro": 10000,
+  "reconcile_ms": 250,
+  "rest_ms": 5000,
+  "schema_version": 1,
+  "trade_lookback_ms": 60000
+}
