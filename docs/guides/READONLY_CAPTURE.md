@@ -136,6 +136,60 @@ This preflight does not measure opportunity duration, market-hours or P&L. A
 prospective streaming cohort and separate completion-risk analysis remain the
 next evidence steps when justified by the selected family.
 
+## Chronological aggressive basket study
+
+Build the `eme-basket-execution` target and analyze an existing basket capture:
+
+```sh
+python3 scripts/basket_execution_study.py captures/your-capture --binary build/eme-basket-execution --output analysis/new-study
+```
+
+The output directory must not exist. This command reads local finalized data;
+it does not load credentials, open the network, record a new window or send
+orders. It freezes a policy/manifest/binary binding before replay and retains
+`policy.json`, `plan.json`, `trace.jsonl` and `report.json`.
+
+The continuous native quote observer calls a typed callback on a new positive
+episode. The study does not read a saved future episode trace or choose its
+later peak. Left-censored initial positives are recorded but skipped for entry.
+Each scenario admits one active basket and sizes it against its remaining cash
+and shadow depth. If several baskets open on the same update, largest net margin
+wins, with basket ID as a deterministic tie-break. Busy onsets are counted rather
+than queued for a later retrospectively chosen entry.
+
+The fixed sensitivity grid is 1/10/50/100/250 ms for **each** of order arrival
+and acknowledgment. Purchases arrive at d, 3d and 5d after detection; completed
+acquisition is confirmed at 6d. These are assumptions on the received-data clock,
+not measurements of exchange execution. Before each buy, the total projected
+cost must preserve at least the declared margin, and conservative gross funding
+must fit. IOC limits use the current last required price. The budget guard is a
+send-time estimate: changing within-limit depth or fill fragmentation can still
+breach it, so actual costs and breach counts are retained.
+
+A partial purchase or failed continuation guard triggers one IOC sale attempt
+per acquired leg, in original leg order, with the same delays. Sales pay the
+specified fees and cross the available bid depth. Remaining inventory halts new
+entries; missing observations never supply future fills. Complete basket payout
+is kept separate from spendable cash. The exact cash identity is checked after
+every modeled event. The report's `conditional_net_micro` combines available cash
+and the complete baskets' conditional payoff floor, less starting capital, only
+when there is no unresolved attempt. It is not realized profit. A separate stress
+bound assumes residual inventory has zero value and pending buy reservations are
+fully spent; unknown positions are never quietly marked profitable.
+
+Both buying NO and selling YES consume the same physical bid level; buying YES
+and selling NO consume the same ask level. Each scenario's cumulative physical
+level deductions persist across historical updates, preventing repeated use of
+unchanged depth. This is a deliberately conservative availability convention,
+not a calibrated market-impact or replenishment model. Scenarios have independent
+ledgers and must never be added together.
+
+The report embeds the continuous observation control even when execution is
+busy. Gap/expiry/EOF handling, partial sells, locking capital, physical-depth
+reuse, price limits, acknowledgments and a within-limit budget breach have native
+regression tests. The saved chronological audit independently checks per-fill
+rational fees, no overlapping entries, confirmation timing, cash and holdings.
+
 ## Passive-entry feasibility probe
 
 `scripts/passive_probe.py` records the same read-only basket feed and **then**

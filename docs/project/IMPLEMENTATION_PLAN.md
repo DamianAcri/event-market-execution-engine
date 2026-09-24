@@ -64,17 +64,40 @@ remaining cases acquire nothing. At d=250 ms, only three complete cases retain
 positive floor margin in either mode. Even per-leg limits can permit a negative
 basket margin when depth moves within those limits.
 
-**Selected next work:** a chronological aggressive basket execution study using
-these existing data, with funded, non-overlapping entries, a total basket cost
-budget and explicit handling/valuation of residual legs. Retain the current
-passive result and a continuous all-taker observation control. The present audit
-is conditional on observed positive episodes, assumes displayed liquidity can
-be taken, and does not price losses from unwinding residual positions. It cannot
-be summed into revenue or justify choosing the most profitable tested delay.
-Do not start another long capture or optimize CPU structures first. Before any
-new operator window, freeze the chosen execution policy and reserve untouched
-expiries for evaluation. End-to-end exchange execution delay is still unmeasured;
-local sub-millisecond CPU processing does not establish 10 ms order arrivals.
+**Implemented and evaluated locally:** the chronological aggressive execution
+study now shares typed episode-onset notifications with the continuous native
+observer. It processes the whole capture with USD 1,000 per scenario, one active
+basket, funded sizing, capital locked until settlement, and persistent deductions
+for its own consumed physical liquidity. It rechecks projected total cost before
+each IOC buy, waits for modeled acknowledgment, and attempts paid sequential
+sales after a partial buy or failed guard. Residual exposure halts new entries;
+unobserved orders remain censored. This is an offline study, not an order adapter.
+
+[Results](../research/results/20260924-chronological-execution/report.json), including
+unwind costs: conditional net USD +1.70, +1.69, +0.52, +0.05, and -4.15 at assumed
+arrival **and** response delays of respectively 1, 10, 50, 100 and 250 ms.
+Sequential buy arrivals are now d, 3d, 5d, rather than the prior audit's d, 2d, 3d.
+The fast paths complete six baskets, the 50/100 ms paths complete two, and the
+250 ms path completes none and loses simulated cash on exits. No residual
+inventory remains in these particular paths. The observation control's original
+eight episodes and complete report are unchanged byte-for-value.
+
+These figures are conditional model equity, not revenue, realized P&L or an
+annualizable return. They exclude operating/funding costs, and do not establish
+exchange latency, winning liquidity races, actual fill fragmentation or settlement
+exception certification. The same single event/capture has informed the design;
+it is not a holdout. Persistent volume deductions avoid reuse without pretending
+to reconstruct the true counterfactual market response. A projected cost guard
+can still be breached by a within-limit depth change; this is tested and reported.
+
+**Next gate:** freeze this candidate execution policy before evaluating untouched
+expiry cohorts, and establish a defensible range for end-to-end execution delay.
+Do not optimize these five delays or other parameters against this same capture.
+A read-only connection can measure feed/transport behavior but cannot certify
+order latency or fill probability. Economic acceptance remains open. Resolve the
+capture storage budget explicitly before another operator window; no automatic
+long capture or actual order submission is scheduled. Broad CPU/hardware work
+requires a measured economic bottleneck, not simply the positive fastest model.
 
 ## Previous decision — 2026-09-17, after interrupted observation and size research
 

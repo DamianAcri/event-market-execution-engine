@@ -61,8 +61,9 @@ std::string hash_field(const Json& row, const std::string_view field) {
 
 class Observation final : public BasketObservation {
 public:
-    Observation(const gateway::kalshi::MetadataSnapshot& metadata, const std::filesystem::path& path, std::ostream& output)
-        : output_{output} {
+    Observation(const gateway::kalshi::MetadataSnapshot& metadata, const std::filesystem::path& path, std::ostream& output,
+                BasketEpisodeHandler handler)
+        : output_{output}, handler_{std::move(handler)} {
         const auto bytes = detail::read_text(path, 32U * 1024U * 1024U);
         policy_hash_ = detail::fingerprint_bytes(bytes).sha256;
         const auto policy = detail::parse_strict(bytes);
@@ -413,6 +414,7 @@ private:
                 event({{"type", "basket_episode_open"}, {"basket_id", basket.id}, {"key", basket.key},
                     {"episode", basket.episodes}, {"time_ns", time}, {"left_censored", basket.opening_left_censored},
                     {"quote", witness_json(value, basket)}});
+                if (handler_) { handler_({basket.id, basket.episodes, time, value.quote, basket.opening_left_censored}); }
             }
             ++basket.episode_evaluations;
             basket.episode_min_margin = std::min(basket.episode_min_margin, value.quote.net_margin_micro);
@@ -432,6 +434,7 @@ private:
     }
 
     std::ostream& output_;
+    BasketEpisodeHandler handler_;
     std::string policy_hash_, metadata_hash_, qualification_hash_;
     std::int64_t valid_from_{}, valid_until_{};
     std::uint64_t maximum_events_{}, total_budget_{}, records_{}, book_updates_{}, trades_{}, evaluations_{}, quantities_{}, events_{};
@@ -449,7 +452,11 @@ private:
 
 std::unique_ptr<BasketObservation> make_basket_observation(const gateway::kalshi::MetadataSnapshot& metadata,
     const std::filesystem::path& policy, std::ostream& output) {
-    try { return std::make_unique<Observation>(metadata, policy, output); }
+    return make_basket_observation(metadata, policy, output, {});
+}
+std::unique_ptr<BasketObservation> make_basket_observation(const gateway::kalshi::MetadataSnapshot& metadata,
+    const std::filesystem::path& policy, std::ostream& output, BasketEpisodeHandler handler) {
+    try { return std::make_unique<Observation>(metadata, policy, output, std::move(handler)); }
     catch (const Json::exception&) { detail::invalid("invalid basket observation JSON"); }
 }
 

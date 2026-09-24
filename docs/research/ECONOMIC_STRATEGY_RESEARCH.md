@@ -608,6 +608,48 @@ impacto propio, carreras, política cronológica, riesgo residual y evaluación 
 fechas no utilizadas para diseñarla. No valida una estrategia de una firma ni
 convierte el mejor supuesto de la tabla en una recomendación de despliegue.
 
+## Estudio cronológico con compras y salidas — 24 de septiembre de 2026
+
+El siguiente paso del plan está implementado en `basket_execution.cpp`, usando
+el observador continuo mediante un callback tipado; no consume episodios futuros
+ni repite un clasificador de oportunidades. La lógica de prioridad, confirmación,
+capital y costes reutiliza las fronteras nativas del motor. El enfoque sigue la
+separación entre margen visible, adquisición conjunta y riesgo de completar
+patas descrita en la investigación; no atribuye parámetros propios a una firma.
+
+Se evalúa toda la misma captura con una cesta activa por escenario, USD 1.000,
+comisiones declaradas, descuentos persistentes de liquidez propia y venta de
+patas incompletas. La ida de una orden y su respuesta cuestan d por separado:
+las llegadas secuenciales son d, 3d y 5d. No se ha medido que estos retrasos sean
+alcanzables. La política se fija antes de este cálculo, pero **después** de haber
+analizado la captura: sigue siendo exploratoria.
+
+| d por llegada y por respuesta | Cestas completas | Resultado condicional con costes de salida |
+|---|---:|---:|
+| 1 ms | 6 | +1,70 USD |
+| 10 ms | 6 | +1,69 USD |
+| 50 ms | 2 | +0,52 USD |
+| 100 ms | 2 | +0,05 USD |
+| 250 ms | 0 | −4,15 USD |
+
+[Informe y supuestos](results/20260924-chronological-execution/report.json).
+Los resultados incluyen el coste de cerrar exposiciones fallidas, no costes de
+operación o financiación. En el escenario de 100 ms, el margen de las cestas
+completas es $0.54, pero las salidas consumen $0.49. Ninguno deja exposición
+residual en esta muestra; las pruebas sí cubren ese fallo y fuerzan parada.
+No se suman escenarios ni se extrapola el resultado de 13 minutos. Los pagos
+siguen condicionados a las reglas certificadas parcialmente; las ejecuciones
+se infieren de profundidad observada, no se observan órdenes propias ganando
+carreras. Las deducciones de volumen son conservadoras, pero no calibran impacto.
+
+La implicación seleccionada es evaluar la política congelada en otros
+vencimientos y acotar el retraso ejecutable, antes de atribuir ingresos a más
+velocidad. La evidencia no autoriza elegir 1 ms por ser el mejor resultado, ni
+cambiar cantidades/esperas hasta que los escenarios lentos ganen en esta muestra.
+El control continuo mantiene exactamente los ocho episodios originales mientras
+cada ejecución tiene su propia contabilidad: se corrige así la confusión entre
+un contador de admisión condicionado y la cobertura total de oportunidades.
+
 ## Fuentes
 
 Fuentes de la revisión base consultadas el 14–15 de septiembre de 2026; las añadidas en la actualización se consultaron el 17. Las secciones fijan el alcance utilizado; acceso al texto completo no implica reproducción de sus resultados.
