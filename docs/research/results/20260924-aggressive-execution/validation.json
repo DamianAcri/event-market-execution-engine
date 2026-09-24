@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-24",
+  "capture": "passive-20260924T151801.503406Z",
+  "native_unit_checks": 10,
+  "asan_ubsan_checks": 10,
+  "independent_rational_per_fill_checks": 309,
+  "zero_delay_opening_quotes_match": true,
+  "repeated_native_trace_identical": true,
+  "source_capture_unchanged": true,
+  "original_strategy_parameters_unchanged": true,
+  "orders_sent": 0,
+  "native_compiler": "Apple clang; C++20; -O2; -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror",
+  "native_probe_sha256": "ed0a9370f61d9e9ea3f1155e996b3dbc837af97de2919e7f13fb479d37fe1620",
+  "native_source_sha256": "97050c73377bd1aa8a11858c3eefc992d551d62c3db9d69bd7518a977fb32082",
+  "depth_sha256": "8481bb3981ef55a1d165d4151b395ef9385403138d7de50b7946114508b68703",
+  "link_dependencies": "Existing eme_core, eme_kalshi_gateway and eme_session objects; pinned nlohmann JSON 3.12.0. No transport linked.",
+  "reproduction": "Compile probe.cpp with repository include/, src/, pinned JSON headers and existing eme_session/eme_kalshi_gateway/eme_core libraries plus pthread. Run audit.py CAPTURE_DIRECTORY PROBE_BINARY NEW_OUTPUT_DIRECTORY. For native tests compile probe_tests.cpp instead, adding tests/ include directory.",
+  "portability_checked": "macOS arm64 only for this research diagnostic"
+}

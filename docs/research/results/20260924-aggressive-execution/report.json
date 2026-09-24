@@ -1,0 +1,6717 @@
+{
+  "orders_sent": 0,
+  "exploratory": true,
+  "results_are_additive": false,
+  "processing_seconds": 8.445501667,
+  "native_depth_queries": 288,
+  "rational_fill_checks": 309,
+  "zero_delay_opening_quote_parity": true,
+  "plan_sha256": "df10efd2a1fa83b1f6780fe600d346fc4bbd057359dca9708e60eca84864b182",
+  "depth_sha256": "8481bb3981ef55a1d165d4151b395ef9385403138d7de50b7946114508b68703",
+  "results": [
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        0,
+        1,
+        2
+      ],
+      "holdings_centicontracts": [
+        1500,
+        1500,
+        1500
+      ],
+      "debit_micro": 29960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 13880000,
+          "fills": [
+            {
+              "debit_micro": 13880000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 0,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749165477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 1920000,
+          "fills": [
+            {
+              "debit_micro": 1920000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 1,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749165477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 14160000,
+          "fills": [
+            {
+              "debit_micro": 14160000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 2,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749165477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        3,
+        4,
+        5
+      ],
+      "holdings_centicontracts": [
+        1500,
+        1500,
+        1500
+      ],
+      "debit_micro": 29960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 13880000,
+          "fills": [
+            {
+              "debit_micro": 13880000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 3,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749165477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 1920000,
+          "fills": [
+            {
+              "debit_micro": 1920000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 4,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749165477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 14160000,
+          "fills": [
+            {
+              "debit_micro": 14160000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 5,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749165477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        6,
+        7,
+        8
+      ],
+      "holdings_centicontracts": [
+        1500,
+        1500,
+        1500
+      ],
+      "debit_micro": 29960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 13880000,
+          "fills": [
+            {
+              "debit_micro": 13880000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 6,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749166477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 1920000,
+          "fills": [
+            {
+              "debit_micro": 1920000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 7,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749167477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 14160000,
+          "fills": [
+            {
+              "debit_micro": 14160000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 8,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749168477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        9,
+        10,
+        11
+      ],
+      "holdings_centicontracts": [
+        1500,
+        1500,
+        1500
+      ],
+      "debit_micro": 29960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 13880000,
+          "fills": [
+            {
+              "debit_micro": 13880000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 9,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749166477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 1920000,
+          "fills": [
+            {
+              "debit_micro": 1920000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 10,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749167477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 14160000,
+          "fills": [
+            {
+              "debit_micro": 14160000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 11,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749168477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        12,
+        13,
+        14
+      ],
+      "holdings_centicontracts": [
+        1500,
+        1500,
+        1500
+      ],
+      "debit_micro": 29960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 13880000,
+          "fills": [
+            {
+              "debit_micro": 13880000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 12,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749175477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 1920000,
+          "fills": [
+            {
+              "debit_micro": 1920000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 13,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749185477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 14160000,
+          "fills": [
+            {
+              "debit_micro": 14160000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 14,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749195477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        15,
+        16,
+        17
+      ],
+      "holdings_centicontracts": [
+        1500,
+        1500,
+        1500
+      ],
+      "debit_micro": 29960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 13880000,
+          "fills": [
+            {
+              "debit_micro": 13880000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 15,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749175477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 1920000,
+          "fills": [
+            {
+              "debit_micro": 1920000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 16,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749185477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 14160000,
+          "fills": [
+            {
+              "debit_micro": 14160000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 17,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749195477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        18,
+        19,
+        20
+      ],
+      "holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "debit_micro": 0,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 0,
+          "fills": [],
+          "id": 18,
+          "quantity_centicontracts": 0,
+          "time_ns": 7366749215477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        21,
+        22,
+        23
+      ],
+      "holdings_centicontracts": [
+        1500,
+        1500,
+        1500
+      ],
+      "debit_micro": 30100000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -100000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 14020000,
+          "fills": [
+            {
+              "debit_micro": 14020000,
+              "price_1e4": 9300,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 21,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749215477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 1920000,
+          "fills": [
+            {
+              "debit_micro": 1920000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 22,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749265477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 14160000,
+          "fills": [
+            {
+              "debit_micro": 14160000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 23,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749315477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        24,
+        25,
+        26
+      ],
+      "holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "debit_micro": 0,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 0,
+          "fills": [],
+          "id": 24,
+          "quantity_centicontracts": 0,
+          "time_ns": 7366749265477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        27,
+        28,
+        29
+      ],
+      "holdings_centicontracts": [
+        1500,
+        1500,
+        1500
+      ],
+      "debit_micro": 30100000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -100000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 14020000,
+          "fills": [
+            {
+              "debit_micro": 14020000,
+              "price_1e4": 9300,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 27,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749265477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 1920000,
+          "fills": [
+            {
+              "debit_micro": 1920000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 28,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749365477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 14160000,
+          "fills": [
+            {
+              "debit_micro": 14160000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 29,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749465477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        30,
+        31,
+        32
+      ],
+      "holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "debit_micro": 0,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 0,
+          "fills": [],
+          "id": 30,
+          "quantity_centicontracts": 0,
+          "time_ns": 7366749415477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 1,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1500,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        33,
+        34,
+        35
+      ],
+      "holdings_centicontracts": [
+        1500,
+        1500,
+        1500
+      ],
+      "debit_micro": 30100000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -100000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 14020000,
+          "fills": [
+            {
+              "debit_micro": 14020000,
+              "price_1e4": 9300,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 33,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749415477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 1920000,
+          "fills": [
+            {
+              "debit_micro": 1920000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 34,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749665477750,
+          "valid": true
+        },
+        {
+          "debit_micro": 14160000,
+          "fills": [
+            {
+              "debit_micro": 14160000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1500
+            }
+          ],
+          "id": 35,
+          "quantity_centicontracts": 1500,
+          "time_ns": 7366749915477750,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        36,
+        37,
+        38
+      ],
+      "holdings_centicontracts": [
+        10000,
+        10000,
+        10000
+      ],
+      "debit_micro": 199660000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 340000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 92520000,
+          "fills": [
+            {
+              "debit_micro": 92520000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 36,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751456309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 12740000,
+          "fills": [
+            {
+              "debit_micro": 12740000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 37,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751456309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 94400000,
+          "fills": [
+            {
+              "debit_micro": 94400000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 38,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751456309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        39,
+        40,
+        41
+      ],
+      "holdings_centicontracts": [
+        10000,
+        10000,
+        10000
+      ],
+      "debit_micro": 199660000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 340000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 92520000,
+          "fills": [
+            {
+              "debit_micro": 92520000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 39,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751456309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 12740000,
+          "fills": [
+            {
+              "debit_micro": 12740000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 40,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751456309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 94400000,
+          "fills": [
+            {
+              "debit_micro": 94400000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 41,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751456309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        42,
+        43,
+        44
+      ],
+      "holdings_centicontracts": [
+        10000,
+        10000,
+        10000
+      ],
+      "debit_micro": 199660000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 340000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 92520000,
+          "fills": [
+            {
+              "debit_micro": 92520000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 42,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751457309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 12740000,
+          "fills": [
+            {
+              "debit_micro": 12740000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 43,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751458309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 94400000,
+          "fills": [
+            {
+              "debit_micro": 94400000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 44,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751459309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        45,
+        46,
+        47
+      ],
+      "holdings_centicontracts": [
+        10000,
+        10000,
+        10000
+      ],
+      "debit_micro": 199660000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 340000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 92520000,
+          "fills": [
+            {
+              "debit_micro": 92520000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 45,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751457309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 12740000,
+          "fills": [
+            {
+              "debit_micro": 12740000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 46,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751458309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 94400000,
+          "fills": [
+            {
+              "debit_micro": 94400000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 47,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751459309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        48,
+        49,
+        50
+      ],
+      "holdings_centicontracts": [
+        10000,
+        10000,
+        10000
+      ],
+      "debit_micro": 199660000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 340000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 92520000,
+          "fills": [
+            {
+              "debit_micro": 92520000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 48,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751466309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 12740000,
+          "fills": [
+            {
+              "debit_micro": 12740000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 49,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751476309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 94400000,
+          "fills": [
+            {
+              "debit_micro": 94400000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 50,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751486309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        51,
+        52,
+        53
+      ],
+      "holdings_centicontracts": [
+        10000,
+        10000,
+        10000
+      ],
+      "debit_micro": 199660000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 340000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 92520000,
+          "fills": [
+            {
+              "debit_micro": 92520000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 51,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751466309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 12740000,
+          "fills": [
+            {
+              "debit_micro": 12740000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 52,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751476309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 94400000,
+          "fills": [
+            {
+              "debit_micro": 94400000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 53,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751486309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        54,
+        55,
+        56
+      ],
+      "holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "debit_micro": 0,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 0,
+          "fills": [],
+          "id": 54,
+          "quantity_centicontracts": 0,
+          "time_ns": 7366751506309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        57,
+        58,
+        59
+      ],
+      "holdings_centicontracts": [
+        10000,
+        10000,
+        10000
+      ],
+      "debit_micro": 200600000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -600000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 93460000,
+          "fills": [
+            {
+              "debit_micro": 93460000,
+              "price_1e4": 9300,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 57,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751506309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 12740000,
+          "fills": [
+            {
+              "debit_micro": 12740000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 58,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751556309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 94400000,
+          "fills": [
+            {
+              "debit_micro": 94400000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 59,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751606309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        60,
+        61,
+        62
+      ],
+      "holdings_centicontracts": [
+        2200,
+        0,
+        0
+      ],
+      "debit_micro": 20360000,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        2200,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 20360000,
+          "fills": [
+            {
+              "debit_micro": 20360000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2200
+            }
+          ],
+          "id": 60,
+          "quantity_centicontracts": 2200,
+          "time_ns": 7366751556309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        63,
+        64,
+        65
+      ],
+      "holdings_centicontracts": [
+        10000,
+        10000,
+        10000
+      ],
+      "debit_micro": 200390000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -390000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 93250000,
+          "fills": [
+            {
+              "debit_micro": 20360000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2200
+            },
+            {
+              "debit_micro": 72890000,
+              "price_1e4": 9300,
+              "quantity_centicontracts": 7800
+            }
+          ],
+          "id": 63,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751556309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 12740000,
+          "fills": [
+            {
+              "debit_micro": 12740000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 64,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751656309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 94400000,
+          "fills": [
+            {
+              "debit_micro": 94400000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 65,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751756309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        66,
+        67,
+        68
+      ],
+      "holdings_centicontracts": [
+        4500,
+        0,
+        0
+      ],
+      "debit_micro": 41640000,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        4500,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 41640000,
+          "fills": [
+            {
+              "debit_micro": 41640000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 4500
+            }
+          ],
+          "id": 66,
+          "quantity_centicontracts": 4500,
+          "time_ns": 7366751706309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 10000,
+      "opening_margin_micro": 340000,
+      "query_ids": [
+        69,
+        70,
+        71
+      ],
+      "holdings_centicontracts": [
+        10000,
+        10000,
+        10000
+      ],
+      "debit_micro": 200180000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -180000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 93040000,
+          "fills": [
+            {
+              "debit_micro": 41640000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 4500
+            },
+            {
+              "debit_micro": 51400000,
+              "price_1e4": 9300,
+              "quantity_centicontracts": 5500
+            }
+          ],
+          "id": 69,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751706309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 12740000,
+          "fills": [
+            {
+              "debit_micro": 12740000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 70,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366751956309375,
+          "valid": true
+        },
+        {
+          "debit_micro": 94400000,
+          "fills": [
+            {
+              "debit_micro": 94400000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 10000
+            }
+          ],
+          "id": 71,
+          "quantity_centicontracts": 10000,
+          "time_ns": 7366752206309375,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        72,
+        73,
+        74
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 72,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751530599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 73,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751530599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 74,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751530599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        75,
+        76,
+        77
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 75,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751530599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 76,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751530599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 77,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751530599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        78,
+        79,
+        80
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 78,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751531599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 79,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751532599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 80,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751533599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        81,
+        82,
+        83
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 81,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751531599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 82,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751532599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 83,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751533599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        84,
+        85,
+        86
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 84,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751540599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 85,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751550599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 86,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751560599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        87,
+        88,
+        89
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 87,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751540599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 88,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751550599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 89,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751560599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        90,
+        91,
+        92
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 90,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751580599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 91,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751630599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 92,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751680599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        93,
+        94,
+        95
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 93,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751580599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 94,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751630599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 95,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751680599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        96,
+        97,
+        98
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 96,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751630599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 97,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751730599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 98,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751830599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        99,
+        100,
+        101
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 99,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751630599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 100,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751730599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 101,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751830599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        102,
+        103,
+        104
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 102,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751780599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 103,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366752030599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 104,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366752280599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 2000,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        105,
+        106,
+        107
+      ],
+      "holdings_centicontracts": [
+        2000,
+        2000,
+        2000
+      ],
+      "debit_micro": 39940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 18510000,
+          "fills": [
+            {
+              "debit_micro": 18510000,
+              "price_1e4": 9200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 105,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366751780599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 2550000,
+          "fills": [
+            {
+              "debit_micro": 2550000,
+              "price_1e4": 1200,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 106,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366752030599666,
+          "valid": true
+        },
+        {
+          "debit_micro": 18880000,
+          "fills": [
+            {
+              "debit_micro": 18880000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 2000
+            }
+          ],
+          "id": 107,
+          "quantity_centicontracts": 2000,
+          "time_ns": 7366752280599666,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        108,
+        109,
+        110
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 9980000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 20000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 108,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803080131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 109,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803080131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 110,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803080131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        111,
+        112,
+        113
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 9980000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 20000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 111,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803080131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 112,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803080131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 113,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803080131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        114,
+        115,
+        116
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 9980000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 20000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 114,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803081131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 115,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803082131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 116,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803083131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        117,
+        118,
+        119
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 9980000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 20000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 117,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803081131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 118,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803082131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 119,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803083131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        120,
+        121,
+        122
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 9980000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 20000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 120,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803090131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 121,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803100131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 122,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803110131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        123,
+        124,
+        125
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 9980000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 20000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 123,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803090131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 124,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803100131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 125,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803110131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        126,
+        127,
+        128
+      ],
+      "holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "debit_micro": 540000,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            }
+          ],
+          "id": 126,
+          "quantity_centicontracts": 57,
+          "time_ns": 7366803130131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        129,
+        130,
+        131
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 10030000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -30000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4770000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            },
+            {
+              "debit_micro": 4230000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 443
+            }
+          ],
+          "id": 129,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803130131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 130,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803180131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 131,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803230131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        132,
+        133,
+        134
+      ],
+      "holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "debit_micro": 540000,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            }
+          ],
+          "id": 132,
+          "quantity_centicontracts": 57,
+          "time_ns": 7366803180131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        135,
+        136,
+        137
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 10030000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -30000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4770000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            },
+            {
+              "debit_micro": 4230000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 443
+            }
+          ],
+          "id": 135,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803180131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 136,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803280131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 137,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803380131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        138,
+        139,
+        140
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 9980000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 20000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 138,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803330131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 139,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803580131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 140,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803830131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 500,
+      "opening_margin_micro": 20000,
+      "query_ids": [
+        141,
+        142,
+        143
+      ],
+      "holdings_centicontracts": [
+        500,
+        500,
+        500
+      ],
+      "debit_micro": 9980000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 20000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 141,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803330131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 142,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803580131333,
+          "valid": true
+        },
+        {
+          "debit_micro": 4720000,
+          "fills": [
+            {
+              "debit_micro": 4720000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 500
+            }
+          ],
+          "id": 143,
+          "quantity_centicontracts": 500,
+          "time_ns": 7366803830131333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        144,
+        145,
+        146
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 144,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803244877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 145,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803244877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 146,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803244877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        147,
+        148,
+        149
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 147,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803244877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 148,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803244877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 149,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803244877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        150,
+        151,
+        152
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 150,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803245877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 151,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803246877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 152,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803247877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        153,
+        154,
+        155
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 153,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803245877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 154,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803246877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 155,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803247877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        156,
+        157,
+        158
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 156,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803254877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 157,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803264877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 158,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803274877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        159,
+        160,
+        161
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 159,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803254877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 160,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803264877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 161,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803274877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        162,
+        163,
+        164
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 162,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803294877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 163,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803344877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 164,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803394877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        165,
+        166,
+        167
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 165,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803294877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 166,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803344877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 167,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803394877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        168,
+        169,
+        170
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 168,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803344877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 169,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803444877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 170,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803544877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        171,
+        172,
+        173
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 17960000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8090000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 857
+            },
+            {
+              "debit_micro": 410000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 43
+            }
+          ],
+          "id": 171,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803344877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 172,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803444877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 173,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803544877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        174,
+        175,
+        176
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 18040000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8580000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            },
+            {
+              "debit_micro": 8040000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 843
+            }
+          ],
+          "id": 174,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803494877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 175,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803744877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 176,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803994877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 900,
+      "opening_margin_micro": 40000,
+      "query_ids": [
+        177,
+        178,
+        179
+      ],
+      "holdings_centicontracts": [
+        900,
+        900,
+        900
+      ],
+      "debit_micro": 18040000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -40000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 8580000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            },
+            {
+              "debit_micro": 8040000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 843
+            }
+          ],
+          "id": 177,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803494877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 960000,
+          "fills": [
+            {
+              "debit_micro": 960000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 178,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803744877250,
+          "valid": true
+        },
+        {
+          "debit_micro": 8500000,
+          "fills": [
+            {
+              "debit_micro": 8500000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 900
+            }
+          ],
+          "id": 179,
+          "quantity_centicontracts": 900,
+          "time_ns": 7366803994877250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        180,
+        181,
+        182
+      ],
+      "holdings_centicontracts": [
+        1200,
+        1200,
+        1200
+      ],
+      "debit_micro": 23940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 180,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803422849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 1280000,
+          "fills": [
+            {
+              "debit_micro": 1280000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 181,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803422849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 182,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803422849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        183,
+        184,
+        185
+      ],
+      "holdings_centicontracts": [
+        1200,
+        1200,
+        1200
+      ],
+      "debit_micro": 23940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 183,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803422849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 1280000,
+          "fills": [
+            {
+              "debit_micro": 1280000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 184,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803422849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 185,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803422849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        186,
+        187,
+        188
+      ],
+      "holdings_centicontracts": [
+        1200,
+        1200,
+        1200
+      ],
+      "debit_micro": 23940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 186,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803423849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 1280000,
+          "fills": [
+            {
+              "debit_micro": 1280000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 187,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803424849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 188,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803425849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        189,
+        190,
+        191
+      ],
+      "holdings_centicontracts": [
+        1200,
+        1200,
+        1200
+      ],
+      "debit_micro": 23940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 189,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803423849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 1280000,
+          "fills": [
+            {
+              "debit_micro": 1280000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 190,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803424849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 191,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803425849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        192,
+        193,
+        194
+      ],
+      "holdings_centicontracts": [
+        1200,
+        1200,
+        1200
+      ],
+      "debit_micro": 23940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 192,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803432849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 1280000,
+          "fills": [
+            {
+              "debit_micro": 1280000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 193,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803442849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 194,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803452849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        195,
+        196,
+        197
+      ],
+      "holdings_centicontracts": [
+        1200,
+        1200,
+        1200
+      ],
+      "debit_micro": 23940000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 60000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 195,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803432849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 1280000,
+          "fills": [
+            {
+              "debit_micro": 1280000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 196,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803442849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 197,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803452849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        198,
+        199,
+        200
+      ],
+      "holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "debit_micro": 540000,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            }
+          ],
+          "id": 198,
+          "quantity_centicontracts": 57,
+          "time_ns": 7366803472849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        201,
+        202,
+        203
+      ],
+      "holdings_centicontracts": [
+        1200,
+        1200,
+        1200
+      ],
+      "debit_micro": 24050000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -50000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 11440000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            },
+            {
+              "debit_micro": 10900000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 1143
+            }
+          ],
+          "id": 201,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803472849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 1280000,
+          "fills": [
+            {
+              "debit_micro": 1280000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 202,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803522849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 203,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803572849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        204,
+        205,
+        206
+      ],
+      "holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "debit_micro": 540000,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            }
+          ],
+          "id": 204,
+          "quantity_centicontracts": 57,
+          "time_ns": 7366803522849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        207,
+        208,
+        209
+      ],
+      "holdings_centicontracts": [
+        1200,
+        1200,
+        1200
+      ],
+      "debit_micro": 24050000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -50000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 11440000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            },
+            {
+              "debit_micro": 10900000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 1143
+            }
+          ],
+          "id": 207,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803522849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 1280000,
+          "fills": [
+            {
+              "debit_micro": 1280000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 208,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803622849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 209,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803722849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        210,
+        211,
+        212
+      ],
+      "holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "debit_micro": 540000,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        57,
+        0,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 540000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            }
+          ],
+          "id": 210,
+          "quantity_centicontracts": 57,
+          "time_ns": 7366803672849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 1200,
+      "opening_margin_micro": 60000,
+      "query_ids": [
+        213,
+        214,
+        215
+      ],
+      "holdings_centicontracts": [
+        1200,
+        1200,
+        1200
+      ],
+      "debit_micro": 24050000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -50000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 11440000,
+          "fills": [
+            {
+              "debit_micro": 540000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 57
+            },
+            {
+              "debit_micro": 10900000,
+              "price_1e4": 9500,
+              "quantity_centicontracts": 1143
+            }
+          ],
+          "id": 213,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803672849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 1280000,
+          "fills": [
+            {
+              "debit_micro": 1280000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 214,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366803922849250,
+          "valid": true
+        },
+        {
+          "debit_micro": 11330000,
+          "fills": [
+            {
+              "debit_micro": 11330000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 1200
+            }
+          ],
+          "id": 215,
+          "quantity_centicontracts": 1200,
+          "time_ns": 7366804172849250,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        216,
+        217,
+        218
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 216,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803748712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 217,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803748712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 218,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803748712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        219,
+        220,
+        221
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 219,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803748712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 220,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803748712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 221,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803748712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        222,
+        223,
+        224
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 222,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803749712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 223,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803750712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 224,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803751712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        225,
+        226,
+        227
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 225,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803749712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 226,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803750712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 227,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803751712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        228,
+        229,
+        230
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 228,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803758712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 229,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803768712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 230,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803778712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        231,
+        232,
+        233
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 231,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803758712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 232,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803768712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 233,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803778712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        234,
+        235,
+        236
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 234,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803798712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 235,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803848712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 236,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803898712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        237,
+        238,
+        239
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 237,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803798712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 238,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803848712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 239,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803898712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        240,
+        241,
+        242
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 240,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803848712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 241,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803948712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 242,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366804048712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        243,
+        244,
+        245
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 145580000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 420000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 243,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803848712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 244,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803948712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 245,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366804048712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        246,
+        247,
+        248
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        0
+      ],
+      "debit_micro": 76670000,
+      "complete": false,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        7300,
+        7300,
+        0
+      ],
+      "conditional_margin_micro": null,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 246,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803998712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 247,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366804248712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 0,
+          "fills": [],
+          "id": 248,
+          "quantity_centicontracts": 0,
+          "time_ns": 7366804498712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 7300,
+      "opening_margin_micro": 420000,
+      "query_ids": [
+        249,
+        250,
+        251
+      ],
+      "holdings_centicontracts": [
+        7300,
+        7300,
+        7300
+      ],
+      "debit_micro": 148080000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": -2080000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 68910000,
+          "fills": [
+            {
+              "debit_micro": 68910000,
+              "price_1e4": 9400,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 249,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366803998712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 7760000,
+          "fills": [
+            {
+              "debit_micro": 7760000,
+              "price_1e4": 1000,
+              "quantity_centicontracts": 7300
+            }
+          ],
+          "id": 250,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366804248712333,
+          "valid": true
+        },
+        {
+          "debit_micro": 71410000,
+          "fills": [
+            {
+              "debit_micro": 24310000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 2500
+            },
+            {
+              "debit_micro": 47100000,
+              "price_1e4": 9800,
+              "quantity_centicontracts": 4800
+            }
+          ],
+          "id": 251,
+          "quantity_centicontracts": 7300,
+          "time_ns": 7366804498712333,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        252,
+        253,
+        254
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185040000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 960000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 89560000,
+          "fills": [
+            {
+              "debit_micro": 86650000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9000
+            },
+            {
+              "debit_micro": 2910000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 300
+            }
+          ],
+          "id": 252,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955907306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 253,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955907306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 254,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955907306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 0,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        255,
+        256,
+        257
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185040000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 960000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 89560000,
+          "fills": [
+            {
+              "debit_micro": 86650000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9000
+            },
+            {
+              "debit_micro": 2910000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 300
+            }
+          ],
+          "id": 255,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955907306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 256,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955907306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 257,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955907306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        258,
+        259,
+        260
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185040000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 960000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 89560000,
+          "fills": [
+            {
+              "debit_micro": 86650000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9000
+            },
+            {
+              "debit_micro": 2910000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 300
+            }
+          ],
+          "id": 258,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955908306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 259,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955909306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 260,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955910306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 1,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        261,
+        262,
+        263
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185040000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 960000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 89560000,
+          "fills": [
+            {
+              "debit_micro": 86650000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9000
+            },
+            {
+              "debit_micro": 2910000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 300
+            }
+          ],
+          "id": 261,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955908306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 262,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955909306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 263,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955910306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        264,
+        265,
+        266
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185050000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 950000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 89570000,
+          "fills": [
+            {
+              "debit_micro": 85680000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 8900
+            },
+            {
+              "debit_micro": 3890000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 400
+            }
+          ],
+          "id": 264,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955917306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 265,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955927306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 266,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955937306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 10,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        267,
+        268,
+        269
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185050000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 950000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 89570000,
+          "fills": [
+            {
+              "debit_micro": 85680000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 8900
+            },
+            {
+              "debit_micro": 3890000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 400
+            }
+          ],
+          "id": 267,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955917306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 268,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955927306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 269,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955937306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        270,
+        271,
+        272
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185880000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 120000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 90400000,
+          "fills": [
+            {
+              "debit_micro": 90400000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 270,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955957306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 271,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956007306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 272,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956057306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 50,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        273,
+        274,
+        275
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185880000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 120000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 90400000,
+          "fills": [
+            {
+              "debit_micro": 90400000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 273,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366955957306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 274,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956007306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 275,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956057306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        276,
+        277,
+        278
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185880000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 120000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 90400000,
+          "fills": [
+            {
+              "debit_micro": 90400000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 276,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956007306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 277,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956107306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 278,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956207306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 100,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        279,
+        280,
+        281
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185880000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 120000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 90400000,
+          "fills": [
+            {
+              "debit_micro": 90400000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 279,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956007306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 280,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956107306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 281,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956207306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "initial_limit",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        282,
+        283,
+        284
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185880000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 120000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 90400000,
+          "fills": [
+            {
+              "debit_micro": 90400000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 282,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956157306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 283,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956407306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 284,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956657306041,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "basket_id": 1,
+      "delay_ms_per_leg": 250,
+      "mode": "cross_available_depth",
+      "quantity_centicontracts": 9300,
+      "opening_margin_micro": 960000,
+      "query_ids": [
+        285,
+        286,
+        287
+      ],
+      "holdings_centicontracts": [
+        9300,
+        9300,
+        9300
+      ],
+      "debit_micro": 185880000,
+      "complete": true,
+      "valid_until_stop": true,
+      "unmatched_holdings_centicontracts": [
+        0,
+        0,
+        0
+      ],
+      "conditional_margin_micro": 120000,
+      "realized_pnl_micro": null,
+      "legs": [
+        {
+          "debit_micro": 90400000,
+          "fills": [
+            {
+              "debit_micro": 90400000,
+              "price_1e4": 9700,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 285,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956157306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 5950000,
+          "fills": [
+            {
+              "debit_micro": 5950000,
+              "price_1e4": 600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 286,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956407306041,
+          "valid": true
+        },
+        {
+          "debit_micro": 89530000,
+          "fills": [
+            {
+              "debit_micro": 89530000,
+              "price_1e4": 9600,
+              "quantity_centicontracts": 9300
+            }
+          ],
+          "id": 287,
+          "quantity_centicontracts": 9300,
+          "time_ns": 7366956657306041,
+          "valid": true
+        }
+      ]
+    }
+  ]
+}

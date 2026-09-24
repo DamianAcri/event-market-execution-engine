@@ -569,6 +569,45 @@ Con la política documentada no hay entradas elegibles en el tramo utilizable.
 El informe conserva la interrupción, el resultado nulo y las hipótesis sin
 resolver; futuras fechas completas deben quedar fuera del ajuste.
 
+## Ejecución agresiva sobre la nueva captura — 24 de septiembre de 2026
+
+El [informe reproducible](results/20260924-aggressive-execution/report.json) y su
+[plan fijado antes de calcular los escenarios](results/20260924-aggressive-execution/plan.json)
+analizan ocho episodios positivos del observador continuo. Es una exploración
+posterior a conocer la captura, no una preregistración previa a recogerla. Se
+congelan cantidades y límites al abrir cada episodio: ninguna compra usa el pico
+posterior ni optimiza su tamaño con precios futuros. El probe reutiliza libros,
+validación de sesiones y comisiones nativas; un oráculo racional independiente
+comprueba 309 costes de ejecuciones por nivel. Diez comprobaciones sintéticas,
+también con ASan/UBSan, cubren precios futuros, profundidad parcial, límites,
+desconexión, saltos de reloj y fin de datos.
+
+| Retraso supuesto por pata (llegadas d, 2d, 3d) | Cruzar profundidad disponible: completas con margen positivo | Límites iniciales: completas con margen positivo | Límites iniciales: exposición parcial |
+|---|---:|---:|---:|
+| 0 ms, control ideal | 8/8 | 8/8 | 0/8 |
+| 1 ms | 8/8 | 8/8 | 0/8 |
+| 10 ms | 8/8 | 8/8 | 0/8 |
+| 50 ms | 4/8 | 4/8 | 2/8 |
+| 100 ms | 4/8 | 4/8 | 3/8 |
+| 250 ms | 3/8 | 3/8 | 3/8 |
+
+A 250 ms, el cuarto caso completo con límites tiene margen negativo: un precio
+límite por pata no congela su precio medio ni las comisiones por fragmentación.
+En el episodio 7, el margen inicial de $0.42 pasa a -$2.08 cruzando precios tras
+250 ms por pata; con límites quedan dos patas compradas, $76.67 desembolsados y
+la tercera sin completar. No se supone que ese inventario pueda deshacerse sin
+coste. Los importes son diferencias frente al pago mínimo condicional, no P&L
+liquidado. Las ocho contrafactuales comparten liquidez, pueden solaparse y no se
+suman como ingresos. Un retraso supuesto tampoco es una medición de red/órdenes.
+
+La literatura sobre competencia por liquidez y latencia motiva precisamente
+medir supervivencia y riesgo de completar patas, no atribuir el margen visible
+al robot.[^race][^speedscale] Este resultado favorece estudiar una ejecución
+agresiva controlada antes de invertir en otra optimización de CPU: aún faltan
+impacto propio, carreras, política cronológica, riesgo residual y evaluación en
+fechas no utilizadas para diseñarla. No valida una estrategia de una firma ni
+convierte el mejor supuesto de la tabla en una recomendación de despliegue.
+
 ## Fuentes
 
 Fuentes de la revisión base consultadas el 14–15 de septiembre de 2026; las añadidas en la actualización se consultaron el 17. Las secciones fijan el alcance utilizado; acceso al texto completo no implica reproducción de sus resultados.

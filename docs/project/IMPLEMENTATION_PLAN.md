@@ -37,7 +37,46 @@ Fixed decisions for the initial strategy:
 - Low latency is part of each measured decision. New hardware, concurrency or
   model complexity requires evidence that it improves the relevant result.
 
-## Current decision — 2026-09-17, after interrupted observation and size research
+## Current decision — 2026-09-24, after prospective passive capture
+
+The new capture finalized at the 256 MiB storage guard after 800 seconds, before
+its planned 30 minutes. It has one continuous connection, 784,280 book updates
+and 3,480 public trades across 50 markets. Native live/replay traces match;
+`usable=false` denotes the incomplete planned window, not corrupted records.
+The preregistered passive policy admitted 34 attempts: conservative queue paths
+never filled; favorable cancellation paths completed two baskets for $76.37
+against a conditional $76 floor. This is a negative floor margin, not realized
+P&L. All three hedge-delay paths gave the same result.
+
+The continuous observer separately found eight positive all-taker quote episodes
+in one basket, totaling 2.863 seconds. The passive report's
+`aggressive_positive_states` counter is scoped to passive admission states; its
+zero is **not** an unconditional aggressive control. The eight episodes occurred
+while a passive attempt was pending. Use the continuous observer for coverage.
+
+A bounded [execution audit](../research/results/20260924-aggressive-execution/report.json)
+uses each episode's **opening** size/limits, never the later peak. With sequential
+leg arrivals at d, 2d and 3d, all eight independent hypothetical executions retain
+positive floor margin for d=1 or 10 ms. At d=50/100 ms, crossing available depth
+leaves four positive and four negative. Initial limit prices instead leave four
+complete positive baskets, plus respectively two/three partial exposures; the
+remaining cases acquire nothing. At d=250 ms, only three complete cases retain
+positive floor margin in either mode. Even per-leg limits can permit a negative
+basket margin when depth moves within those limits.
+
+**Selected next work:** a chronological aggressive basket execution study using
+these existing data, with funded, non-overlapping entries, a total basket cost
+budget and explicit handling/valuation of residual legs. Retain the current
+passive result and a continuous all-taker observation control. The present audit
+is conditional on observed positive episodes, assumes displayed liquidity can
+be taken, and does not price losses from unwinding residual positions. It cannot
+be summed into revenue or justify choosing the most profitable tested delay.
+Do not start another long capture or optimize CPU structures first. Before any
+new operator window, freeze the chosen execution policy and reserve untouched
+expiries for evaluation. End-to-end exchange execution delay is still unmeasured;
+local sub-millisecond CPU processing does not establish 10 ms order arrivals.
+
+## Previous decision — 2026-09-17, after interrupted observation and size research
 
 The initial observation was attempted and is **not accepted as a complete
 window**: host sleep interrupted receipt and the policy expired. See the

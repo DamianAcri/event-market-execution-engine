@@ -199,6 +199,11 @@ Outputs in the printed capture directory:
 - `passive-report.json`: six **separate, non-additive** scenarios, spent/locked
   cash, residual quantities, conditional payoff margins and coverage flags.
 
+The passive report counter `aggressive_positive_states` only covers states
+where a new passive attempt can be admitted. For continuous all-taker quote
+coverage use `session/basket-summary.json` and its episode trace; a zero in the
+passive counter does not mean the capture had no positive all-taker quotes.
+
 The conditional floor still lacks exceptional-settlement certification. Modeled
 fills, queue priority, clock error and market impact are uncalibrated; realized
 PnL stays null. Zero eligible entries is a valid result. Do not change parameters
